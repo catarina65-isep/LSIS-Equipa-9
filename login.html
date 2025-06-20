@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Login Plataforma - Tlantic</title>
+<style>
+  /* Reset simples */
+  * {
+    box-sizing: border-box;
+  }
+
+  body, html {
+    margin: 0; 
+    padding: 0; 
+    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  /* Container split screen */
+  .container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  /* Lado esquerdo - imagem grande */
+  .left-side {
+    flex: 1;
+    background: url('https://portugalstartups.com/wp-content/uploads/2015/09/instalacoes_tlantic_1366_137757024252e91bf77da19.jpg') no-repeat center center;
+    background-size: cover;
+  }
+
+  /* Lado direito - login */
+  .right-side {
+    flex: 1;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+    overflow-y: auto;
+  }
+
+  /* Logotipo no topo */
+  .logo {
+    max-width: 220px;
+    margin-bottom: 25px;
+  }
+
+  /* Mensagem de boas-vindas */
+  .welcome-msg {
+    font-size: 22px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+
+  /* Caixa do formulário */
+  .login-container {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  /* Estilos para os botões de tipo de utilizador */
+  .user-type-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .user-type-btn {
+    padding: 12px;
+    border: 2px solid #ddd;
+    background: #f8f9fa;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .user-type-btn:hover {
+    border-color: #0066ff;
+  }
+
+  .user-type-btn.active {
+    background: #0066ff;
+    color: white;
+    border-color: #0066ff;
+  }
+
+  /* Estilos para os campos do formulário */
+  .input-group {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .input-group img {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    opacity: 0.7;
+  }
+
+  input[type="text"], 
+  input[type="password"],
+  input[type="email"],
+  select {
+    width: 100%;
+    padding: 14px 45px;
+    border-radius: 10px;
+    border: 2px solid #ddd;
+    font-size: 15px;
+    transition: all 0.3s ease;
+  }
+
+  input:focus,
+  select:focus {
+    outline: none;
+    border-color: #0066ff;
+    box-shadow: 0 0 8px rgba(0,102,255,0.3);
+  }
+
+  /* Estilo para o botão de submissão */
+  .submit-btn {
+    width: 100%;
+    padding: 15px;
+    background: #0066ff;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    font-weight: 700;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+  }
+
+  .submit-btn:hover {
+    background: #004bb5;
+  }
+
+  /* Links */
+  .action-link {
+    display: block;
+    color: #0066ff;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 15px;
+    transition: color 0.3s ease;
+  }
+
+  .action-link:hover {
+    color: #004bb5;
+    text-decoration: underline;
+  }
+
+  /* Mensagem de erro */
+  .error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+    display: none;
+  }
+
+  /* Responsividade */
+  @media(max-width: 900px) {
+    .container {
+      flex-direction: column;
+    }
+    .left-side, .right-side {
+      width: 100%;
+      height: auto;
+      min-height: 50vh;
+    }
+    .right-side {
+      padding: 30px 20px;
+    }
+    .user-type-container {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* Estilos para o formulário de registo */
+  .form-section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .form-section.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Estilo para o link de convidado */
+  .guest-link {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="left-side"></div>
+
+  <div class="right-side">
+    <img class="logo" src="https://ixtenso.com/media/story/18141/content-1401199148_hires.jpg" alt="Tlantic Logo" />
+
+    <div id="loginSection" class="form-section active">
+      <h2 class="welcome-msg">Bem-vindo(a) à Plataforma Tlantic</h2>
+      
+      <div class="login-container">
+        <div class="input-group">
+          <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Email" />
+          <input type="email" id="loginEmail" placeholder="Email" required />
+        </div>
+
+        <div class="input-group">
+          <img src="https://cdn-icons-png.flaticon.com/512/3064/3064155.png" alt="Senha" />
+          <input type="password" id="loginPassword" placeholder="Palavra-passe" required />
+        </div>
+
+        <div class="input-group">
+          <select id="loginUserType" required>
+            <option value="">Selecione o seu perfil</option>
+            <option value="colaborador">Colaborador</option>
+            <option value="coordenador">Coordenador</option>
+            <option value="rh">Recursos Humanos</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+
+        <button type="button" id="loginBtn" class="submit-btn">Entrar</button>
+        
+        <div class="guest-link">
+          <a href="#" id="guestLink" class="action-link">Acesso Convidado</a>
+        </div>
+
+        <a href="#" id="showRegister" class="action-link">Não tem uma conta? Registe-se</a>
+        <a href="#" class="action-link">Esqueceu a palavra-passe?</a>
+      </div>
+    </div>
+
+    <div id="registerSection" class="form-section">
+      <h2 class="welcome-msg">Criar Nova Conta</h2>
+      
+      <div class="login-container">
+        <div class="user-type-container">
+          <button type="button" class="user-type-btn active" data-type="colaborador">Colaborador</button>
+          <button type="button" class="user-type-btn" data-type="convidado">Convidado</button>
+        </div>
+
+        <div class="input-group">
+          <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Nome" />
+          <input type="text" id="regName" placeholder="Nome completo" required />
+        </div>
+
+        <div class="input-group">
+          <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Email" />
+          <input type="email" id="regEmail" placeholder="Email" required />
+        </div>
+
+        <div class="input-group">
+          <img src="https://cdn-icons-png.flaticon.com/512/3064/3064155.png" alt="Senha" />
+          <input type="password" id="regPassword" placeholder="Criar palavra-passe" required />
+        </div>
+
+        <div class="input-group">
+          <img src="https://cdn-icons-png.flaticon.com/512/3064/3064155.png" alt="Confirmar Senha" />
+          <input type="password" id="regConfirmPassword" placeholder="Confirmar palavra-passe" required />
+        </div>
+
+        <div id="inviteCodeGroup" class="input-group" style="display: none;">
+          <img src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Código de Convite" />
+          <input type="text" id="inviteCode" placeholder="Código de convite" />
+        </div>
+
+        <button type="button" id="registerBtn" class="submit-btn">Criar Conta</button>
+        <a href="#" id="showLogin" class="action-link">Já tem uma conta? Faça login</a>
+      </div>
+    </div>
+
+    <div id="guestSection" class="form-section">
+      <h2 class="welcome-msg">Acesso Convidado</h2>
+      
+      <div class="login-container">
+        <p style="text-align: center; margin-bottom: 20px; color: #666;">
+          Por favor, insira o código de convite que recebeu por email.
+        </p>
+
+        <div class="input-group">
+          <img src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Código de Convite" />
+          <input type="text" id="guestInviteCode" placeholder="Código de convite" required />
+        </div>
+
+        <button type="button" id="guestSubmitBtn" class="submit-btn">Avançar</button>
+        <a href="#" id="backToLoginFromGuest" class="action-link">Voltar para o login</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Elementos do DOM
+  const loginSection = document.getElementById('loginSection');
+  const registerSection = document.getElementById('registerSection');
+  const guestSection = document.getElementById('guestSection');
+  const showRegisterLink = document.getElementById('showRegister');
+  const showLoginLink = document.getElementById('showLogin');
+  const guestLink = document.getElementById('guestLink');
+  const backToLoginFromGuest = document.getElementById('backToLoginFromGuest');
+  const userTypeBtns = document.querySelectorAll('.user-type-btn');
+  const inviteCodeGroup = document.getElementById('inviteCodeGroup');
+  const registerBtn = document.getElementById('registerBtn');
+  const loginBtn = document.getElementById('loginBtn');
+  const guestSubmitBtn = document.getElementById('guestSubmitBtn');
+
+  // Alternar entre login e registo
+  showRegisterLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    loginSection.classList.remove('active');
+    guestSection.classList.remove('active');
+    registerSection.classList.add('active');
+  });
+
+  showLoginLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    registerSection.classList.remove('active');
+    guestSection.classList.remove('active');
+    loginSection.classList.add('active');
+  });
+
+  // Acesso convidado
+  guestLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    loginSection.classList.remove('active');
+    registerSection.classList.remove('active');
+    guestSection.classList.add('active');
+  });
+
+  backToLoginFromGuest.addEventListener('click', (e) => {
+    e.preventDefault();
+    guestSection.classList.remove('active');
+    registerSection.classList.remove('active');
+    loginSection.classList.add('active');
+  });
+
+  // Alternar entre tipos de utilizador no registo
+  userTypeBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      userTypeBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      
+      // Mostrar/ocultar campo de código de convite
+      if (this.dataset.type === 'convidado') {
+        inviteCodeGroup.style.display = 'block';
+      } else {
+        inviteCodeGroup.style.display = 'none';
+      }
+    });
+  });
+
+  // Validação do formulário de registo
+  registerBtn.addEventListener('click', function() {
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const password = document.getElementById('regPassword').value;
+    const confirmPassword = document.getElementById('regConfirmPassword').value;
+    const userType = document.querySelector('.user-type-btn.active').dataset.type;
+    const inviteCode = document.getElementById('inviteCode')?.value;
+
+    // Validações básicas
+    if (!name || !email || !password || !confirmPassword) {
+      alert('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert('As palavras-passe não coincidem!');
+      return;
+    }
+
+    if (password.length < 8) {
+      alert('A palavra-passe deve ter pelo menos 8 caracteres.');
+      return;
+    }
+
+    if (userType === 'convidado' && !inviteCode) {
+      alert('Por favor, insira o código de convite.');
+      return;
+    }
+
+    // Aqui você pode adicionar a lógica para enviar os dados para o servidor
+    console.log('Registando novo utilizador:', { name, email, userType });
+    
+    // Simulação de sucesso no registo
+    alert('Conta criada com sucesso! Por favor, faça login.');
+    showLoginLink.click();
+  });
+
+  // Validação do formulário de login
+  loginBtn.addEventListener('click', function() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const userType = document.getElementById('loginUserType').value;
+
+    if (!email || !password || !userType) {
+      alert('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    // Aqui você pode adicionar a lógica de autenticação
+    console.log('Tentativa de login:', { email, userType });
+    
+    // Redirecionamento baseado no tipo de utilizador (simulação)
+    switch(userType) {
+      case 'admin':
+        // window.location.href = 'admin/dashboard.html';
+        alert('Redirecionando para o painel de Administrador');
+        break;
+      case 'rh':
+        // window.location.href = 'rh/dashboard.html';
+        alert('Redirecionando para o painel de Recursos Humanos');
+        break;
+      case 'coordenador':
+        // window.location.href = 'coordenador/dashboard.html';
+        alert('Redirecionando para o painel de Coordenador');
+        break;
+      default:
+        // window.location.href = 'colaborador/dashboard.html';
+        alert('Redirecionando para o painel do Colaborador');
+    }
+  });
+
+  // Validação do acesso convidado
+  guestSubmitBtn.addEventListener('click', function() {
+    const inviteCode = document.getElementById('guestInviteCode').value.trim();
+
+    if (!inviteCode) {
+      alert('Por favor, insira o código de convite.');
+      return;
+    }
+
+    // Aqui você pode adicionar a lógica para validar o código de convite
+    console.log('Validando código de convite:', inviteCode);
+    
+    // Simulação de código válido
+    if (inviteCode === 'Tlantic2024' || inviteCode === '12345') {
+      // Redirecionar para o formulário de registo de convidado
+      guestSection.classList.remove('active');
+      registerSection.classList.add('active');
+      
+      // Selecionar automaticamente o tipo "Convidado"
+      document.querySelectorAll('.user-type-btn').forEach(btn => {
+        if (btn.dataset.type === 'convidado') {
+          btn.click();
+        }
+      });
+      
+      // Preencher automaticamente o código de convite
+      if (document.getElementById('inviteCode')) {
+        document.getElementById('inviteCode').value = inviteCode;
+      }
+    } else {
+      alert('Código de convite inválido. Por favor, verifique o código e tente novamente.');
+    }
+  });
+</script>
+
+</body>
+</html>
