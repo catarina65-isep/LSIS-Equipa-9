@@ -1,14 +1,19 @@
 <?php
 session_start();
-require_once __DIR__ . '/../DAL/database.php';
 
-// Verificar se já está logado
-if (isset($_SESSION['usuario_id'])) {
-    header('Location: dashboard.php');
+// Verificar se já está logado e não está na página de login
+if (isset($_SESSION['usuario_id']) && basename($_SERVER['PHP_SELF']) != 'login.php') {
+    header('Location: index.php');
     exit;
 }
 
 $page_title = "Login Plataforma - Tlantic";
+$erro = '';
+
+if (isset($_SESSION['erro'])) {
+    $erro = $_SESSION['erro'];
+    unset($_SESSION['erro']);
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-PT">
@@ -371,45 +376,47 @@ $page_title = "Login Plataforma - Tlantic";
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="left-side"></div>
-        <div class="right-side">
-            <div class="login-card">
-                <img class="logo" src="https://ixtenso.com/media/story/18141/content-1401199148_hires.jpg" alt="Tlantic Logo" />
+    <div style="display: flex; min-height: 100vh; width: 100%;">
+        <div style="flex: 1; background: url('https://portugalstartups.com/wp-content/uploads/2015/09/instalacoes_tlantic_1366_137757024252e91bf77da19.jpg') no-repeat center center; background-size: cover;"></div>
+        <div style="flex: 1; background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;">
+            <div style="max-width: 400px; width: 100%; padding: 40px; background: white; border-radius: 8px; box-shadow: 0 0 20px rgba(0,0,0,0.1);">
+                <img src="https://ixtenso.com/media/story/18141/content-1401199148_hires.jpg" alt="Tlantic Logo" style="max-width: 200px; margin: 0 auto 30px; display: block;" />
                 
-                <?php if (isset($_SESSION['erro'])): ?>
-                    <div class="alert alert-danger">
-                        <?= htmlspecialchars($_SESSION['erro']); ?>
-                        <?php unset($_SESSION['erro']); ?>
+                <?php if (!empty($erro)): ?>
+                    <div style="color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; margin-bottom: 20px; border-radius: 4px; text-align: center;">
+                        <?= htmlspecialchars($erro) ?>
                     </div>
                 <?php endif; ?>
                 
-                <div class="welcome-container">
-                    <div class="welcome-emoji">👋</div>
-                    <h1 class="welcome-title">Bem-vindo(a) à <span class="company-name">Tlantic</span></h1>
-                    <p class="welcome-subtitle">Sua plataforma de gestão de colaboradores</p>
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="font-size: 2.5em; margin-bottom: 10px;">👋</div>
+                    <h1 style="font-size: 1.8em; color: #333; margin-bottom: 10px;">Bem-vindo(a) à <span style="color: #0056b3;">Tlantic</span></h1>
+                    <p style="color: #6c757d;">Sua plataforma de gestão de colaboradores</p>
                 </div>
                 
-                <form id="loginForm" action="processa_login.php" method="POST">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Email" />
-                            <input type="email" name="email" id="loginEmail" placeholder="Email" required />
+                <form id="loginForm" action="../DAL/UI/processa_login.php" method="POST" style="width: 100%;">
+                    <div style="margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 15px; border: 1px solid #ced4da; border-radius: 4px; overflow: hidden;">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Email" style="width: 20px; height: 20px; margin: 0 10px;" />
+                            <input type="email" name="email" id="loginEmail" placeholder="Email" required 
+                                   style="flex: 1; padding: 10px; border: none; outline: none;" />
                         </div>
 
-                        <div class="input-group">
-                            <img src="https://cdn-icons-png.flaticon.com/512/3064/3064155.png" alt="Senha" />
-                            <input type="password" name="senha" id="loginPassword" placeholder="Palavra-passe" required />
+                        <div style="display: flex; align-items: center; margin-bottom: 20px; border: 1px solid #ced4da; border-radius: 4px; overflow: hidden;">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3064/3064155.png" alt="Senha" style="width: 20px; height: 20px; margin: 0 10px;" />
+                            <input type="password" name="senha" id="loginPassword" placeholder="Palavra-passe" required 
+                                   style="flex: 1; padding: 10px; border: none; outline: none;" />
                         </div>
-
-
                     </div>
 
-                    <button type="submit" class="submit-btn">Entrar</button>
+                    <button type="submit" 
+                            style="width: 100%; padding: 12px; background-color: #0056b3; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">
+                        Entrar
+                    </button>
                 </form>
 
-                <div class="action-links">
-                    <a href="#" id="forgotPassword" class="action-link">Esqueceu a palavra-passe?</a>
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="#" id="forgotPassword" style="color: #0056b3; text-decoration: none;">Esqueceu a palavra-passe?</a>
                 </div>
             </div>
         </div>
