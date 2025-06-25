@@ -1,1 +1,0 @@
-# LSIS-Equipa-9
