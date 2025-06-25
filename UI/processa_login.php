@@ -1,61 +1,70 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config/database.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Habilita a exibição de erros para depuração
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+try {
+    // Verifica se o formulário foi submetido
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        throw new Exception('Método de requisição inválido');
+    }
+
+    // Verifica se os campos obrigatórios foram preenchidos
+    if (empty($_POST['email']) || empty($_POST['senha'])) {
+        throw new Exception('Por favor, preencha todos os campos.');
+    }
+
+    // Inclui o arquivo de configuração do banco de dados
+    require_once __DIR__ . '/DAL/database.php';
+    require_once __DIR__ . '/DAL/LoginDAL.php';
+    require_once __DIR__ . '/BLL/LoginBLL.php';
+
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $senha = $_POST['senha'] ?? '';
-    $tipo_usuario = (int)($_POST['tipo_usuario'] ?? 0);
-
-    if (empty($email) || empty($senha) || $tipo_usuario === 0) {
-        $_SESSION['erro'] = 'Por favor, preencha todos os campos.';
-        header('Location: login.php');
-        exit;
+    $senha = $_POST['senha'];
+    
+    $loginBLL = new LoginBLL();
+    $usuario = $loginBLL->autenticar($email, $senha);
+    
+    if (!$usuario) {
+        throw new Exception('Falha na autenticação. Verifique suas credenciais.');
     }
-
-    try {
-        $pdo = Database::getConnection();
-        
-        $stmt = $pdo->prepare("
-            SELECT u.*, p.descricao as perfil 
-            FROM utilizador u
-            JOIN perfilacesso p ON u.id_perfil_acesso = p.id_perfil_acesso
-            WHERE u.email = ? AND u.id_perfil_acesso = ? AND u.ativo = 1
-            LIMIT 1
-        ");
-        
-        $stmt->execute([$email, $tipo_usuario]);
-        $usuario = $stmt->fetch();
-
-        if ($usuario && password_verify($senha, $usuario['password_hash'])) {
-            // Login bem-sucedido
-            $_SESSION['usuario_id'] = $usuario['id_utilizador'];
-            $_SESSION['usuario_email'] = $usuario['email'];
-            $_SESSION['usuario_nome'] = $usuario['username'];
-            $_SESSION['usuario_tipo'] = $tipo_usuario;
-            $_SESSION['usuario_perfil'] = $usuario['perfil'];
-            
-            // Redirecionar conforme o perfil
-            switch ($tipo_usuario) {
-                case 1: header('Location: colaborador/dashboard.php'); break;
-                case 2: header('Location: coordenador/dashboard.php'); break;
-                case 3: header('Location: rh/dashboard.php'); break;
-                case 4: header('Location: admin/dashboard.php'); break;
-                default: header('Location: index.php');
-            }
-            exit;
-        } else {
-            $_SESSION['erro'] = 'Credenciais inválidas. Verifique seu email e senha.';
-            header('Location: login.php');
-            exit;
-        }
-    } catch (PDOException $e) {
-        error_log('Erro no login: ' . $e->getMessage());
-        $_SESSION['erro'] = 'Ocorreu um erro ao processar seu login. Tente novamente.';
-        header('Location: login.php');
-        exit;
+    
+    // Se chegou até aqui, a autenticação foi bem-sucedida
+    $_SESSION['usuario_id'] = $usuario['id_utilizador'];
+    $_SESSION['usuario_nome'] = $usuario['nome'];
+    $_SESSION['usuario_email'] = $usuario['email'];
+    $_SESSION['perfil'] = $usuario['perfil'];
+    $_SESSION['id_perfilacesso'] = $usuario['id_perfilacesso'];
+    
+    // Redireciona com base no perfil
+    $redirecionamento = match((int)$usuario['id_perfilacesso']) {
+        1 => 'admin/dashboard.php',
+        2 => 'rh/dashboard.php',
+        3 => 'coordenador/dashboard.php',
+        4 => 'colaborador/dashboard.php',
+        default => 'index.php'
+    };
+    
+    // Se o diretório de destino não existir, redireciona para uma página padrão
+    if (!is_dir(dirname(__DIR__) . '/UI/' . dirname($redirecionamento))) {
+        $redirecionamento = 'index.php';
     }
-} else {
+    
+    header('Location: ' . $redirecionamento);
+    exit();
+    
+} catch (Exception $e) {
+    // Log do erro para depuração
+    error_log('Erro no login: ' . $e->getMessage());
+    error_log('Stack trace: ' . $e->getTraceAsString());
+    
+    // Define a mensagem de erro na sessão
+    $_SESSION['erro'] = $e->getMessage();
+    
+    // Redireciona de volta para a página de login
     header('Location: login.php');
-    exit;
+    exit();
 }
+?>
