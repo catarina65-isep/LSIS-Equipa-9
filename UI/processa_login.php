@@ -5,56 +5,44 @@ session_start();
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-try {
-    // Verifica se o formulário foi submetido
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        throw new Exception('Método de requisição inválido');
+require_once __DIR__ . '/../BLL/loginBLL.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $senha = $_POST['senha'] ?? '';
+    $tipo_usuario = filter_input(INPUT_POST, 'tipo_usuario', FILTER_SANITIZE_NUMBER_INT);
+
+    if (empty($email) || empty($senha) || empty($tipo_usuario)) {
+        $_SESSION['erro'] = 'Por favor, preencha todos os campos.';
+        header('Location: login.php');
+        exit;
     }
 
-    // Inclui os arquivos necessários
-    require_once __DIR__ . '/../../BLL/LoginBLL.php';
-    
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $senha = $_POST['senha'];
-    
-    // Tenta autenticar o usuário
-    $loginBLL = new LoginBLL();
-    $usuario = $loginBLL->autenticar($email, $senha);
-    
-    // Se chegou até aqui, a autenticação foi bem-sucedida
-    $_SESSION['usuario_id'] = $usuario['id_utilizador'];
-    $_SESSION['usuario_nome'] = $usuario['nome'];
-    $_SESSION['usuario_email'] = $usuario['email'];
-    $_SESSION['perfil'] = $usuario['perfil'];
-    $_SESSION['id_perfilacesso'] = $usuario['id_perfilacesso'];
-    $_SESSION['perfil'] = $perfil;
-    $_SESSION['id_perfilacesso'] = $id_perfil;
-    
-    // Redireciona com base no perfil
-    $redirecionamento = match((int)$id_perfil) {
-        1 => 'admin/dashboard.php',
-        2 => 'rh/dashboard.php',
-        3 => 'coordenador/dashboard.php',
-        4 => 'colaborador/dashboard.php',
-        default => 'index.php'
-    };
-    if (!is_dir(dirname(__DIR__) . '/UI/' . dirname($redirecionamento))) {
-        $redirecionamento = 'index.php';
+    try {
+        $loginBLL = new LoginBLL();
+        $usuario = $loginBLL->autenticar($email, $senha);
+
+        if ($usuario) {
+            // Define as variáveis de sessão
+            $_SESSION['usuario_id'] = $usuario['id_utilizador'];
+            $_SESSION['usuario_email'] = $usuario['email'];
+            $_SESSION['usuario_nome'] = $usuario['nome'] ?? 'Usuário';
+            $_SESSION['id_perfilacesso'] = $usuario['id_perfilacesso'];
+            $_SESSION['perfil_nome'] = $usuario['perfil'] ?? 'Usuário';
+
+            // Redireciona para a página inicial
+            header('Location: ../index.php');
+            exit;
+        } else {
+            throw new Exception('Credenciais inválidas. Verifique seu email e senha.');
+        }
+    } catch (Exception $e) {
+        $_SESSION['erro'] = $e->getMessage();
+        header('Location: login.php');
+        exit;
     }
-    
-    header('Location: ' . $redirecionamento);
-    exit();
-    
-} catch (Exception $e) {
-    // Log do erro para depuração
-    error_log('Erro no login: ' . $e->getMessage());
-    error_log('Stack trace: ' . $e->getTraceAsString());
-    
-    // Define a mensagem de erro na sessão
-    $_SESSION['erro'] = $e->getMessage();
-    
-    // Redireciona de volta para a página de login
+} else {
     header('Location: login.php');
-    exit();
+    exit;
 }
 ?>
