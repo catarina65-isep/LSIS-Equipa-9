@@ -1,0 +1,36 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body, html {
+    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.left-side {
+    flex: 1;
+    background: url('https://portugalstartups.com/wp-content/uploads/2015/09/instalacoes_tlantic_1366_137757024252e91bf77da19.jpg') no-repeat center center;
+    background-size: cover;
+}
+
+.right-side {
+    flex: 1;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+}
+
+/* ... (adicione todo o restante do CSS aqui) ... */
