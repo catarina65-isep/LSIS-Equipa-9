@@ -100,7 +100,8 @@ class LoginDAL {
                 'recursoshumanos' => 2,
                 'rh' => 2, // Alternativa para recursos humanos
                 'coordenador' => 3,
-                'colaborador' => 4
+                'colaborador' => 4,
+                'tlantic' => 1 // Domínio tlanic.pt mapeado para administrador
             ];
             
             // Verifica se o domínio está mapeado

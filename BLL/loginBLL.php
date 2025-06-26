@@ -20,9 +20,9 @@ class LoginBLL {
                 throw new Exception('Por favor, insira um email válido.');
             }
             
-            // Verifica se o email está no formato correto (algo@perfil.com)
-            if (!preg_match('/^[^@]+@(administrador|recursoshumanos|rh|coordenador|colaborador)(\.[^.]+)?$/', $email)) {
-                throw new Exception('O email deve estar no formato: usuario@perfil.com, onde perfil pode ser administrador, recursoshumanos, coordenador ou colaborador');
+            // Verifica se o email está no formato correto (algo@perfil.com ou algo@tlantic.pt)
+            if (!preg_match('/^[^@]+@(administrador|recursoshumanos|rh|coordenador|colaborador|tlantic\.pt)(\.[^.]*)?$/', $email)) {
+                throw new Exception('O email deve estar no formato: usuario@perfil.com ou usuario@tlantic.pt, onde perfil pode ser administrador, recursoshumanos, coordenador ou colaborador');
             }
 
             // Obtém o perfil com base no domínio do email
