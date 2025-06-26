@@ -53,7 +53,7 @@ A	login.html
 <summary>Commits</summary>
 
 <pre>
-commit ef0d2ed6a55a87a4231dccd01fc35cf3af7035c3	refs/heads/main (HEAD -> main, origin/main, origin/HEAD)
+commit ef0d2ed6a55a87a4231dccd01fc35cf3af7035c3	refs/heads/main
 Author: Ines Martinho <1230806@isep.ipp.pt>
 Date:   Fri Jun 20 15:06:33 2025 +0100
 
