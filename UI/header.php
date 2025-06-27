@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/session.php';
 $page_title = $page_title ?? 'Tlantic - Gestão de Colaboradores';
 
 // Verifica se o usuário está logado para páginas que requerem autenticação
@@ -47,9 +47,87 @@ $nivel_acesso = $_SESSION['nivel_acesso'] ?? 0;
             --danger-color: #f72585;
             --light-color: #f8f9fa;
             --dark-color: #212529;
-            --sidebar-width: 250px;
             --header-height: 60px;
             --transition: all 0.3s ease;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f5f7fb;
+            color: #2c3e50;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.9375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alert:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .alert-danger {
+            color: #7f1d1d;
+            background-color: #fee2e2;
+        }
+
+        .alert-danger:before {
+            background-color: #dc2626;
+        }
+
+        .alert-success {
+            color: #14532d;
+            background-color: #dcfce7;
+        }
+
+        .alert-success:before {
+            background-color: #16a34a;
+        }
+
+        .alert-warning {
+            color: #78350f;
+            background-color: #fef3c7;
+        }
+
+        .alert-warning:before {
+            background-color: #d97706;
+        }
+
+        .alert-info {
+            color: #1e40af;
+            background-color: #dbeafe;
+        }
+
+        .alert-info:before {
+            background-color: #2563eb;
         }
         
         body {
@@ -260,8 +338,10 @@ $nivel_acesso = $_SESSION['nivel_acesso'] ?? 0;
 </head>
 <body>
     <div id="main-wrapper">
-        <!-- Sidebar -->
-        <?php include_once 'includes/sidebar.php'; ?>
+        <?php if ($nivel_acesso >= 2): // Apenas para administrador e RH ?>
+            <!-- Sidebar -->
+            <?php include_once 'admin/includes/sidebar.php'; ?>
+        <?php endif; ?>
         
         <!-- Main Content -->
         <div id="main-content">
@@ -299,3 +379,27 @@ $nivel_acesso = $_SESSION['nivel_acesso'] ?? 0;
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <?php unset($_SESSION['info']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.js"></script>
+    <script src="/LSIS-Equipa-9/UI/assets/js/main.js"></script>
+
+    <!-- Fecha a sessão -->
+    <?php
+    session_write_close();
+    ?>
+</body>
+</html>
+?>

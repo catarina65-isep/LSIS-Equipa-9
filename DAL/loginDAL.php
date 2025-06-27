@@ -83,6 +83,9 @@ class LoginDAL {
     
     public function obterPerfilPorEmail($email) {
         try {
+            // Carrega a configuração de perfis
+            $perfisConfig = require __DIR__ . '/../config/perfis.php';
+            
             // Extrai o domínio do email (parte após o @)
             $partes = explode('@', $email);
             if (count($partes) !== 2) {
@@ -94,21 +97,21 @@ class LoginDAL {
             // Remove o .com ou outro TLD do final
             $dominio = preg_replace('/\\.[^.\\s]{2,}$/', '', $dominio);
             
-            // Mapeia domínios para perfis
-            $mapeamentoPerfis = [
-                'administrador' => 1,
-                'recursoshumanos' => 2,
-                'rh' => 2, // Alternativa para recursos humanos
-                'coordenador' => 3,
-                'colaborador' => 4,
-                'tlantic' => 1 // Domínio tlanic.pt mapeado para administrador
-            ];
-            
-            // Verifica se o domínio está mapeado
-            foreach ($mapeamentoPerfis as $chave => $valor) {
-                if (strpos($dominio, $chave) !== false) {
-                    return $valor;
-                }
+            // Verifica primeiro se é um domínio de admin
+            if (in_array($dominio, $perfisConfig['dominios_admin'])) {
+                return 1;
+            }
+            // Verifica se é um domínio de RH
+            if (in_array($dominio, $perfisConfig['dominios_rh'])) {
+                return 2;
+            }
+            // Verifica se é um domínio de coordenador
+            if (in_array($dominio, $perfisConfig['dominios_coordenador'])) {
+                return 3;
+            }
+            // Verifica se é um domínio de colaborador
+            if (in_array($dominio, $perfisConfig['dominios_colaborador'])) {
+                return 4;
             }
             
             return null; // Retorna null se não encontrar um perfil correspondente

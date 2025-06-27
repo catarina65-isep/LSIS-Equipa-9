@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once __DIR__ . '/includes/session.php';
 
 // Habilita a exibição de erros para depuração
 error_reporting(E_ALL);
@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Redireciona com base no perfil do usuário
             if ($_SESSION['id_perfilacesso'] == 1) { // Administrador
                 header('Location: admin/dashboard.php');
+            } elseif ($_SESSION['id_perfilacesso'] == 4) { // Colaborador
+                header('Location: colaborador.php');
             } else {
                 header('Location: ../index.php');
             }
