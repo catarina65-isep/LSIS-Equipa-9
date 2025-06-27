@@ -3,7 +3,7 @@
 $current_page = basename($_SERVER['PHP_SELF']);
 ?>
 <!-- Sidebar -->
-<aside class="sidebar" style="width: var(--sidebar-width); background: linear-gradient(180deg, #1a2a3a 0%, #2c3e50 100%); position: fixed; left: 0; top: 0; bottom: 0; z-index: 1000; box-shadow: 0 0 2rem 0 rgba(0, 0, 0, 0.1); transition: all 0.3s ease; overflow-y: auto;">
+<aside class="sidebar position-fixed h-100">
     <div class="d-flex flex-column h-100">
         <!-- Logo -->
         <div class="text-center p-4">
@@ -50,7 +50,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class='bx bxs-group <?php echo ($current_page == 'colaboradores.php') ? 'text-white' : 'text-warning'; ?>'></i>
                         </div>
                         <span>Colaboradores</span>
-                        <span class="badge <?php echo ($current_page == 'colaboradores.php') ? 'bg-white text-primary' : 'bg-warning'; ?> rounded-pill ms-auto">215</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="equipas.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'equipas.php' || $current_page == 'equipa_detalhes.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'equipas.php' || $current_page == 'equipa_detalhes.php') ? 'bg-white bg-opacity-10' : 'bg-danger bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-group <?php echo ($current_page == 'equipas.php' || $current_page == 'equipa_detalhes.php') ? 'text-white' : 'text-danger'; ?>'></i>
+                        </div>
+                        <span>Equipas</span>
                     </a>
                 </li>
                 
@@ -132,8 +140,23 @@ $current_page = basename($_SERVER['PHP_SELF']);
     
     <style>
         .sidebar {
+            width: 250px !important;
+            min-height: 100vh;
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            bottom: 0 !important;
+            z-index: 1000 !important;
+            background: linear-gradient(180deg, #1a2a3a 0%, #2c3e50 100%) !important;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1) !important;
+            transition: all 0.3s !important;
+            overflow-y: auto !important;
             scrollbar-width: thin;
             scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            transform: translateX(0) !important;
         }
         
         .sidebar::-webkit-scrollbar {

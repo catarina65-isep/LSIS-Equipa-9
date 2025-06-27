@@ -1,13 +1,9 @@
 <?php
-class Database {
-    private $host = 'localhost';
-    private $db_name = 'ficha_colaboradores';
-    private $username = 'root';
-    private $password = '';
-    private $conn;
+// This file is deprecated. Please use config.php instead.
+require_once __DIR__ . '/config.php';
 
-    public function getConnection() {
-        $this->conn = null;
+// For backward compatibility only
+class_alias('Database', 'DatabaseDeprecated');
 
         try {
             $this->conn = new PDO(
