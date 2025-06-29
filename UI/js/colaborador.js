@@ -392,27 +392,69 @@ if (profileForm) {
         const nome = document.getElementById('nome').value.trim();
         const email = document.getElementById('email').value.trim();
         const telefone = document.getElementById('telefone').value.trim();
-        const morada = document.getElementById('morada').value.trim();
-        const data_nascimento = document.getElementById('data_nascimento').value;
+        const dataNascimento = document.getElementById('dataNascimento').value;
         const nif = document.getElementById('nif').value.trim();
-        const genero = document.getElementById('genero').value;
+        const niss = document.getElementById('niss').value.trim();
+        const numeroCartaoCidadao = document.getElementById('numeroCartaoCidadao').value.trim();
+        const dataValidadeCartao = document.getElementById('dataValidadeCartao').value;
+        const estadoCivil = document.getElementById('estadoCivil').value;
+        const numeroDependentes = document.getElementById('numeroDependentes').value;
+        const habilitacoes = document.getElementById('habilitacoes').value;
 
-        if (!nome || !email || !telefone || !morada || !data_nascimento || !nif || !genero) {
+        if (!nome || !email || !telefone || !dataNascimento || !nif || !niss || 
+            !numeroCartaoCidadao || !dataValidadeCartao || !estadoCivil || 
+            !numeroDependentes || !habilitacoes) {
             showAlert('error', 'Por favor, preencha todos os campos obrigatórios');
             return;
         }
 
-        // Validar formato do email
+        // Validar formato de email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            showAlert('error', 'Por favor, insira um email válido');
+            showAlert('error', 'Formato de email inválido');
             return;
         }
 
-        // Validar formato do NIF
+        // Validar formato de NIF
         const nifRegex = /^[0-9]{9}$/;
         if (!nifRegex.test(nif)) {
-            showAlert('error', 'Por favor, insira um NIF válido (9 dígitos)');
+            showAlert('error', 'Formato de NIF inválido');
+            return;
+        }
+
+        // Validar formato de telefone
+        const telefoneRegex = /^\+?\d{9,15}$/;
+        if (!telefoneRegex.test(telefone)) {
+            showAlert('error', 'Formato de telefone inválido');
+            return;
+        }
+
+        // Validar número de dependentes
+        const numeroDependentesRegex = /^[0-9]+$/;
+        if (!numeroDependentesRegex.test(numeroDependentes)) {
+            showAlert('error', 'Número de dependentes inválido');
+            return;
+        }
+
+        // Validar data de validade do cartão de cidadão
+        const hoje = new Date();
+        const dataValidade = new Date(dataValidadeCartao);
+        if (dataValidade < hoje) {
+            showAlert('error', 'Data de validade do cartão de cidadão inválida');
+            return;
+        }
+
+        // Validar formato de NISS
+        const nissRegex = /^[0-9]{10}$/;
+        if (!nissRegex.test(niss)) {
+            showAlert('error', 'Formato de NISS inválido');
+            return;
+        }
+
+        // Validar número do cartão de cidadão
+        const numeroCartaoRegex = /^[0-9]{12}$/;
+        if (!numeroCartaoRegex.test(numeroCartaoCidadao)) {
+            showAlert('error', 'Formato do número do cartão inválido');
             return;
         }
 

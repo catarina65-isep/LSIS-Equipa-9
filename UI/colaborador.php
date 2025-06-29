@@ -19,155 +19,106 @@ if ($_SESSION['id_perfilacesso'] != 4) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Perfil - Tlantic</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Perfil do Colaborador</title>
+    <!-- Boxicons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
             /* Cores principais */
-            --primary-color: #0066ff;
-            --primary-hover: #0052cc;
+            --primary-color: #0047ab;
+            --primary-hover: #003d82;
             --secondary-color: #2c3e50;
-            --success-color: #4CAF50;
-            --info-color: #2196F3;
-            --warning-color: #FFC107;
-            --danger-color: #F44336;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
             --light-color: #f8f9fa;
-            --dark-color: #2c3e50;
-            
-            /* Cores complementares */
-            --accent-1: #0066ff;
-            --accent-2: #00ccff;
-            --accent-3: #0052cc;
-            --accent-4: #e6f0ff;
-            --accent-5: #cce0ff;
-            
-            /* Cores para cards e elementos */
-            --card-bg: #ffffff;
-            --card-border: 1px solid rgba(0, 0, 0, 0.05);
-            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            
-            /* Tipografia */
-            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            --font-size-sm: 0.875rem;
-            --font-size-base: 1rem;
-            --font-size-lg: 1.125rem;
-            --font-size-xl: 1.25rem;
-            
-            /* Espaçamento */
-            --spacing-sm: 0.5rem;
-            --spacing-md: 1rem;
-            --spacing-lg: 1.5rem;
-            --spacing-xl: 2rem;
-            
-            /* Bordas */
-            --border-radius-sm: 8px;
-            --border-radius-md: 12px;
-            --border-radius-lg: 20px;
-            
-            /* Transições */
-            --transition-fast: 0.2s ease;
-            --transition-normal: 0.3s ease;
-            --transition-slow: 0.4s ease;
+            --dark-color: #343a40;
+            --border-color: #dee2e6;
+            --border-radius-md: 1rem;
+            --spacing-sm: 0.75rem;
+            --spacing-md: 1.25rem;
+            --spacing-lg: 1.75rem;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition-speed: 0.3s;
         }
 
         body {
-            font-family: var(--font-family);
-            background-color: var(--light-color);
-            color: var(--dark-color);
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #212529;
             line-height: 1.6;
             min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 1.5rem;
+        }
+
+        .profile-container {
             display: flex;
-            flex-direction: column;
-        }
-
-        /* Estilos para o header do perfil */
-        .profile-header {
-            padding: 2rem;
-            background: linear-gradient(135deg, #e6f0ff 0%, #cce0ff 100%);
-            border-bottom: 2px solid #e9ecef;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-        }
-
-        .profile-header .profile-card {
-            background: white;
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--card-shadow);
-            padding: var(--spacing-lg);
-        }
-
-        .profile-image {
-            width: 120px;
-            height: 120px;
-        }
-
-        .profile-photo-container {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
+            gap: 3rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 2rem;
             overflow: hidden;
-            border: 3px solid white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-lg);
         }
 
-        .profile-photo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .profile-sidebar {
+            flex: 0 0 280px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 0 2rem 2rem 0;
+            padding: 2.5rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .profile-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border: 3px solid white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        .profile-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-color) 50%, transparent 50%);
+            z-index: 2;
         }
 
-        .stat-item {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            color: var(--secondary-color);
-            font-size: var(--font-size-sm);
+        .profile-content {
+            flex: 1;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 2rem 0 0 2rem;
+            padding: 3rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .sidebar-footer {
-            padding: 1rem;
-            border-top: 1px solid #e9ecef;
+        .profile-header {
+            margin-bottom: 3rem;
+            text-align: center;
+            position: relative;
         }
 
-        .sidebar-footer .btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-        }
-
-        .sidebar-footer .btn i {
-            font-size: 1.1rem;
-        }
-
-        .stat-item i {
-            color: var(--primary-color);
-            font-size: 1.5em;
-            width: 32px;
-        }
-
-        /* Estilos para os cards */
         .profile-card {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            box-shadow: var(--card-shadow);
-            border: var(--card-border);
-            transition: transform var(--transition-normal);
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
             transform: translateY(-2px);
             box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
         }
@@ -477,39 +428,6 @@ if ($_SESSION['id_perfilacesso'] != 4) {
         .form-group label {
             display: block;
             margin-bottom: 0.75rem;
-            font-weight: 600;
-            color: #212529;
-            font-size: 1.1rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 1rem 1.25rem;
-            border: 2px solid #ced4da;
-            border-radius: 0.75rem;
-            background-color: #ffffff;
-            transition: all 0.3s ease;
-            font-size: 1.1rem;
-            color: #212529;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .form-control:focus {
-            border-color: #0056b3;
-            box-shadow: 0 0 0 0.25rem rgba(0,86,179,0.25);
-            background-color: #ffffff;
-            outline: none;
-        }
-
-        .form-control::placeholder {
-            color: #6c757d;
-            opacity: 1;
-            font-size: 1rem;
-        }
-
-        .form-control:disabled {
-            background-color: #e9ecef;
-            opacity: 1;
             cursor: not-allowed;
         }
 
@@ -639,44 +557,220 @@ if ($_SESSION['id_perfilacesso'] != 4) {
                     <div class="card-header">
                         <h2>Dados Pessoais</h2>
                     </div>
-                    <form id="profileForm" class="row g-4">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="nome">Nome Completo</label>
-                                <input type="text" id="nome" name="nome" required 
-                                    class="form-control">
+                    <form id="profileForm">
+                        <!-- Seção Identificação -->
+                        <div class="section-header mb-4">
+                            <h3 class="section-title">Identificação</h3>
+                            <div class="section-divider"></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nome"><i class='bx bx-user'></i> Nome Completo</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-user'></i></span>
+                                        <input type="text" id="nome" name="nome" required 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="dataNascimento"><i class='bx bx-calendar'></i> Data de Nascimento</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-calendar'></i></span>
+                                        <input type="date" id="dataNascimento" name="dataNascimento" required 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email" required 
-                                    class="form-control">
+
+                        <!-- Seção Documentação -->
+                        <div class="section-header mt-4 mb-4">
+                            <h3 class="section-title">Documentação</h3>
+                            <div class="section-divider"></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nif"><i class='bx bx-id-card'></i> NIF (Número de Identificação Fiscal)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-id-card'></i></span>
+                                        <input type="text" id="nif" name="nif" required 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="niss"><i class='bx bx-shield-quarter'></i> NISS (Número de Identificação da Segurança Social)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-shield-quarter'></i></span>
+                                        <input type="text" id="niss" name="niss" required 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="numeroCartaoCidadao"><i class='bx bx-id-card'></i> Número do Cartão de Cidadão</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-id-card'></i></span>
+                                        <input type="text" id="numeroCartaoCidadao" name="numeroCartaoCidadao" required 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="dataValidadeCartao"><i class='bx bx-calendar-check'></i> Data de Validade do Cartão de Cidadão</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-calendar-check'></i></span>
+                                        <input type="date" id="dataValidadeCartao" name="dataValidadeCartao" required 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="morada">Morada</label>
-                                <input type="text" id="morada" name="morada" required 
-                                    class="form-control">
+
+                        <!-- Seção Contactos -->
+                        <div class="section-header mt-4 mb-4">
+                            <h3 class="section-title">Contactos</h3>
+                            <div class="section-divider"></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="telefone"><i class='bx bx-phone'></i> Contacto Telefónico</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-phone'></i></span>
+                                        <input type="tel" id="telefone" name="telefone" required 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email"><i class='bx bx-envelope'></i> Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-envelope'></i></span>
+                                        <input type="email" id="email" name="email" required 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="codigoPostal">Código Postal</label>
-                                <input type="text" id="codigoPostal" name="codigoPostal" required 
-                                    class="form-control">
+
+                        <!-- Seção Dados Pessoais -->
+                        <div class="section-header mt-4 mb-4">
+                            <h3 class="section-title">Dados Pessoais</h3>
+                            <div class="section-divider"></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="estadoCivil"><i class='bx bx-heart'></i> Estado Civil</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-heart'></i></span>
+                                        <select id="estadoCivil" name="estadoCivil" required class="form-control form-control-lg">
+                                            <option value="">Selecione...</option>
+                                            <option value="solteiro">Solteiro(a)</option>
+                                            <option value="casado">Casado(a)</option>
+                                            <option value="divorciado">Divorciado(a)</option>
+                                            <option value="viuvo">Viúvo(a)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="numeroDependentes"><i class='bx bx-group'></i> Número de Dependentes</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-group'></i></span>
+                                        <input type="number" id="numeroDependentes" name="numeroDependentes" min="0" 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="habilitacoes"><i class='bx bx-graduation'></i> Habilitações Literárias</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-graduation'></i></span>
+                                        <select id="habilitacoes" name="habilitacoes" class="form-control form-control-lg">
+                                            <option value="">Selecione...</option>
+                                            <option value="ensino_basico">Ensino Básico</option>
+                                            <option value="ensino_secundario">Ensino Secundário</option>
+                                            <option value="ensino_superior">Ensino Superior</option>
+                                            <option value="outro">Outro</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="form-group">
-                                <label for="observacoes">Observações</label>
-                                <textarea id="observacoes" name="observacoes" class="form-control" rows="3"></textarea>
+
+                        <!-- Seção Dados de Emergência -->
+                        <div class="section-header mt-4 mb-4">
+                            <h3 class="section-title">Dados de Emergência</h3>
+                            <div class="section-divider"></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="contactoEmergencia"><i class='bx bx-user'></i> Contacto de Emergência</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-user'></i></span>
+                                        <input type="text" id="contactoEmergencia" name="contactoEmergencia" 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="relacaoEmergencia"><i class='bx bx-link'></i> Relação com o Contacto de Emergência</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-link'></i></span>
+                                        <input type="text" id="relacaoEmergencia" name="relacaoEmergencia" 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="telemovelEmergencia"><i class='bx bx-phone'></i> Telemóvel do Contacto de Emergência</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-phone'></i></span>
+                                        <input type="tel" id="telemovelEmergencia" name="telemovelEmergencia" 
+                                            class="form-control form-control-lg">
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="form-actions mt-4">
-                                <button type="submit" class="btn btn-primary w-100">Salvar Alterações</button>
+
+                        <!-- Seção Observações -->
+                        <div class="section-header mt-4 mb-4">
+                            <h3 class="section-title">Observações</h3>
+                            <div class="section-divider"></div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="observacoes"><i class='bx bx-comment-detail'></i> Observações</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-comment-detail'></i></span>
+                                        <textarea id="observacoes" name="observacoes" class="form-control form-control-lg" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botão de Envio -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="form-actions text-center">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">Salvar Alterações</button>
+                                </div>
                             </div>
                         </div>
                     </form>
