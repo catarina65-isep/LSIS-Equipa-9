@@ -217,7 +217,7 @@ A	script.js
 <summary>Commits</summary>
 
 <pre>
-commit 3c48702d5fd45f7cd48ff5a6ef002876b534fdb3	refs/heads/main (HEAD -> main, origin/main, origin/HEAD)
+commit 3c48702d5fd45f7cd48ff5a6ef002876b534fdb3	refs/heads/main
 Author: Ines Martinho <1230806@isep.ipp.pt>
 Date:   Sun Jun 29 23:09:03 2025 +0100
 
