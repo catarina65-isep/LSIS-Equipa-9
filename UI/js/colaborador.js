@@ -1,10 +1,27 @@
 function handlePhotoUpload(input) {
     if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // Validar tamanho do arquivo (máximo 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            showAlert('error', 'O arquivo deve ter no máximo 5MB');
+            return;
+        }
+
+        // Validar formato do arquivo
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (!validTypes.includes(file.type)) {
+            showAlert('error', 'Formato de arquivo não suportado. Por favor, use JPEG, PNG ou GIF.');
+            return;
+        }
+
+        // Pré-visualizar a foto
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('foto-preview').src = e.target.result;
-        }
-        reader.readAsDataURL(input.files[0]);
+            const previewImg = document.getElementById('foto-preview');
+            previewImg.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
     }
 }
 
@@ -161,6 +178,78 @@ if (addDocumentBtn) {
     addDocumentBtn.addEventListener('click', function() {
         const modal = new bootstrap.Modal(document.getElementById('documentModal'));
         modal.show();
+    });
+}
+
+// Função para fazer upload de documento
+const uploadDocumentBtn = document.getElementById('uploadDocument');
+if (uploadDocumentBtn) {
+    uploadDocumentBtn.addEventListener('click', function() {
+        const form = document.getElementById('documentForm');
+        const formData = new FormData(form);
+        
+        // Adicionar ID do usuário
+        formData.append('usuario_id', <?php echo $_SESSION['usuario_id']; ?>);
+        
+        // Validar arquivo
+        const fileInput = document.getElementById('documentFile');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            showAlert('error', 'Por favor, selecione um arquivo');
+            return;
+        }
+        
+        // Validar tamanho do arquivo (máximo 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            showAlert('error', 'O arquivo deve ter no máximo 5MB');
+            return;
+        }
+
+        // Validar tipo de arquivo
+        const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                           'image/jpeg', 'image/png'];
+        if (!validTypes.includes(file.type)) {
+            showAlert('error', 'Formato de arquivo não suportado. Por favor, use PDF, DOC, DOCX, JPG ou PNG.');
+            return;
+        }
+
+        // Mostrar loading
+        uploadDocumentBtn.disabled = true;
+        uploadDocumentBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Carregando...';
+
+        // Enviar para o servidor
+        fetch('../DAL/documentos.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Fechar modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('documentModal'));
+                modal.hide();
+                
+                // Limpar formulário
+                form.reset();
+                
+                // Atualizar lista de documentos
+                loadDocuments();
+                
+                showAlert('success', 'Documento adicionado com sucesso!');
+            } else {
+                showAlert('error', 'Erro ao adicionar documento: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            showAlert('error', 'Erro ao adicionar documento');
+        })
+        .finally(() => {
+            // Restaurar botão
+            uploadDocumentBtn.disabled = false;
+            uploadDocumentBtn.innerHTML = 'Upload';
+        });
     });
 }
 
@@ -327,18 +416,42 @@ if (profileForm) {
             return;
         }
 
+        // Criar objeto com os dados do formulário
         const formData = new FormData(profileForm);
-        
-        fetch('api/colaborador/atualizar.php', {
+        const data = {
+            nome: formData.get('nome'),
+            email: formData.get('email'),
+            telefone: formData.get('telefone'),
+            morada: formData.get('morada'),
+            nif: formData.get('nif'),
+            dataNascimento: formData.get('data_nascimento'),
+            codigoPostal: formData.get('codigo_postal'),
+            localidade: formData.get('localidade'),
+            observacoes: formData.get('observacoes')
+        };
+
+        // Enviar dados como JSON
+        fetch('../DAL/colaborador.php', {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
+                'Content-Type': 'application/json'
             },
-            body: formData
+            body: JSON.stringify(data)
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                // Atualizar o header com as informações retornadas do servidor
+                document.getElementById('displayName').textContent = data.data.nome;
+                document.getElementById('displayEmail').textContent = data.data.email;
+                document.getElementById('displayPhone').textContent = data.data.telefone;
+                
+                // Atualizar o nome no menu
+                const menuName = document.querySelector('.menu-name');
+                if (menuName) {
+                    menuName.textContent = data.data.nome;
+                }
+                
                 showAlert('success', 'Perfil atualizado com sucesso!');
                 // Recarregar dados após atualização
                 loadUserData();

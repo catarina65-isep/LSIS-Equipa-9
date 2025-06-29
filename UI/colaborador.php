@@ -3,7 +3,7 @@ session_start();
 
 // Verifica se o usuário está logado e é um colaborador
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
+    header('Location: UI/login.php');
     exit;
 }
 
@@ -23,37 +23,28 @@ if ($_SESSION['id_perfilacesso'] != 4) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-            /* Cores da Tlantic */
+            /* Cores principais */
             --primary-color: #0066ff;
             --primary-hover: #0052cc;
-            --secondary-color: #004d99;
-            --header-color: #e6f0ff;
+            --secondary-color: #2c3e50;
             --success-color: #4CAF50;
             --info-color: #2196F3;
             --warning-color: #FFC107;
             --danger-color: #F44336;
             --light-color: #f8f9fa;
             --dark-color: #2c3e50;
-            --header-height: 70px;
-            --transition: all 0.3s ease;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --card-border: 1px solid rgba(0, 0, 0, 0.05);
             
-            /* Paleta de cores complementares */
-            --accent-1: #003366;
-            --accent-2: #00264d;
-            --accent-3: #001a33;
+            /* Cores complementares */
+            --accent-1: #0066ff;
+            --accent-2: #00ccff;
+            --accent-3: #0052cc;
             --accent-4: #e6f0ff;
             --accent-5: #cce0ff;
             
-            /* Cores para a sidebar */
-            --sidebar-bg: #e6f0ff;
-            --sidebar-header-bg: linear-gradient(135deg, #cce0ff 0%, #0066ff 100%);
-            
             /* Cores para cards e elementos */
             --card-bg: #ffffff;
-            --card-header-bg: #f8f9fa;
-            --card-border-radius: 12px;
+            --card-border: 1px solid rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             
             /* Tipografia */
             --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -71,214 +62,231 @@ if ($_SESSION['id_perfilacesso'] != 4) {
             /* Bordas */
             --border-radius-sm: 8px;
             --border-radius-md: 12px;
-            --border-radius-lg: 16px;
+            --border-radius-lg: 20px;
             
             /* Transições */
-            --transition-fast: 0.2s ease-in-out;
-            --transition-normal: 0.3s ease-in-out;
-            --transition-slow: 0.4s ease-in-out;
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.4s ease;
         }
 
         body {
             font-family: var(--font-family);
-            background-color: var(--accent-4);
+            background-color: var(--light-color);
             color: var(--dark-color);
             line-height: 1.6;
-            transition: var(--transition-normal);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Estilos para o header */
+        /* Estilos para o header do perfil */
         .profile-header {
-            background: linear-gradient(135deg, var(--accent-4) 0%, var(--accent-5) 100%);
             padding: 2rem;
+            background: linear-gradient(135deg, #e6f0ff 0%, #cce0ff 100%);
+            border-bottom: 2px solid #e9ecef;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .profile-header .profile-card {
+            background: white;
             border-radius: var(--border-radius-lg);
-            margin-bottom: 2rem;
             box-shadow: var(--card-shadow);
+            padding: var(--spacing-lg);
         }
 
-        .profile-header h1 {
-            color: white;
-            margin-bottom: 1rem;
+        .profile-image {
+            width: 120px;
+            height: 120px;
         }
 
-        .profile-header .profile-info {
+        .profile-photo-container {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item {
             display: flex;
             align-items: center;
-            gap: 2rem;
-        }
-
-        .profile-header .profile-photo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .profile-header .profile-photo {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 4px solid white;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .profile-header .profile-photo img {
+            justify-content: center;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            color: var(--secondary-color);
+            font-size: var(--font-size-sm);
         }
 
-        .profile-header .photo-container {
-            position: relative;
-            width: 150px;
-            height: 150px;
+        .sidebar-footer {
+            padding: 1rem;
+            border-top: 1px solid #e9ecef;
         }
 
-        .profile-header .photo-container .photo-upload-btn {
-            position: absolute;
-            bottom: -60px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 0.4rem 1.2rem;
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius-md);
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: var(--transition-normal);
-            z-index: 1;
+        .sidebar-footer .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
         }
 
-        .profile-header .profile-photo .photo-upload-btn:hover {
-            background: var(--primary-hover);
-            transform: translateX(-50%) translateY(-2px);
+        .sidebar-footer .btn i {
+            font-size: 1.1rem;
         }
 
-        .profile-header .profile-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .profile-header .profile-details {
-            color: var(--dark-color);
-        }
-
-        .profile-header .profile-details h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .profile-header .profile-details p {
-            margin: 0.5rem 0;
-            opacity: 0.9;
+        .stat-item i {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            width: 32px;
         }
 
         /* Estilos para os cards */
         .profile-card {
-            background: white;
+            background-color: var(--card-bg);
             border-radius: var(--border-radius-lg);
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
             box-shadow: var(--card-shadow);
-            transition: var(--transition-normal);
+            border: var(--card-border);
+            transition: transform var(--transition-normal);
         }
 
         .profile-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
         }
 
-        .profile-card h2 {
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
+        .card-header {
+            margin-bottom: var(--spacing-md);
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: var(--spacing-sm);
         }
 
-        /* Estilos para o formulário */
-        .form-control {
-            border: 1px solid var(--accent-4);
-            padding: 0.75rem;
+        .card-header h2 {
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        /* Estilos para formulário */
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: var(--spacing-sm);
+            border: var(--card-border);
             border-radius: var(--border-radius-md);
-            transition: var(--transition-normal);
+            background-color: #f8f9fa;
+            transition: all var(--transition-normal);
         }
 
-        .form-control:focus {
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(0, 102, 255, 0.25);
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+            background-color: white;
+            outline: none;
         }
 
         /* Estilos para botões */
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
-            padding: 0.75rem 1.5rem;
+            padding: var(--spacing-sm) var(--spacing-lg);
             border-radius: var(--border-radius-md);
             transition: var(--transition-normal);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
         }
 
         .btn-primary:hover {
             background-color: var(--primary-hover);
             border-color: var(--primary-hover);
             transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.2);
+        }
+
+        /* Estilos para ação de form */
+        .form-actions {
+            margin-top: var(--spacing-lg);
         }
 
         /* Estilos para a sidebar */
         .profile-sidebar {
-            background: linear-gradient(135deg, var(--accent-4) 0%, var(--accent-5) 100%);
-            border-right: 1px solid var(--accent-2);
-            padding: 2rem;
+            width: 280px;
+            background-color: white;
+            border-right: var(--card-border);
+            padding: var(--spacing-lg);
             transition: var(--transition-normal);
         }
 
-        .profile-sidebar .nav-link {
-            color: var(--dark-color);
-            padding: 1rem;
+        .sidebar-header {
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .logo img {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .logo img {
+            max-width: 150px;
+            height: auto;
+        }
+
+        .sidebar-nav {
+            margin-top: var(--spacing-lg);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-lg);
             border-radius: var(--border-radius-md);
             transition: var(--transition-normal);
+            color: var(--dark-color);
+            text-decoration: none;
         }
 
-        .profile-sidebar .nav-link:hover {
-            background: var(--accent-4);
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: #f8f9fa;
             color: var(--primary-color);
         }
 
-        .profile-sidebar .nav-link.active {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        /* Estilos para documentos e benefícios */
-        .document-item, .benefit-item {
-            background: var(--accent-4);
-            border-radius: var(--border-radius-md);
-            padding: 1rem;
-            margin-bottom: 1rem;
-            transition: var(--transition-normal);
-        }
-
-        .document-item:hover, .benefit-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Estilos para o tema */
-        .theme-toggle {
-            background: var(--accent-4);
-            border: 1px solid var(--accent-2);
-            border-radius: var(--border-radius-md);
-            padding: 0.5rem;
-            cursor: pointer;
-            transition: var(--transition-normal);
-        }
-
-        .theme-toggle:hover {
-            background: var(--accent-5);
+        .nav-link i {
+            font-size: 1.2em;
         }
 
         /* Layout principal */
@@ -304,7 +312,7 @@ if ($_SESSION['id_perfilacesso'] != 4) {
         /* Cabeçalho do perfil */
         .profile-header {
             padding: 2rem;
-            background-color: #f8f9fa;
+            background-color: #e6f0ff;
             border-bottom: 2px solid #e9ecef;
         }
 
@@ -567,10 +575,13 @@ if ($_SESSION['id_perfilacesso'] != 4) {
 <body>
     <div class="container">
         <div class="profile-container">
-            <div class="profile-sidebar">
-                <div class="sidebar-header">
-                    <h2 class="text-center mb-4">Meu Perfil</h2>
-                </div>
+                <div class="profile-sidebar">
+                    <div class="sidebar-header">
+                        <div class="logo">
+                            <img src="/LSIS-Equipa-9/UI/assets/img/logos/tlantic-logo.jpg" alt="Tlantic Logo" class="mb-3">
+                        </div>
+                        <h2 class="mb-4">Meu Perfil</h2>
+                    </div>
                 <nav class="sidebar-nav">
                     <a class="nav-link active" href="#dados-pessoais">
                         <i class='bx bx-user'></i>
@@ -581,37 +592,42 @@ if ($_SESSION['id_perfilacesso'] != 4) {
                         <span>Documentos</span>
                     </a>
                 </nav>
+                <div class="sidebar-footer mt-auto">
+                    <a href="logout.php" class="btn btn-outline-danger w-100">
+                        <i class='bx bx-log-out'></i>
+                        <span>Sair</span>
+                    </a>
+                </div>
             </div>
 
             <div class="profile-content">
                 <!-- Header do Perfil -->
                 <div class="profile-header">
-                    <div class="profile-info">
+                    <div class="profile-card mb-4">
                         <div class="d-flex align-items-center mb-3">
-                            <div class="photo-container me-4">
-                                <div class="profile-photo">
-                                    <img src="<?php echo htmlspecialchars($data['foto'] ?? 'img/default-profile.png'); ?>" alt="" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                            <div class="profile-image me-4">
+                                <div class="profile-photo-container">
+                                    <img src="../assets/placeholder.jpg" alt="Foto de Perfil" id="foto-preview" class="rounded-circle">
                                 </div>
-                                <button class="photo-upload-btn" onclick="document.getElementById('foto-upload').click()">
-                                    <i class='bx bx-camera'></i> Atualizar Foto
-                                </button>
-                                <input type="file" id="foto-upload" name="foto" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
                             </div>
                             <div class="profile-details">
-                                <h1 class="mb-1">Nome Completo</h1>
+                                <h1 class="mb-1" id="displayName">Nome Completo</h1>
                                 <div class="mt-3">
                                     <div class="stat-item mb-2">
-                                        <i class='bx bx-briefcase'></i>
-                                        <span>Cargo:</span>
+                                        <i class='bx bx-envelope'></i>
+                                        <span id="displayEmail" class="ms-2"></span>
                                     </div>
                                     <div class="stat-item">
-                                        <i class='bx bx-building'></i>
-                                        <span>Departamento:</span>
+                                        <i class='bx bx-phone'></i>
+                                        <span id="displayPhone" class="ms-2"></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="profile-actions d-flex gap-2">
+                            <button class="btn btn-primary" id="updatePhoto" onclick="document.getElementById('profilePhoto').click()">
+                                <i class='bx bx-image'></i>
+                                Atualizar Foto
                             </button>
                         </div>
                         <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
@@ -620,7 +636,9 @@ if ($_SESSION['id_perfilacesso'] != 4) {
 
                 <!-- Seção de Dados Pessoais -->
                 <div class="profile-card">
-                    <h2>Dados Pessoais</h2>
+                    <div class="card-header">
+                        <h2>Dados Pessoais</h2>
+                    </div>
                     <form id="profileForm" class="row g-4">
                         <div class="col-md-6">
                             <div class="form-group">
@@ -638,20 +656,6 @@ if ($_SESSION['id_perfilacesso'] != 4) {
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="nif">NIF</label>
-                                <input type="text" id="nif" name="nif" required 
-                                    class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="dataNascimento">Data de Nascimento</label>
-                                <input type="date" id="dataNascimento" name="dataNascimento" required 
-                                    class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
                                 <label for="morada">Morada</label>
                                 <input type="text" id="morada" name="morada" required 
                                     class="form-control">
@@ -664,34 +668,6 @@ if ($_SESSION['id_perfilacesso'] != 4) {
                                     class="form-control">
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="localidade">Localidade</label>
-                                <input type="text" id="localidade" name="localidade" required 
-                                    class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="cargo">Cargo</label>
-                                <input type="text" id="cargo" name="cargo" required 
-                                    class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="departamento">Departamento</label>
-                                <input type="text" id="departamento" name="departamento" required 
-                                    class="form-control">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="telefone">Telefone</label>
-                                <input type="tel" id="telefone" name="telefone" required 
-                                    class="form-control">
-                            </div>
-                        </div>
                         <div class="col-12">
                             <div class="form-group">
                                 <label for="observacoes">Observações</label>
@@ -699,7 +675,9 @@ if ($_SESSION['id_perfilacesso'] != 4) {
                             </div>
                         </div>
                         <div class="col-12">
-                            <button type="submit" class="btn btn-primary w-100">Guardar Alterações</button>
+                            <div class="form-actions mt-4">
+                                <button type="submit" class="btn btn-primary w-100">Salvar Alterações</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -708,13 +686,55 @@ if ($_SESSION['id_perfilacesso'] != 4) {
                 <div class="profile-card">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2>Documentos</h2>
-                        <button type="button" class="btn btn-primary" id="addDocument">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#documentModal">
                             <i class='bx bx-plus'></i>
                             Adicionar Documento
                         </button>
                     </div>
                     <div id="documentList">
                         <!-- Documentos serão adicionados aqui via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Upload de Documento -->
+        <div class="modal fade" id="documentModal" tabindex="-1" aria-labelledby="documentModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="documentModalLabel">Adicionar Documento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="documentForm" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="documentName" class="form-label">Nome do Documento</label>
+                                <input type="text" class="form-control" id="documentName" name="nome" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="documentType" class="form-label">Tipo de Documento</label>
+                                <select class="form-select" id="documentType" name="tipo" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="contrato">Contrato</option>
+                                    <option value="identificacao">Identificação</option>
+                                    <option value="recibo">Recibo</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="documentFile" class="form-label">Arquivo</label>
+                                <input type="file" class="form-control" id="documentFile" name="arquivo" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="documentExpiry" class="form-label">Data de Validade (opcional)</label>
+                                <input type="date" class="form-control" id="documentExpiry" name="data_validade">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="uploadDocument">Upload</button>
                     </div>
                 </div>
             </div>

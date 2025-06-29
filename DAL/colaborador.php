@@ -11,6 +11,26 @@ function updateProfilePhoto($userId, $photoFileName) {
     return $stmt->execute();
 }
 
+// Processar atualização de perfil
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Verificar se é uma atualização de perfil
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    if ($data && isset($data['nome'])) {
+        $userId = $_SESSION['usuario_id'];
+        
+        // Atualizar dados do perfil
+        $result = updateProfileData($userId, $data);
+        
+        // Atualizar header com as informações do usuário
+        if ($result['success']) {
+            $user = $result['data'];
+            echo json_encode($result);
+            exit;
+        }
+    }
+}
+
 // Função para atualizar dados do perfil
 function updateProfileData($userId, $data) {
     global $conn;
@@ -39,7 +59,24 @@ function updateProfileData($userId, $data) {
         $userId
     );
     
-    return $stmt->execute();
+    if ($stmt->execute()) {
+        // Retorna as informações atualizadas
+        $stmt = $conn->prepare("SELECT nome, email, telefone FROM colaboradores WHERE id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        
+        return array(
+            'success' => true,
+            'data' => $user
+        );
+    }
+    
+    return array(
+        'success' => false,
+        'message' => 'Erro ao atualizar perfil'
+    );
 }
 
 // Função para obter dados do perfil
