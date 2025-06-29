@@ -23,16 +23,17 @@ if ($_SESSION['id_perfilacesso'] != 4) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-            /* Cores mais profissionais */
-            --primary-color: #004d99;
-            --primary-hover: #003366;
-            --secondary-color: #003366;
+            /* Cores da Tlantic */
+            --primary-color: #0066ff;
+            --primary-hover: #0052cc;
+            --secondary-color: #004d99;
+            --header-color: #e6f0ff;
             --success-color: #4CAF50;
             --info-color: #2196F3;
             --warning-color: #FFC107;
             --danger-color: #F44336;
             --light-color: #f8f9fa;
-            --dark-color: #212529;
+            --dark-color: #2c3e50;
             --header-height: 70px;
             --transition: all 0.3s ease;
             --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -46,8 +47,8 @@ if ($_SESSION['id_perfilacesso'] != 4) {
             --accent-5: #cce0ff;
             
             /* Cores para a sidebar */
-            --sidebar-bg: #f8f9fa;
-            --sidebar-header-bg: linear-gradient(135deg, #e6f0ff 0%, #cce0ff 100%);
+            --sidebar-bg: #e6f0ff;
+            --sidebar-header-bg: linear-gradient(135deg, #cce0ff 0%, #0066ff 100%);
             
             /* Cores para cards e elementos */
             --card-bg: #ffffff;
@@ -80,9 +81,204 @@ if ($_SESSION['id_perfilacesso'] != 4) {
 
         body {
             font-family: var(--font-family);
-            background-color: var(--light-color);
+            background-color: var(--accent-4);
             color: var(--dark-color);
             line-height: 1.6;
+            transition: var(--transition-normal);
+        }
+
+        /* Estilos para o header */
+        .profile-header {
+            background: linear-gradient(135deg, var(--accent-4) 0%, var(--accent-5) 100%);
+            padding: 2rem;
+            border-radius: var(--border-radius-lg);
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .profile-header h1 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .profile-header .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-header .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-header .profile-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .profile-header .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-header .photo-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+        }
+
+        .profile-header .photo-container .photo-upload-btn {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.4rem 1.2rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition-normal);
+            z-index: 1;
+        }
+
+        .profile-header .profile-photo .photo-upload-btn:hover {
+            background: var(--primary-hover);
+            transform: translateX(-50%) translateY(-2px);
+        }
+
+        .profile-header .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-header .profile-details {
+            color: var(--dark-color);
+        }
+
+        .profile-header .profile-details h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-header .profile-details p {
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+
+        /* Estilos para os cards */
+        .profile-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition-normal);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .profile-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        /* Estilos para o formulário */
+        .form-control {
+            border: 1px solid var(--accent-4);
+            padding: 0.75rem;
+            border-radius: var(--border-radius-md);
+            transition: var(--transition-normal);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 102, 255, 0.25);
+        }
+
+        /* Estilos para botões */
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            transition: var(--transition-normal);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        /* Estilos para a sidebar */
+        .profile-sidebar {
+            background: linear-gradient(135deg, var(--accent-4) 0%, var(--accent-5) 100%);
+            border-right: 1px solid var(--accent-2);
+            padding: 2rem;
+            transition: var(--transition-normal);
+        }
+
+        .profile-sidebar .nav-link {
+            color: var(--dark-color);
+            padding: 1rem;
+            border-radius: var(--border-radius-md);
+            transition: var(--transition-normal);
+        }
+
+        .profile-sidebar .nav-link:hover {
+            background: var(--accent-4);
+            color: var(--primary-color);
+        }
+
+        .profile-sidebar .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Estilos para documentos e benefícios */
+        .document-item, .benefit-item {
+            background: var(--accent-4);
+            border-radius: var(--border-radius-md);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: var(--transition-normal);
+        }
+
+        .document-item:hover, .benefit-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Estilos para o tema */
+        .theme-toggle {
+            background: var(--accent-4);
+            border: 1px solid var(--accent-2);
+            border-radius: var(--border-radius-md);
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition-normal);
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-5);
         }
 
         /* Layout principal */
@@ -107,12 +303,9 @@ if ($_SESSION['id_perfilacesso'] != 4) {
 
         /* Cabeçalho do perfil */
         .profile-header {
-            background: linear-gradient(135deg, var(--accent-4) 0%, var(--accent-5) 100%);
-            color: white;
-            padding: var(--spacing-lg);
-            border-radius: var(--border-radius-lg);
-            margin-bottom: var(--spacing-lg);
-            box-shadow: var(--card-shadow);
+            padding: 2rem;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
         }
 
         .profile-header h1 {
@@ -122,7 +315,7 @@ if ($_SESSION['id_perfilacesso'] != 4) {
         }
 
         .profile-header .profile-info {
-            margin-top: var(--spacing-md);
+            margin-bottom: 2rem;
         }
 
         /* Cards */
@@ -259,34 +452,63 @@ if ($_SESSION['id_perfilacesso'] != 4) {
             border-radius: 50%;
         }
 
-        .photo-upload-label {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: #0056b3;
-            color: white;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
 
-        .photo-upload-label:hover {
-            background: #003d82;
-        }
-
-        .photo-upload-label i {
-            font-size: 16px;
-        }
 
         #profilePhotoLabel {
             font-size: 0.875rem;
             color: #6c757d;
             margin-top: 5px;
+        }
+
+        /* Estilo dos campos de formulário */
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            color: #212529;
+            font-size: 1.1rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #ced4da;
+            border-radius: 0.75rem;
+            background-color: #ffffff;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            color: #212529;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .form-control:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 0 0.25rem rgba(0,86,179,0.25);
+            background-color: #ffffff;
+            outline: none;
+        }
+
+        .form-control::placeholder {
+            color: #6c757d;
+            opacity: 1;
+            font-size: 1rem;
+        }
+
+        .form-control:disabled {
+            background-color: #e9ecef;
+            opacity: 1;
+            cursor: not-allowed;
+        }
+
+        /* Estilo específico para textarea */
+        .form-control textarea {
+            min-height: 100px;
+            resize: vertical;
         }
 
         /* Progress bars */
@@ -324,6 +546,22 @@ if ($_SESSION['id_perfilacesso'] != 4) {
                 margin-left: 0;
             }
         }
+
+        .profile-details h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #212529;
+            font-weight: 700;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #212529;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -350,13 +588,14 @@ if ($_SESSION['id_perfilacesso'] != 4) {
                 <div class="profile-header">
                     <div class="profile-info">
                         <div class="d-flex align-items-center mb-3">
-                            <div class="profile-photo me-3">
-                                <div class="profile-photo-container">
-                                    <img src="https://via.placeholder.com/80" alt="Foto de Perfil" class="rounded-circle">
-                                    <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" 
-                                           class="form-control" onchange="updateProfilePhoto(this)">
-                                    <label id="profilePhotoLabel" class="d-none">Arquivo selecionado</label>
+                            <div class="photo-container me-4">
+                                <div class="profile-photo">
+                                    <img src="<?php echo htmlspecialchars($data['foto'] ?? 'img/default-profile.png'); ?>" alt="" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
                                 </div>
+                                <button class="photo-upload-btn" onclick="document.getElementById('foto-upload').click()">
+                                    <i class='bx bx-camera'></i> Atualizar Foto
+                                </button>
+                                <input type="file" id="foto-upload" name="foto" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
                             </div>
                             <div class="profile-details">
                                 <h1 class="mb-1">Nome Completo</h1>
@@ -373,8 +612,9 @@ if ($_SESSION['id_perfilacesso'] != 4) {
                             </div>
                         </div>
                         <div class="profile-actions d-flex gap-2">
-                        <!-- Removido o botão de atualizar foto -->
-                    </div>
+                            </button>
+                        </div>
+                        <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
                     </div>
                 </div>
 
