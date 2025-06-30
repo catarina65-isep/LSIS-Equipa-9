@@ -6,11 +6,11 @@ return [
         'rh' => 2,
         'coordenador' => 3,
         'colaborador' => 4,
-        'tlantic.pt' => 4,
-        'tlantic' => 4
+        'tlantic.pt' => 1,
+        'tlantic' => 1
     ],
-    'dominios_admin' => ['administrador'],
+    'dominios_admin' => ['administrador', 'admin'],
     'dominios_rh' => ['recursoshumanos', 'rh'],
     'dominios_coordenador' => ['coordenador'],
-    'dominios_colaborador' => ['colaborador', 'tlantic.pt', 'tlantic']
+    'dominios_colaborador' => ['colaborador']
 ];

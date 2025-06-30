@@ -31,12 +31,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['perfil_nome'] = $usuario['perfil'] ?? 'Usuário';
 
             // Redireciona com base no perfil do usuário
-            if ($_SESSION['id_perfilacesso'] == 1) { // Administrador
-                header('Location: admin/dashboard.php');
-            } elseif ($_SESSION['id_perfilacesso'] == 4) { // Colaborador
-                header('Location: colaborador.php');
-            } else {
-                header('Location: ../index.php');
+            // Redireciona com base no perfil do usuário
+            switch ($_SESSION['id_perfilacesso']) {
+                case 1: // Administrador
+                    header('Location: admin/dashboard.php');
+                    break;
+                case 2: // Recursos Humanos
+                    header('Location: rh.php');
+                    break;
+                case 3: // Coordenador
+                    header('Location: coordenador.php');
+                    break;
+                case 4: // Colaborador
+                    header('Location: colaborador.php');
+                    break;
+                default:
+                    header('Location: ../index.php');
             }
             exit;
         } else {
