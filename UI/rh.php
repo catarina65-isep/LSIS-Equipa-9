@@ -1,11 +1,51 @@
 <?php
-session_start();
+// Inicia a sessão se ainda não estiver iniciada
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Verifica se o usuário está logado e tem permissão de RH
-if (!isset($_SESSION['usuario_id']) || $_SESSION['id_perfilacesso'] != 3) {
-    header('Location: ../login.php');
+// Habilita a exibição de erros para depuração
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Log de depuração completo
+error_log('========================================');
+error_log('Tentando acessar RH. Dados da sessão: ' . print_r($_SESSION, true));
+error_log('Cookie da sessão: ' . print_r($_COOKIE, true));
+error_log('ID da sessão: ' . session_id());
+
+// Verifica se o usuário está logado
+if (!isset($_SESSION['usuario_id'])) {
+    error_log('ERRO: Usuário não está logado. Sessão: ' . print_r($_SESSION, true));
+    error_log('Redirecionando para login.php');
+    header('Location: login.php');
     exit;
 }
+
+// Verifica se o perfil de acesso está definido
+if (!isset($_SESSION['id_perfilacesso'])) {
+    error_log('ERRO: id_perfilacesso não está definido na sessão');
+    error_log('Dados completos da sessão: ' . print_r($_SESSION, true));
+    session_destroy();
+    header('Location: login.php?error=perfil_nao_definido');
+    exit;
+}
+
+// Verifica se o usuário tem permissão de RH (ID 2)
+$perfil = $_SESSION['id_perfilacesso'];
+error_log("Perfil do usuário: " . $perfil . " (Esperado: 2 para RH)");
+
+if ($perfil != 2) {
+    error_log('ACESSO NEGADO: O usuário não tem permissão de RH. Perfil: ' . $perfil);
+    error_log('Dados da sessão: ' . print_r($_SESSION, true));
+    $_SESSION['erro'] = 'Você não tem permissão para acessar esta área. Seu perfil: ' . ($_SESSION['perfil_nome'] ?? 'Desconhecido') . ' (ID: ' . $perfil . ')';
+    header('Location: ../index.php?error=acesso_negado');
+    exit;
+}
+
+error_log('ACESSO PERMITIDO ao RH para o usuário ID: ' . $_SESSION['usuario_id']);
+error_log('Dados da sessão: ' . print_r($_SESSION, true));
+error_log('========================================');
 
 $page_title = "Dashboard RH - Tlantic";
 ?>

@@ -49,8 +49,27 @@ class LoginBLL {
             return $usuario;
 
         } catch (Exception $e) {
+            error_log('Erro na autenticação: ' . $e->getMessage());
             throw $e;
         }
+    }
+
+    /**
+     * Verifica se o usuário está autenticado e tem permissão de administrador
+     * @return bool Retorna true se o usuário estiver autenticado e for administrador, caso contrário, redireciona para a página de login
+     */
+    public function verificarAutenticacao() {
+        // Verifica se o usuário está logado
+        if (!isset($_SESSION['usuario_id']) || !isset($_SESSION['id_perfilacesso'])) {
+            return false;
+        }
+        
+        // Verifica se o perfil é de administrador (id_perfilacesso = 1)
+        if ($_SESSION['id_perfilacesso'] != 1) {
+            return false;
+        }
+        
+        return true;
     }
 }
 ?>
