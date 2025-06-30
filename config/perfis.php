@@ -2,8 +2,7 @@
 return [
     'perfis' => [
         'administrador' => 1,
-        'recursoshumanos' => 2,
-        'rh' => 2,
+        'admin' => 1,
         'coordenador' => 3,
         'colaborador' => 4,
         'tlantic.pt' => 1,
