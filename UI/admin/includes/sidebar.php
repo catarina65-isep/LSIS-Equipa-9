@@ -50,7 +50,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class='bx bxs-group <?php echo ($current_page == 'colaboradores.php') ? 'text-white' : 'text-warning'; ?>'></i>
                         </div>
                         <span>Colaboradores</span>
-                        <span class="badge <?php echo ($current_page == 'colaboradores.php') ? 'bg-white text-primary' : 'bg-warning'; ?> rounded-pill ms-auto">215</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="dashboard_colaboradores.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'dashboard_colaboradores.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'dashboard_colaboradores.php') ? 'bg-white bg-opacity-10' : 'bg-danger bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-pie-chart-alt-2 <?php echo ($current_page == 'dashboard_colaboradores.php') ? 'text-white' : 'text-danger'; ?>'></i>
+                        </div>
+                        <span>Dashboard Colaboradores</span>
                     </a>
                 </li>
                 

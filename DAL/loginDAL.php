@@ -92,6 +92,7 @@ class LoginDAL {
                 return null;
             }
             
+<<<<<<< HEAD
             $username = strtolower($partes[0]);
             $dominio = strtolower($partes[1]);
             
@@ -106,6 +107,25 @@ class LoginDAL {
             // Verifica se é um domínio de colaborador
             if (in_array($username, $perfisConfig['dominios_colaborador']) || in_array($dominio, $perfisConfig['dominios_colaborador'])) {
                 return 4;
+=======
+            $dominio = strtolower($partes[1]); // Pega a parte após o @
+            
+            // Mapeia domínios para perfis
+            $mapeamentoPerfis = [
+                'administrador' => 1,
+                'recursoshumanos' => 2,
+                'rh' => 2, // Alternativa para recursos humanos
+                'coordenador' => 3,
+                'colaborador' => 4,
+                'tlantic' => 1 // Domínio tlanic.pt mapeado para administrador
+            ];
+            
+            // Verifica se o domínio está mapeado
+            foreach ($mapeamentoPerfis as $chave => $valor) {
+                if (strpos($dominio, $chave) !== false) {
+                    return $valor;
+                }
+>>>>>>> cf0ce0ec40049ded23ee0662dd50939e9cf75a42
             }
             
             return null; // Retorna null se não encontrar um perfil correspondente

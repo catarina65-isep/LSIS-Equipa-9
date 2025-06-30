@@ -1,11 +1,13 @@
 <?php
 session_start();
 
-// Verificar autenticação
-if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
+// Verificar autenticação e perfil RH
+if (!isset($_SESSION['usuario_id']) || $_SESSION['id_perfilacesso'] != 2) {
+    header('Location: ../login.php');
     exit;
 }
+
+$page_title = "Dashboard de Colaboradores - RH";
 
 // Conexão com o banco de dados
 require_once __DIR__ . '/../BLL/ColaboradorBLL.php';
@@ -13,8 +15,6 @@ $colaboradorBLL = new ColaboradorBLL();
 
 // Obter dados de colaboradores ativos
 $colaboradores = $colaboradorBLL->obterColaboradoresAtivos();
-
-$page_title = "Dashboard - Tlantic";
 ?>
 
 <!DOCTYPE html>
@@ -116,12 +116,17 @@ $page_title = "Dashboard - Tlantic";
     <!-- Main Content -->
     <div class="main-content">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Dashboard de Colaboradores</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    <li class="breadcrumb-item"><a href="dashboard.php">Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Colaboradores</li>
                 </ol>
             </nav>
+            <div>
+                <a href="colaboradores.php" class="btn btn-outline-primary">
+                    <i class='bx bx-user-plus'></i> Novo Colaborador
+                </a>
+            </div>
         </div>
 
         <div class="dashboard">
