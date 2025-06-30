@@ -33,6 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Redireciona com base no perfil do usuário
             if ($_SESSION['id_perfilacesso'] == 1) { // Administrador
                 header('Location: admin/dashboard.php');
+            } elseif ($_SESSION['id_perfilacesso'] == 3) { // Coordenador
+                header('Location: coordenador.php');
             } elseif ($_SESSION['id_perfilacesso'] == 4) { // Colaborador
                 header('Location: colaborador.php');
             } else {

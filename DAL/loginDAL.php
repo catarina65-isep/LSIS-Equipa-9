@@ -86,31 +86,25 @@ class LoginDAL {
             // Carrega a configuração de perfis
             $perfisConfig = require __DIR__ . '/../config/perfis.php';
             
-            // Extrai o domínio do email (parte após o @)
+            // Extrai o nome de usuário e domínio
             $partes = explode('@', $email);
             if (count($partes) !== 2) {
                 return null;
             }
             
-            $dominio = strtolower($partes[1]); // Pega a parte após o @
-            
-            // Remove o .com ou outro TLD do final
-            $dominio = preg_replace('/\\.[^.\\s]{2,}$/', '', $dominio);
+            $username = strtolower($partes[0]);
+            $dominio = strtolower($partes[1]);
             
             // Verifica primeiro se é um domínio de admin
-            if (in_array($dominio, $perfisConfig['dominios_admin'])) {
+            if (in_array($username, $perfisConfig['dominios_admin']) || in_array($dominio, $perfisConfig['dominios_admin'])) {
                 return 1;
             }
-            // Verifica se é um domínio de RH
-            if (in_array($dominio, $perfisConfig['dominios_rh'])) {
-                return 2;
-            }
             // Verifica se é um domínio de coordenador
-            if (in_array($dominio, $perfisConfig['dominios_coordenador'])) {
+            if (in_array($username, $perfisConfig['dominios_coordenador'])) {
                 return 3;
             }
             // Verifica se é um domínio de colaborador
-            if (in_array($dominio, $perfisConfig['dominios_colaborador'])) {
+            if (in_array($username, $perfisConfig['dominios_colaborador']) || in_array($dominio, $perfisConfig['dominios_colaborador'])) {
                 return 4;
             }
             
