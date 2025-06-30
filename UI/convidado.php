@@ -270,6 +270,13 @@ session_start();
                             <input type="number" class="form-control" id="dependentes" name="dependentes" min="0" value="0">
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cartaocidadao" class="form-label required-field">Cartão de Cidadão</label>
+                            <input type="file" class="form-control" id="cartaocidadao" name="cartaocidadao" accept=".pdf,.jpg,.jpeg,.png" required>
+                            <div class="form-note">Fotografia ou digitalização do Cartão de Cidadão (frente e verso)</div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Morada de Residência -->
@@ -287,6 +294,13 @@ session_start();
                         <div class="form-group">
                             <label for="codigo_postal" class="form-label required-field">Código Postal</label>
                             <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="comprovativo_morada" class="form-label required-field">Comprovativo de Morada</label>
+                            <input type="file" class="form-control" id="comprovativo_morada" name="comprovativo_morada" accept=".pdf,.jpg,.jpeg,.png" required>
+                            <div class="form-note">Formatos aceites: PDF, JPG, PNG (tamanho máximo: 5MB)</div>
                         </div>
                     </div>
                 </div>
@@ -396,31 +410,6 @@ session_start();
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
                         </div>
                     </div>
-                </div>
-            </div>
-                    <div class="form-group">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone" class="form-label">Telefone</label>
-                        <input type="tel" class="form-control" id="phone" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cc_anexo" class="form-label">Anexar Cartão de Cidadão</label>
-                        <input type="file" class="form-control" id="cc_anexo" accept=".pdf,.jpg,.jpeg,.png" required>
-                        <div class="form-text">
-                            Faça o upload do seu Cartão de Cidadão (PDF, JPG ou PNG, máximo 5MB)
-                        </div>
-                    </div>
-                </form>
-                <div class="guest-submit">
-                    <button type="button" class="guest-button guest-button-secondary" onclick="window.location.href='index.php'">
-                        Cancelar
-                    </button>
-                    <button type="button" class="guest-button guest-button-primary" onclick="submitGuestForm()">
-                        Agendar Visita
-                    </button>
                 </div>
             </div>
 
