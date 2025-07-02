@@ -4,9 +4,6 @@ require_once __DIR__ . '/config.php';
 
 // For backward compatibility only
 class_alias('Database', 'DatabaseDeprecated');
-
-        try {
-            $this->conn = new PDO(
                 'mysql:host=' . $this->host . ';dbname=' . $this->db_name,
                 $this->username,
                 $this->password
