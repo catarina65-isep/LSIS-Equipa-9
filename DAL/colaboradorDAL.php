@@ -6,7 +6,7 @@ class ColaboradorDAL {
     private $db;
 
     public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
+        $this->db = Database::getInstance();
     }
 
     public function criar(Colaborador $colaborador) {

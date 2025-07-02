@@ -163,7 +163,7 @@ $tituloPagina = 'Detalhes da Equipa: ' . htmlspecialchars($equipa['nome']);
                                 <?php else: ?>
                                     <div class="text-center p-4">
                                         <i class="bi bi-people-slash" style="font-size: 2rem; color: #6c757d;"></i>
-                                        <p class="mt-2 mb-0">Nenhum membro na equipe</p>
+                                        <p class="mt-2 mb-0">Nenhum membro na equipa</p>
                                     </div>
                                 <?php endif; ?>
                             </div>
@@ -179,7 +179,7 @@ $tituloPagina = 'Detalhes da Equipa: ' . htmlspecialchars($equipa['nome']);
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="adicionarMembroModalLabel">Adicionar Membro à Equipe</h5>
+                    <h5 class="modal-title" id="adicionarMembroModalLabel">Adicionar Membro à Equipa</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
@@ -203,7 +203,7 @@ $tituloPagina = 'Detalhes da Equipa: ' . htmlspecialchars($equipa['nome']);
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let equipeAtualId = <?php echo $equipa['id']; ?>;
+        let equipaAtualId = <?php echo $equipa['id']; ?>;
         
         function editarEquipa(equipa) {
             window.location.href = `equipas.php?editar=${equipa.id}`;
@@ -211,7 +211,7 @@ $tituloPagina = 'Detalhes da Equipa: ' . htmlspecialchars($equipa['nome']);
         
         function adicionarMembro(equipaId) {
             const modal = new bootstrap.Modal(document.getElementById('adicionarMembroModal'));
-            equipeAtualId = equipaId;
+            equipaAtualId = equipaId;
             
             // Carrega a lista de usuários
             fetch(`api_usuarios.php?acao=listar`)
@@ -220,7 +220,7 @@ $tituloPagina = 'Detalhes da Equipa: ' . htmlspecialchars($equipa['nome']);
                     const membrosAtuais = <?php echo json_encode(array_column($equipa['membros'], 'id')); ?>;
                     const coordenadorId = <?php echo $equipa['coordenador_id'] ?? 0; ?>;
                     
-                    // Filtra usuários que ainda não estão na equipe e não são o coordenador
+                    // Filtra utilizadores que ainda não estão na equipa e não são o coordenador
                     const usuariosDisponiveis = usuarios.filter(usuario => 
                         !membrosAtuais.includes(parseInt(usuario.id)) && 
                         usuario.id != coordenadorId
@@ -232,7 +232,7 @@ $tituloPagina = 'Detalhes da Equipa: ' . htmlspecialchars($equipa['nome']);
                         listaUsuarios.innerHTML = `
                             <div class="text-center p-4">
                                 <i class="bi bi-emoji-frown" style="font-size: 2rem; color: #6c757d;"></i>
-                                <p class="mt-2">Todos os usuários já estão nesta equipe ou não há usuários disponíveis.</p>
+                                <p class="mt-2">Todos os utilizadores já estão nesta equipa ou não há utilizadores disponíveis.</p>
                             </div>
                         `;
                         document.getElementById('btnAdicionarMembros').disabled = true;
@@ -280,7 +280,7 @@ $tituloPagina = 'Detalhes da Equipa: ' . htmlspecialchars($equipa['nome']);
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                equipa_id: equipeAtualId,
+                                equipa_id: equipaAtualId,
                                 membros: selecionados
                             })
                         })
@@ -312,7 +312,7 @@ $tituloPagina = 'Detalhes da Equipa: ' . htmlspecialchars($equipa['nome']);
         }
         
         function removerMembro(equipaId, membroId, membroNome) {
-            if (!confirm(`Tem certeza que deseja remover ${membroNome} da equipe?`)) {
+            if (!confirm(`Tem certeza que deseja remover ${membroNome} da equipa?`)) {
                 return;
             }
             

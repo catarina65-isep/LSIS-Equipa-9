@@ -7,19 +7,37 @@ if (!isset($_SESSION['usuario_id']) || $_SESSION['id_perfilacesso'] != 1) {
     exit;
 }
 
-$page_title = "Gerenciar Perfis - Tlantic";
+require_once __DIR__ . '/../../BLL/PerfilAcessoBLL.php';
+require_once __DIR__ . '/../../BLL/UtilizadorBLL.php';
+
+$perfilBLL = new PerfilAcessoBLL();
+$utilizadorBLL = new UtilizadorBLL();
+
+// Obter lista de perfis
+$perfis = $perfilBLL->listarTodos();
+
+// Contar usuários por perfil
+$contagemUsuarios = [];
+foreach ($perfis as $perfil) {
+    $contagemUsuarios[$perfil['id_perfilacesso']] = $utilizadorBLL->contarPorPerfil($perfil['id_perfilacesso']);
+}
+
+$page_title = "Gerenciar Perfis de Acesso";
 ?>
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($page_title) ?></title>
+    <title><?= htmlspecialchars($page_title) ?> - Tlantic</title>
+    
+    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    
     <style>
         :root {
             --primary: #4361ee;
@@ -31,404 +49,197 @@ $page_title = "Gerenciar Perfis - Tlantic";
             --danger: #ef476f;
             --light: #f8f9fa;
             --dark: #343a40;
-            --gray-100: #f8f9fa;
-            --gray-200: #e9ecef;
-            --gray-300: #dee2e6;
-            --gray-400: #ced4da;
-            --gray-500: #adb5bd;
-            --gray-600: #6c757d;
-            --gray-700: #495057;
-            --gray-800: #343a40;
-            --gray-900: #212529;
         }
         
         body {
             background-color: #f5f7fb;
             color: #4a5568;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         
-        /* Card Styles */
+        /* Estilo da barra lateral */
+        .sidebar {
+            width: 250px !important;
+            background-color: #1a1a2e;
+            color: #fff;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 1040;
+            overflow-y: auto;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Conteúdo principal */
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            min-height: 100vh;
+            transition: all 0.3s ease-in-out;
+            background-color: #f5f7fb;
+            position: relative;
+        }
+        
+        /* Overlay para telas menores */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1039;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Ajustes para telas menores */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+                margin-left: 0;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .sidebar.active + .sidebar-overlay {
+                display: block;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            body.sidebar-active {
+                overflow: hidden;
+            }
+        }
+        
+        /* Estilo para o cabeçalho fixo */
+        .page-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: #fff;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        }
+        
+        /* Ajuste para o container principal */
+        .container-fluid {
+            padding: 1.5rem;
+        }
+        
         .card {
             border: none;
             border-radius: 10px;
-            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
             margin-bottom: 1.5rem;
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         }
         
         .card-header {
             background-color: #fff;
             border-bottom: 1px solid #e3e6f0;
             padding: 1.25rem 1.5rem;
-            border-top-left-radius: 10px !important;
-            border-top-right-radius: 10px !important;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            border-radius: 10px 10px 0 0 !important;
         }
         
-        .card-body {
-            padding: 1.5rem;
+        .form-control, .form-select, .select2-selection {
+            border-radius: 0.35rem;
+            padding: 0.5rem 0.75rem;
         }
         
-        /* Table Styles */
-        .table th {
-            border-top: none;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-            color: #6c757d;
-            background-color: #f8f9fc;
-            padding: 1rem;
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
         }
         
-        .table > :not(:first-child) {
-            border-top: none;
+        .btn-primary:hover {
+            background-color: #3a56d4;
+            border-color: #3a56d4;
         }
         
-        .table > :not(caption) > * > * {
-            padding: 0.75rem 1rem;
-            vertical-align: middle;
-        }
-        
-        .table-hover > tbody > tr:hover {
-            background-color: #f8f9fc;
-        }
-        
-        /* Sidebar Styles */
-        .sidebar {
-            min-height: 100vh;
-            background: linear-gradient(180deg, #1a2a3a 0%, #2c3e50 100%);
-            color: #fff;
-            padding: 20px 0;
-            position: fixed;
-            width: 16.666667%;
-            z-index: 1000;
-            transition: all 0.3s;
-        }
-        
-        .sidebar-brand {
-            padding: 0 1.5rem 1.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .sidebar-brand img {
-            max-height: 40px;
-        }
-        
-        .sidebar-nav {
-            padding: 0 1rem;
-            overflow-y: auto;
-            height: calc(100vh - 100px);
-        }
-        
-        .sidebar-nav .nav-link {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 0.75rem 1rem;
-            margin: 0.25rem 0;
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-        }
-        
-        .sidebar-nav .nav-link:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            text-decoration: none;
-        }
-        
-        .sidebar-nav .nav-link i {
-            font-size: 1.25rem;
-            margin-right: 0.75rem;
-            width: 24px;
-            text-align: center;
-        }
-        
-        .sidebar-nav .nav-link.active {
-            background: rgba(255, 255, 255, 0.15);
-            color: #fff;
+        .badge {
             font-weight: 500;
+            padding: 0.35em 0.65em;
         }
         
-        /* Main Content */
-        .main-content {
-            margin-left: 280px;
-            padding: 2rem;
-            min-height: 100vh;
-            transition: all 0.3s;
-        }
-        
-        /* Page Header */
-        .page-header {
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .page-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: #1a202c;
-            margin: 0;
-        }
-        
-        .page-subtitle {
-            color: #718096;
-            margin: 0.5rem 0 0;
-            font-size: 1rem;
-        }
-        
-        /* Card Styles */
-        /* Status Badges */
         .status-badge {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 5px;
-        }
-        
-        .status-active { background-color: var(--success); }
-        .status-inactive { background-color: var(--danger); }
-        
-        /* Avatar */
-        .avatar-sm {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        
-        /* Buttons */
-        .btn-sm {
+            font-size: 0.75rem;
             padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            line-height: 1.5;
-            border-radius: 0.2rem;
+            border-radius: 0.25rem;
         }
         
-        /* Stats Cards */
-        .stat-card {
-            border-left: 4px solid;
-            transition: all 0.3s ease;
-            height: 100%;
+        .bg-success-light {
+            background-color: rgba(40, 167, 69, 0.1) !important;
+            color: #28a745 !important;
         }
         
-        .stat-card.primary {
-            border-left-color: var(--primary);
+        .bg-danger-light {
+            background-color: rgba(239, 71, 111, 0.1) !important;
+            color: #ef476f !important;
         }
         
-        .stat-card .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-right: 1rem;
-        }
-        
-        .stat-card.primary .stat-icon {
-            background-color: rgba(67, 97, 238, 0.1);
-            color: var(--primary);
-        }
-        
-        .stat-card .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1a202c;
-            line-height: 1.2;
-        }
-        
-        .stat-card .stat-label {
-            font-size: 0.875rem;
-            color: #718096;
-        }
-        
-        .card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        
-        .card-header {
-            background-color: #fff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 1.25rem 1.5rem;
-            border-top-left-radius: 0.75rem !important;
-            border-top-right-radius: 0.75rem !important;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: #1a202c;
-            margin: 0;
-        }
-        
-        .card-body {
-            padding: 1.5rem;
-        }
-        
-        /* Stats Cards */
-        .stat-card {
-            border-left: 4px solid;
-            transition: all 0.3s ease;
-            height: 100%;
-        }
-        
-        .stat-card.primary {
-            border-left-color: var(--primary-color);
-        }
-        
-        .stat-card .stat-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-right: 1rem;
-        }
-        
-        .stat-card.primary .stat-icon {
-            background-color: rgba(67, 97, 238, 0.1);
-            color: var(--primary-color);
-        }
-        
-        .stat-card .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #1a202c;
-            line-height: 1.2;
-        }
-        
-        .stat-card .stat-label {
-            font-size: 0.875rem;
-            color: #718096;
-            margin-top: 0.25rem;
-        }
-        
-        /* Table Styles */
-        .table th {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-            color: #6b7280;
-            background-color: #f9fafb;
-            border-bottom-width: 1px;
-        }
-        
-        /* Permission Groups */
-        .permission-group {
-            background: #f9fafb;
-            border-radius: 0.5rem;
-            padding: 1.25rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #e5e7eb;
-        }
-        
-        .permission-group h5 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #1a202c;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e5e7eb;
-        }
-        
-        .permission-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1rem;
-            background: #fff;
-            border-radius: 0.5rem;
-            border: 1px solid #e5e7eb;
-            margin-bottom: 0.75rem;
-            transition: all 0.2s;
-        }
-        
-        .permission-item:hover {
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            transform: translateY(-1px);
-        }
-        
-        /* Responsive Styles */
-        @media (max-width: 991.98px) {
-            .sidebar {
-                left: -280px;
-            }
-            
-            .sidebar.show {
-                left: 0;
-                box-shadow: 5px 0 15px rgba(0, 0, 0, 0.1);
-            }
-            
-            .main-content {
-                margin-left: 0;
-                padding: 1rem;
-            }
+        .bg-warning-light {
+            background-color: rgba(255, 193, 7, 0.1) !important;
+            color: #ffc107 !important;
         }
     </style>
 </head>
 <body>
     <div class="container-fluid p-0">
-        <div class="row g-0">
-            <!-- Sidebar -->
+        <!-- Sidebar -->
+        <div class="sidebar">
             <?php include 'includes/sidebar.php'; ?>
+        </div>
+        
+        <!-- Overlay para fechar a sidebar -->
+        <div class="sidebar-overlay"></div>
 
-            <!-- Main Content -->
-            <main class="main-content">
+        <!-- Main Content -->
+        <main class="main-content">
                 <!-- Page Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4 p-4 bg-white shadow-sm">
                     <div>
-                        <h1 class="h3 mb-1 text-gray-800">Perfis de Acesso</h1>
+                        <h1 class="h3 mb-1">Gerenciar Perfis de Acesso</h1>
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-0">
                                 <li class="breadcrumb-item"><a href="dashboard.php" class="text-decoration-none">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Perfis</li>
+                                <li class="breadcrumb-item active" aria-current="page">Perfis de Acesso</li>
                             </ol>
                         </nav>
                     </div>
-                    <div>
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-outline-secondary me-2 d-lg-none" id="sidebarToggle">
+                            <i class='bx bx-menu'></i>
+                        </button>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoPerfilModal">
-                            <i class='bx bx-plus me-2'></i>Novo Perfil
+                            <i class='bx bx-plus-circle me-2'></i>Novo Perfil
                         </button>
                     </div>
                 </div>
 
-                <!-- Conteúdo principal -->
                 <div class="container-fluid px-4">
                     <!-- Cards de Estatísticas -->
                     <div class="row g-4 mb-4">
                         <!-- Total de Perfis -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card h-100 border-0 shadow-sm">
+                        <div class="col-md-3">
+                            <div class="card bg-primary bg-opacity-10 border-0">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-muted mb-2 small">Total de Perfis</h6>
-                                            <h2 class="mb-0">8</h2>
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-wrapper rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                                            <i class='bx bx-group text-primary' style="font-size: 1.75rem;"></i>
                                         </div>
-                                        <div class="bg-primary bg-opacity-10 p-3 rounded-circle">
-                                            <i class='bx bx-group text-primary' style="font-size: 1.5rem;"></i>
+                                        <div>
+                                            <h6 class="mb-1 text-muted">Total de Perfis</h6>
+                                            <h3 class="mb-0"><?= count($perfis) ?></h3>
                                         </div>
                                     </div>
                                 </div>
@@ -436,246 +247,261 @@ $page_title = "Gerenciar Perfis - Tlantic";
                         </div>
 
                         <!-- Perfis Ativos -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card h-100 border-0 shadow-sm">
+                        <div class="col-md-3">
+                            <div class="card bg-success bg-opacity-10 border-0">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-muted mb-2 small">Ativos</h6>
-                                            <h2 class="mb-0">7</h2>
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-wrapper rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                                            <i class='bx bx-check-circle text-success' style="font-size: 1.75rem;"></i>
                                         </div>
-                                        <div class="bg-success bg-opacity-10 p-3 rounded-circle">
-                                            <i class='bx bx-check-circle text-success' style="font-size: 1.5rem;"></i>
+                                        <div>
+                                            <h6 class="mb-1 text-muted">Perfis Ativos</h6>
+                                            <h3 class="mb-0">
+                                                <?= count(array_filter($perfis, fn($p) => $p['ativo'])) ?>
+                                            </h3>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Perfis Inativos -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-muted mb-2 small">Inativos</h6>
-                                            <h2 class="mb-0">1</h2>
-                                        </div>
-                                        <div class="bg-warning bg-opacity-10 p-3 rounded-circle">
-                                            <i class='bx bx-x-circle text-warning' style="font-size: 1.5rem;"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Total de Permissões -->
-                        <div class="col-xl-3 col-md-6">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-muted mb-2 small">Permissões</h6>
-                                            <h2 class="mb-0">24</h2>
-                                        </div>
-                                        <div class="bg-info bg-opacity-10 p-3 rounded-circle">
-                                            <i class='bx bx-shield-alt-2 text-info' style="font-size: 1.5rem;"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Barra de Pesquisa e Filtros -->
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-body p-3">
-                            <form class="row g-3">
-                                <div class="col-md-4">
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-transparent border-end-0">
-                                            <i class='bx bx-search text-muted'></i>
-                                        </span>
-                                        <input type="text" class="form-control border-start-0" placeholder="Pesquisar perfis...">
+                        <!-- Total de Usuários -->
+                        <div class="col-md-3">
+                            <div class="card bg-info bg-opacity-10 border-0">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-wrapper rounded-circle bg-info bg-opacity-10 p-3 me-3">
+                                            <i class='bx bx-user text-info' style="font-size: 1.75rem;"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 text-muted">Total de Usuários</h6>
+                                            <h3 class="mb-0"><?= array_sum($contagemUsuarios) ?></h3>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <select class="form-select">
-                                        <option value="">Todos os status</option>
-                                        <option value="1">Ativo</option>
-                                        <option value="0">Inativo</option>
-                                    </select>
+                            </div>
+                        </div>
+
+                        <!-- Última Atualização -->
+                        <div class="col-md-3">
+                            <div class="card bg-warning bg-opacity-10 border-0">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-wrapper rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                                            <i class='bx bx-time-five text-warning' style="font-size: 1.75rem;"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 text-muted">Última Atualização</h6>
+                                            <h6 class="mb-0">
+                                                <?= date('d/m/Y H:i') ?>
+                                            </h6>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <select class="form-select">
-                                        <option value="">Todas as permissões</option>
-                                        <option value="admin">Administrador</option>
-                                        <option value="editor">Editor</option>
-                                        <option value="visualizador">Visualizador</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <i class='bx bx-filter-alt me-1'></i>Filtrar
-                                    </button>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
 
                     <!-- Tabela de Perfis -->
                     <div class="card border-0 shadow-sm">
-                        <div class="card-body p-0">
+                        <div class="card-header bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Lista de Perfis</h5>
+                                <div class="d-flex">
+                                    <div class="input-group input-group-sm" style="width: 250px;">
+                                        <span class="input-group-text bg-transparent"><i class='bx bx-search'></i></span>
+                                        <input type="text" class="form-control" id="searchInput" placeholder="Pesquisar perfis...">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0" id="perfisTable">
+                                <table class="table table-hover align-middle" id="perfisTable">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th class="border-0">Perfil</th>
-                                            <th class="border-0">Descrição</th>
-                                            <th class="border-0 text-center">Usuários</th>
-                                            <th class="border-0 text-center">Status</th>
-                                            <th class="border-0 text-end">Ações</th>
+                                            <th>Nome do Perfil</th>
+                                            <th>Descrição</th>
+                                            <th class="text-center">Usuários</th>
+                                            <th class="text-center">Status</th>
+                                            <th class="text-end">Ações</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="icon-wrapper bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                                        <i class='bx bxs-user-check text-primary'></i>
+                                        <?php foreach ($perfis as $perfil): ?>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="icon-wrapper bg-<?= $perfil['ativo'] ? 'primary' : 'secondary' ?>-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                                            <i class='bx bx-<?= $perfil['icone'] ?? 'user' ?> text-<?= $perfil['ativo'] ? 'primary' : 'secondary' ?>'></i>
+                                                        </div>
+                                                        <div>
+                                                            <h6 class="mb-0"><?= htmlspecialchars($perfil['nome_perfil']) ?></h6>
+                                                            <small class="text-muted">ID: <?= $perfil['id_perfilacesso'] ?></small>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <h6 class="mb-0">Administrador</h6>
-                                                        <small class="text-muted">admin</small>
+                                                </td>
+                                                <td><?= htmlspecialchars($perfil['descricao'] ?? 'Sem descrição') ?></td>
+                                                <td class="text-center">
+                                                    <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                        <?= $contagemUsuarios[$perfil['id_perfilacesso']] ?? 0 ?> usuário(s)
+                                                    </span>
+                                                </td>
+                                                <td class="text-center">
+                                                    <div class="form-check form-switch d-inline-block">
+                                                        <input class="form-check-input toggle-status" type="checkbox" 
+                                                               role="switch" id="status<?= $perfil['id_perfilacesso'] ?>" 
+                                                               data-id="<?= $perfil['id_perfilacesso'] ?>" 
+                                                               <?= $perfil['ativo'] ? 'checked' : '' ?>>
+                                                        <label class="form-check-label" for="status<?= $perfil['id_perfilacesso'] ?>">
+                                                            <span class="status-badge badge bg-<?= $perfil['ativo'] ? 'success' : 'secondary' ?>">
+                                                                <?= $perfil['ativo'] ? 'Ativo' : 'Inativo' ?>
+                                                            </span>
+                                                        </label>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>Acesso total ao sistema</td>
-                                            <td class="text-center">3</td>
-                                            <td class="text-center">
-                                                <span class="badge bg-success">Ativo</span>
-                                            </td>
-                                            <td class="text-end">
-                                                <button class="btn btn-sm btn-link text-primary p-1" title="Editar">
-                                                    <i class='bx bx-edit-alt fs-5'></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-link text-danger p-1" title="Excluir">
-                                                    <i class='bx bx-trash fs-5'></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="icon-wrapper bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                                        <i class='bx bxs-edit text-success'></i>
+                                                </td>
+                                                <td class="text-end">
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                                                type="button" id="dropdownMenuButton<?= $perfil['id_perfilacesso'] ?>" 
+                                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <i class='bx bx-dots-horizontal-rounded'></i>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end" 
+                                                            aria-labelledby="dropdownMenuButton<?= $perfil['id_perfilacesso'] ?>">
+                                                            <li>
+                                                                <a class="dropdown-item btn-editar" href="#" 
+                                                                   data-id="<?= $perfil['id_perfilacesso'] ?>"
+                                                                   data-nome="<?= htmlspecialchars($perfil['nome_perfil']) ?>"
+                                                                   data-descricao="<?= htmlspecialchars($perfil['descricao'] ?? '') ?>"
+                                                                   data-icone="<?= $perfil['icone'] ?? 'user' ?>"
+                                                                   data-ativo="<?= $perfil['ativo'] ? 'true' : 'false' ?>">
+                                                                    <i class='bx bx-edit-alt me-2'></i>Editar
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item text-danger btn-delete" 
+                                                                   href="#" 
+                                                                   data-id="<?= $perfil['id_perfilacesso'] ?>" 
+                                                                   data-nome="<?= htmlspecialchars($perfil['nome_perfil']) ?>">
+                                                                    <i class='bx bx-trash me-2'></i>Excluir
+                                                                </a>
+                                                            </li>
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li>
+                                                                <a class="dropdown-item" 
+                                                                   href="permissoes.php?perfil=<?= $perfil['id_perfilacesso'] ?>">
+                                                                    <i class='bx bx-lock me-2'></i>Gerenciar Permissões
+                                                                </a>
+                                                            </li>
+                                                        </ul>
                                                     </div>
-                                                    <div>
-                                                        <h6 class="mb-0">Editor</h6>
-                                                        <small class="text-muted">editor</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>Pode criar e editar conteúdo</td>
-                                            <td class="text-center">5</td>
-                                            <td class="text-center">
-                                                <span class="badge bg-success">Ativo</span>
-                                            </td>
-                                            <td class="text-end">
-                                                <button class="btn btn-sm btn-link text-primary p-1" title="Editar">
-                                                    <i class='bx bx-edit-alt fs-5'></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-link text-danger p-1" title="Excluir">
-                                                    <i class='bx bx-trash fs-5'></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="icon-wrapper bg-warning bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                                        <i class='bx bxs-show text-warning'></i>
-                                                    </div>
-                                                    <div>
-                                                        <h6 class="mb-0">Visualizador</h6>
-                                                        <small class="text-muted">viewer</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>Apenas visualização</td>
-                                            <td class="text-center">12</td>
-                                            <td class="text-center">
-                                                <span class="badge bg-success">Ativo</span>
-                                            </td>
-                                            <td class="text-end">
-                                                <button class="btn btn-sm btn-link text-primary p-1" title="Editar">
-                                                    <i class='bx bx-edit-alt fs-5'></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-link text-danger p-1" title="Excluir">
-                                                    <i class='bx bx-trash fs-5'></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="icon-wrapper bg-danger bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
-                                                        <i class='bx bxs-lock-alt text-danger'></i>
-                                                    </div>
-                                                    <div>
-                                                        <h6 class="mb-0">Restrito</h6>
-                                                        <small class="text-muted">restricted</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>Acesso limitado</td>
-                                            <td class="text-center">2</td>
-                                            <td class="text-center">
-                                                <span class="badge bg-danger">Inativo</span>
-                                            </td>
-                                            <td class="text-end">
-                                                <button class="btn btn-sm btn-link text-primary p-1" title="Editar">
-                                                    <i class='bx bx-edit-alt fs-5'></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-link text-danger p-1" title="Excluir">
-                                                    <i class='bx bx-trash fs-5'></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        <div class="card-footer bg-transparent border-0 py-3">
-                            <nav aria-label="Navegação da tabela">
-                                <ul class="pagination justify-content-end mb-0">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">Próximo</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
                     </div>
                 </div>
+            </main>
+    </div>
 
-                <!-- Footer -->
-                <footer class="footer mt-auto py-3 bg-light">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">© 2023 Tlantic. Todos os direitos reservados.</div>
-                            <div>
-                                <a href="#" class="text-decoration-none">Política de Privacidade</a>
-                                <span class="mx-2">|</span>
-                                <a href="#" class="text-decoration-none">Termos de Uso</a>
+    <!-- Modal Novo Perfil -->
+    <div class="modal fade" id="novoPerfilModal" tabindex="-1" aria-labelledby="novoPerfilModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="novoPerfilModalLabel">Novo Perfil de Acesso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <form id="formNovoPerfil" action="processa_perfil.php" method="POST">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nomePerfil" class="form-label">Nome do Perfil <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nomePerfil" name="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="descricaoPerfil" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="descricaoPerfil" name="descricao" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ícone</label>
+                            <div class="d-flex flex-wrap gap-2" id="iconesContainer">
+                                <?php
+                                $icones = ['user', 'user-pin', 'user-check', 'user-voice', 'user-x', 'user-plus', 'user-minus'];
+                                foreach ($icones as $icone): ?>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="icone" id="icone_<?= $icone ?>" 
+                                               value="<?= $icone ?>" <?= $icone === 'user' ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="icone_<?= $icone ?>">
+                                            <i class='bx bx-<?= $icone ?>'></i>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
                             </div>
                         </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="ativoPerfil" name="ativo" checked>
+                            <label class="form-check-label" for="ativoPerfil">Ativo</label>
+                        </div>
                     </div>
-                </footer>
-            </main>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Perfil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Perfil -->
+    <div class="modal fade" id="editarPerfilModal" tabindex="-1" aria-labelledby="editarPerfilModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editarPerfilModalLabel">Editar Perfil de Acesso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <form id="formEditarPerfil" action="processa_perfil.php" method="POST">
+                    <input type="hidden" id="editarPerfilId" name="id">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="editarNomePerfil" class="form-label">Nome do Perfil <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="editarNomePerfil" name="nome" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editarDescricaoPerfil" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="editarDescricaoPerfil" name="descricao" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ícone</label>
+                            <div class="d-flex flex-wrap gap-2" id="editarIconesContainer">
+                                <?php
+                                $icones = ['user', 'user-pin', 'user-check', 'user-voice', 'user-x', 'user-plus', 'user-minus'];
+                                foreach ($icones as $icone): ?>
+                                    <div class="form-check">
+                                        <input class="form-check-input icone-radio" type="radio" name="icone" id="editarIcone_<?= $icone ?>" 
+                                               value="<?= $icone ?>">
+                                        <label class="form-check-label" for="editarIcone_<?= $icone ?>">
+                                            <i class='bx bx-<?= $icone ?>'></i>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="editarAtivoPerfil" name="ativo">
+                            <label class="form-check-label" for="editarAtivoPerfil">Ativo</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Atualizar Perfil</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -685,399 +511,370 @@ $page_title = "Gerenciar Perfis - Tlantic";
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <script>
         $(document).ready(function() {
+            // Toggle da sidebar em telas pequenas
+            $('#sidebarToggle').on('click', function(e) {
+                e.stopPropagation();
+                $('.sidebar').toggleClass('active');
+                $('body').toggleClass('sidebar-active');
+            });
+
+            // Fechar a sidebar ao clicar no overlay
+            $('.sidebar-overlay').on('click', function() {
+                $('.sidebar').removeClass('active');
+                $('body').removeClass('sidebar-active');
+            });
+
+            // Fechar a sidebar ao clicar em um link
+            $('.sidebar .nav-link').on('click', function() {
+                if ($(window).width() < 992) {
+                    $('.sidebar').removeClass('active');
+                    $('body').removeClass('sidebar-active');
+                }
+            });
+
+            // Ajustar o layout quando a janela for redimensionada
+            function handleResize() {
+                if ($(window).width() >= 992) {
+                    $('.sidebar').removeClass('active');
+                    $('body').removeClass('sidebar-active');
+                }
+            }
+
+            // Executar ao carregar e ao redimensionar a janela
+            $(window).on('resize', handleResize);
+            handleResize();
+            // Manipular clique no botão de editar perfil
+            $(document).on('click', '.btn-editar', function(e) {
+                e.preventDefault();
+                
+                // Obter os dados do perfil dos atributos data
+                const perfilId = $(this).data('id');
+                const nomePerfil = $(this).data('nome');
+                const descricao = $(this).data('descricao');
+                const icone = $(this).data('icone');
+                const ativo = $(this).data('ativo') === 'true';
+                
+                // Preencher o formulário de edição
+                $('#editarPerfilId').val(perfilId);
+                $('#editarNomePerfil').val(nomePerfil);
+                $('#editarDescricaoPerfil').val(descricao);
+                
+                // Marcar o ícone correto
+                $(`#editarIconesContainer input[value="${icone}"]`).prop('checked', true);
+                
+                // Definir o estado do switch de ativo
+                $('#editarAtivoPerfil').prop('checked', ativo);
+                
+                // Exibir o modal
+                const editarModal = new bootstrap.Modal(document.getElementById('editarPerfilModal'));
+                editarModal.show();
+            });
+            
+            // Manipular envio do formulário de edição
+            $('#formEditarPerfil').on('submit', function(e) {
+                e.preventDefault();
+                
+                // Aqui você pode adicionar validação adicional se necessário
+                
+                // Enviar o formulário via AJAX
+                $.ajax({
+                    url: 'processa_perfil.php',
+                    type: 'POST',
+                    data: $(this).serialize() + '&acao=atualizar',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // Fechar o modal
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('editarPerfilModal'));
+                            modal.hide();
+                            
+                            // Exibir mensagem de sucesso
+                            Swal.fire({
+                                title: 'Sucesso!',
+                                text: response.message || 'Perfil atualizado com sucesso!',
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            }).then(() => {
+                                // Recarregar a página para atualizar a lista
+                                window.location.reload();
+                            });
+                        } else {
+                            // Exibir mensagem de erro
+                            Swal.fire({
+                                title: 'Erro!',
+                                text: response.message || 'Ocorreu um erro ao atualizar o perfil.',
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                    error: function() {
+                        // Exibir mensagem de erro genérica
+                        Swal.fire({
+                            title: 'Erro!',
+                            text: 'Ocorreu um erro ao atualizar o perfil. Tente novamente mais tarde.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+            
             // Inicialização do DataTable
-            $('#perfisTable').DataTable({
+            const table = $('#perfisTable').DataTable({
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
                     search: "",
-                    searchPlaceholder: "Pesquisar...",
-                    lengthMenu: "Mostrar _MENU_ registros por página",
-                    zeroRecords: "Nenhum registro encontrado",
-                    info: "Mostrando página _PAGE_ de _PAGES_",
-                    infoEmpty: "Nenhum registro disponível",
-                    infoFiltered: "(filtrado de _MAX_ registros totais)",
-                    paginate: {
-                        first: "Primeira",
-                        last: "Última",
-                        next: "Próxima",
-                        previous: "Anterior"
-                    }
+                    searchPlaceholder: "Pesquisar perfis..."
                 },
-                responsive: true,
                 order: [[0, 'asc']],
+                pageLength: 10,
+                responsive: true,
                 dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                      "<'row'<'col-sm-12'tr>>" +
                      "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
                 columnDefs: [
-                    { orderable: false, targets: [4] } // Desabilita ordenação na coluna de ações
+                    { orderable: false, targets: [3, 4] } // Desabilita ordenação nas colunas de status e ações
                 ]
             });
 
-            // Inicialização do Select2
+            // Alternar status do perfil
+            $(document).on('change', '.toggle-status', function() {
+                const perfilId = $(this).data('id');
+                const isAtivo = $(this).is(':checked');
+                const $statusBadge = $(this).closest('tr').find('.status-badge');
+                
+                // Simulação de atualização (substitua por chamada AJAX real)
+                if (isAtivo) {
+                    $statusBadge.removeClass('bg-secondary').addClass('bg-success').text('Ativo');
+                    
+                    // Atualiza o ícone do perfil na tabela
+                    const $icon = $(this).closest('tr').find('.icon-wrapper i');
+                    $icon.removeClass('text-secondary').addClass('text-primary');
+                    $icon.closest('.icon-wrapper').removeClass('bg-secondary-light').addClass('bg-primary-light');
+                } else {
+                    $statusBadge.removeClass('bg-success').addClass('bg-secondary').text('Inativo');
+                    
+                    // Atualiza o ícone do perfil na tabela
+                    const $icon = $(this).closest('tr').find('.icon-wrapper i');
+                    $icon.removeClass('text-primary').addClass('text-secondary');
+                    $icon.closest('.icon-wrapper').removeClass('bg-primary-light').addClass('bg-secondary-light');
+                }
+                
+                // Exemplo de como seria a chamada AJAX real:
+                /*
+                $.ajax({
+                    url: 'atualiza_status_perfil.php',
+                    type: 'POST',
+                    data: {
+                        id: perfilId,
+                        ativo: isAtivo ? 1 : 0
+                    },
+                    success: function(response) {
+                        if (!response.success) {
+                            // Reverte a mudança em caso de erro
+                            $(this).prop('checked', !isAtivo);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erro!',
+                                text: response.message || 'Ocorreu um erro ao atualizar o status do perfil.'
+                            });
+                        }
+                    },
+                    error: function() {
+                        // Reverte a mudança em caso de erro
+                        $(this).prop('checked', !isAtivo);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro!',
+                            text: 'Não foi possível conectar ao servidor. Tente novamente.'
+                        });
+                    }
+                });
+                */
+            });
+
+            // Confirmação de exclusão
+            $(document).on('click', '.btn-delete', function(e) {
+                e.preventDefault();
+                const perfilId = $(this).data('id');
+                const perfilNome = $(this).data('nome');
+                const $row = $(this).closest('tr');
+                
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: `Você está prestes a excluir o perfil "${perfilNome}". Esta ação não pode ser desfeita!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4361ee',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Sim, excluir!',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Mostra o loading
+                        Swal.fire({
+                            title: 'Excluindo...',
+                            text: 'Por favor, aguarde.',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                        
+                        // Faz a chamada AJAX para excluir o perfil
+                        $.ajax({
+                            url: 'excluir_perfil.php',
+                            type: 'POST',
+                            data: { id: perfilId },
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Sucesso!',
+                                        text: response.message || 'Perfil excluído com sucesso.',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        // Recarrega a página para atualizar a lista
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Erro!',
+                                        text: response.message || 'Ocorreu um erro ao excluir o perfil.'
+                                    });
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Erro na requisição:', status, error);
+                                let errorMessage = 'Não foi possível conectar ao servidor. Tente novamente.';
+                                
+                                try {
+                                    const response = xhr.responseJSON;
+                                    if (response && response.message) {
+                                        errorMessage = response.message;
+                                    }
+                                } catch (e) {
+                                    console.error('Erro ao processar resposta de erro:', e);
+                                }
+                                
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Erro!',
+                                    text: errorMessage
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Validação do formulário de novo perfil
+            $('#formNovoPerfil').on('submit', function(e) {
+                e.preventDefault();
+                
+                const nomePerfil = $('#nomePerfil').val().trim();
+                
+                if (!nomePerfil) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Campo obrigatório',
+                        text: 'Por favor, insira um nome para o perfil.'
+                    });
+                    return false;
+                }
+                
+                // Mostra o loading
+                Swal.fire({
+                    title: 'Salvando...',
+                    text: 'Por favor, aguarde.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                // Prepara os dados do formulário
+                const formData = $(this).serialize();
+                
+                // Envia os dados via AJAX
+                $.ajax({
+                    url: 'processa_perfil.php',
+                    type: 'POST',
+                    data: formData,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sucesso!',
+                                text: response.message || 'Perfil criado com sucesso!',
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                // Fecha o modal e recarrega a página
+                                $('#novoPerfilModal').modal('hide');
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erro!',
+                                text: response.message || 'Ocorreu um erro ao criar o perfil.'
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Erro na requisição:', status, error);
+                        let errorMessage = 'Não foi possível conectar ao servidor. Tente novamente.';
+                        
+                        try {
+                            const response = xhr.responseJSON;
+                            if (response && response.message) {
+                                errorMessage = response.message;
+                            }
+                        } catch (e) {
+                            console.error('Erro ao processar resposta de erro:', e);
+                        }
+                        
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro!',
+                            text: errorMessage
+                        });
+                    },
+                    complete: function() {
+                        // Esconde o loading
+                        Swal.close();
+                    }
+                });
+                return false;
+            });
+
+            // Fechar modal ao clicar fora
+            $('.modal').on('click', function(e) {
+                if ($(e.target).hasClass('modal')) {
+                    $(this).modal('hide');
+                }
+            });
+
+            // Limpar formulário ao fechar o modal
+            $('#novoPerfilModal').on('hidden.bs.modal', function () {
+                $(this).find('form').trigger('reset');
+            });
+
+            // Inicialização do Select2 (se necessário)
             $('.select2').select2({
                 theme: 'bootstrap-5',
-                width: '100%',
-                placeholder: 'Selecione uma opção',
-                allowClear: true
-            });
-
-            // Toggle para ativar/desativar perfil
-            $('.toggle-status').change(function() {
-                const perfilId = $(this).data('id');
-                const isActive = $(this).is(':checked');
-                // Aqui você pode adicionar a lógica para atualizar o status no banco de dados
-                console.log(`Perfil ${perfilId} - Ativo: ${isActive}`);
-                
-                // Exemplo de feedback visual
-                const statusBadge = $(this).closest('tr').find('.status-badge');
-                if (isActive) {
-                    statusBadge.removeClass('bg-secondary').addClass('bg-success').text('Ativo');
-                } else {
-                    statusBadge.removeClass('bg-success').addClass('bg-secondary').text('Inativo');
-                }
-            });
-
-            // Confirmação antes de excluir
-            $('.btn-delete').click(function(e) {
-                e.preventDefault();
-                const perfilNome = $(this).data('nome');
-                
-                if (confirm(`Tem certeza que deseja excluir o perfil "${perfilNome}"? Esta ação não pode ser desfeita.`)) {
-                    // Aqui você pode adicionar a lógica para excluir o perfil
-                    console.log(`Excluindo perfil: ${perfilNome}`);
-                    // Exemplo de remoção da linha da tabela
-                    $(this).closest('tr').fadeOut(300, function() {
-                        $(this).remove();
-                    });
-                }
-            });
-
-            // Abrir modal de edição
-            $('.btn-edit').click(function() {
-                const perfilId = $(this).data('id');
-                // Aqui você pode carregar os dados do perfil via AJAX e preencher o modal de edição
-                console.log(`Editando perfil ID: ${perfilId}`);
-                $('#editarPerfilModal').modal('show');
-            });
-        });
-    </script>
-    </div>          <main class="main-content">
-                <!-- Page Header -->
-                <div class="d-flex justify-content-between align-items-center mb-4 p-4 bg-white shadow-sm">
-                    <div>
-                        <h1 class="h3 mb-1 text-gray-800">Perfis de Acesso</h1>
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-0">
-                                <li class="breadcrumb-item"><a href="dashboard.php" class="text-decoration-none">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Perfis</li>
-                            </ol>
-                        </nav>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoPerfilModal">
-                            <i class='bx bx-plus me-2'></i>Novo Perfil
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Stats Cards -->
-                <div class="container-fluid px-4">
-                    <div class="row g-4 mb-4">
-                        <div class="col-md-3">
-                            <div class="card bg-primary bg-opacity-10 border-0">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-primary mb-1">Total de Perfis</h6>
-                                            <h2 class="mb-0">5</h2>
-                                        </div>
-                                        <div class="bg-primary bg-opacity-25 p-3 rounded-circle">
-                                            <i class='bx bx-group text-primary' style="font-size: 1.5rem;"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-success bg-opacity-10 border-0">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-success mb-1">Ativos</h6>
-                                            <h2 class="mb-0">4</h2>
-                                        </div>
-                                        <div class="bg-success bg-opacity-25 p-3 rounded-circle">
-                                            <i class='bx bx-check-circle text-success' style="font-size: 1.5rem;"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-warning bg-opacity-10 border-0">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-warning mb-1">Inativos</h6>
-                                            <h2 class="mb-0">1</h2>
-                                        </div>
-                                        <div class="bg-warning bg-opacity-25 p-3 rounded-circle">
-                                            <i class='bx bx-x-circle text-warning' style="font-size: 1.5rem;"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-info bg-opacity-10 border-0">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-info mb-1">Permissões</h6>
-                                            <h2 class="mb-0">24</h2>
-                                        </div>
-                                        <div class="bg-info bg-opacity-25 p-3 rounded-circle">
-                                            <i class='bx bx-shield-alt-2 text-info' style="font-size: 1.5rem;"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Search and Filter -->
-                    <div class="card border-0 mb-4">
-                        <div class="card-body p-3">
-                            <div class="row g-3">
-                                <div class="col-md-5">
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-transparent"><i class='bx bx-search'></i></span>
-                                        <input type="text" class="form-control" placeholder="Pesquisar perfis...">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="form-select">
-                                        <option value="">Todos os status</option>
-                                        <option>Ativo</option>
-                                        <option>Inativo</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <button class="btn btn-outline-primary w-100">
-                                        <i class='bx bx-filter-alt me-1'></i> Filtrar
-                                    </button>
-                                </div>
-                                <div class="col-md-2">
-                                    <button class="btn btn-outline-secondary w-100">
-                                        <i class='bx bx-export me-1'></i> Exportar
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <span>Lista de Perfis</span>
-                                </div>
-                                <div class="list-group list-group-flush" id="perfisList">
-                                    <a href="#" class="list-group-item list-group-item-action active" data-perfil="1">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">Administrador</h6>
-                                            <small>1</small>
-                                        </div>
-                                        <p class="mb-1">Acesso total ao sistema</p>
-                                        <small>5 usuários</small>
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action" data-perfil="2">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">Recursos Humanos</h6>
-                                            <small>2</small>
-                                        </div>
-                                        <p class="mb-1">Gerenciamento de colaboradores</p>
-                                        <small>3 usuários</small>
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action" data-perfil="3">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">Coordenador</h6>
-                                            <small>3</small>
-                                        </div>
-                                        <p class="mb-1">Visualização de equipes</p>
-                                        <small>8 usuários</small>
-                                    </a>
-                                    <a href="#" class="list-group-item list-group-item-action" data-perfil="4">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1">Colaborador</h6>
-                                            <small>4</small>
-                                        </div>
-                                        <p class="mb-1">Acesso limitado</p>
-                                        <small>45 usuários</small>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card">
-                                <div class="card-header">
-                                    <span>Permissões do Perfil: <span id="perfilNome">Administrador</span></span>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="perfilAtivo" checked>
-                                        <label class="form-check-label" for="perfilAtivo">Ativo</label>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <form id="permissoesForm">
-                                        <div class="permission-group">
-                                            <h5>Usuários</h5>
-                                            <div class="permission-item">
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="checkbox" id="userCreate" checked disabled>
-                                                    <label class="form-check-label" for="userCreate">Criar</label>
-                                                </div>
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="checkbox" id="userRead" checked disabled>
-                                                    <label class="form-check-label" for="userRead">Visualizar</label>
-                                                </div>
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="checkbox" id="userUpdate" checked>
-                                                    <label class="form-check-label" for="userUpdate">Editar</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="userDelete" checked>
-                                                    <label class="form-check-label" for="userDelete">Excluir</label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="permission-group">
-                                            <h5>Colaboradores</h5>
-                                            <div class="permission-item">
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="checkbox" id="colabCreate" checked>
-                                                    <label class="form-check-label" for="colabCreate">Criar</label>
-                                                </div>
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="checkbox" id="colabRead" checked>
-                                                    <label class="form-check-label" for="colabRead">Visualizar</label>
-                                                </div>
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="checkbox" id="colabUpdate" checked>
-                                                    <label class="form-check-label" for="colabUpdate">Editar</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox" id="colabDelete">
-                                                    <label class="form-check-label" for="colabDelete">Excluir</label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="permission-group">
-                                            <h5>Relatórios</h5>
-                                            <div class="permission-item">
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="checkbox" id="reportView" checked>
-                                                    <label class="form-check-label" for="reportView">Visualizar Relatórios</label>
-                                                </div>
-                                                <div class="form-check me-3">
-                                                    <input class="form-check-input" type="checkbox" id="reportExport" checked>
-                                                    <label class="form-check-label" for="reportExport">Exportar Dados</label>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="text-end mt-4">
-                                            <button type="button" class="btn btn-secondary me-2">Cancelar</button>
-                                            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Novo Perfil -->
-    <div class="modal fade" id="novoPerfilModal" tabindex="-1" aria-labelledby="novoPerfilModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="novoPerfilModalLabel">Novo Perfil</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <form id="novoPerfilForm">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="nomePerfil" class="form-label">Nome do Perfil</label>
-                            <input type="text" class="form-control" id="nomePerfil" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="descricaoPerfil" class="form-label">Descrição</label>
-                            <textarea class="form-control" id="descricaoPerfil" rows="3"></textarea>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="perfilAtivoNovo" checked>
-                            <label class="form-check-label" for="perfilAtivoNovo">Ativo</label>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Criar Perfil</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Troca de perfil ativo
-            $('#perfisList .list-group-item').on('click', function(e) {
-                e.preventDefault();
-                $('#perfisList .list-group-item').removeClass('active');
-                $(this).addClass('active');
-                
-                // Atualiza o nome do perfil no cabeçalho
-                const perfilNome = $(this).find('h6').text();
-                $('#perfilNome').text(perfilNome);
-                
-                // Aqui você carregaria as permissões do perfil selecionado via AJAX
-                console.log('Carregando permissões para o perfil:', perfilNome);
-            });
-            
-            // Submissão do formulário de permissões
-            $('#permissoesForm').on('submit', function(e) {
-                e.preventDefault();
-                // Aqui você implementaria a lógica para salvar as permissões
-                alert('Permissões salvas com sucesso!');
-            });
-            
-            // Submissão do formulário de novo perfil
-            $('#novoPerfilForm').on('submit', function(e) {
-                e.preventDefault();
-                const nomePerfil = $('#nomePerfil').val();
-                const descricao = $('#descricaoPerfil').val();
-                const ativo = $('#perfilAtivoNovo').is(':checked');
-                
-                // Aqui você implementaria a lógica para criar o novo perfil
-                console.log('Criando novo perfil:', { nomePerfil, descricao, ativo });
-                
-                // Fecha o modal
-                $('#novoPerfilModal').modal('hide');
-                
-                // Limpa o formulário
-                this.reset();
-                
-                // Recarrega a lista de perfis (simulação)
-                alert(`Perfil "${nomePerfil}" criado com sucesso!`);
+                width: '100%'
             });
         });
     </script>

@@ -1,5 +1,9 @@
 <?php
-session_start();
+// Iniciar a sessão apenas se não estiver ativa
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 $page_title = $page_title ?? 'Tlantic - Gestão de Colaboradores';
 
 // Verifica se o usuário está logado para páginas que requerem autenticação
@@ -299,3 +303,26 @@ $nivel_acesso = $_SESSION['nivel_acesso'] ?? 0;
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 <?php unset($_SESSION['info']); ?>
+            <?php endif; ?>
+            
+            <!-- Main content will be included here -->
+            
+        </div>
+        <!-- End Main Content -->
+    </div>
+    <!-- End Main Wrapper -->
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script src="/LSIS-Equipa-9/UI/assets/js/script.js"></script>
+</body>
+</html>

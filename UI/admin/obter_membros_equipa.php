@@ -6,7 +6,7 @@ header('Content-Type: application/json');
 
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     http_response_code(400);
-    echo json_encode(['erro' => 'ID da equipe inválido']);
+    echo json_encode(['erro' => 'ID da equipa inválido']);
     exit;
 }
 
@@ -18,14 +18,14 @@ try {
     
     if (!$equipa) {
         http_response_code(404);
-        echo json_encode(['erro' => 'Equipe não encontrada']);
+        echo json_encode(['erro' => 'Equipa não encontrada']);
         exit;
     }
     
-    // Retorna os membros da equipe
+    // Retorna os membros da equipa
     echo json_encode($equipa['membros'] ?? []);
     
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['erro' => 'Erro ao buscar membros da equipe: ' . $e->getMessage()]);
+    echo json_encode(['erro' => 'Erro ao buscar membros da equipa: ' . $e->getMessage()]);
 }

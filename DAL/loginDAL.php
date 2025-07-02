@@ -5,8 +5,7 @@ class LoginDAL {
     private $conn;
 
     public function __construct() {
-        $database = new Database();
-        $this->conn = $database->getConnection();
+        $this->conn = Database::getInstance();
     }
 
     public function verificarCredenciais($email, $senha) {

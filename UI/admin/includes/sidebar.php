@@ -63,6 +63,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </li>
                 
                 <li class="nav-item">
+                    <a href="equipa_dashboard.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'equipa_dashboard.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'equipa_dashboard.php') ? 'bg-white bg-opacity-10' : 'bg-pink bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-dashboard <?php echo ($current_page == 'equipa_dashboard.php') ? 'text-white' : 'text-pink'; ?>'></i>
+                        </div>
+                        <span>Dashboard de Equipas</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
                     <a href="campos_personalizados.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-white-80 hover-bg-dark-10">
                         <div class="icon-wrapper bg-warning bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
                             <i class='bx bxs-edit-alt text-warning'></i>
@@ -139,6 +148,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
     </div>
     
     <style>
+        .bg-pink {
+            background-color: #e83e8c !important;
+        }
+        
+        .text-pink {
+            color: #e83e8c !important;
+        }
+        
         .sidebar {
             width: 250px !important;
             min-height: 100vh;

@@ -766,7 +766,7 @@ $page_title = "Ajuda - Tlantic";
                 ],
                 responses: [
                     'Para entrar em contato com o suporte técnico, você pode:\n\n1. Enviar um e-mail para suporte@exemplo.pt\n2. Ligar para o número (XX) XXXX-XXXX\n3. Utilizar o chat de suporte no canto inferior direito da tela\n\nHorário de atendimento: Segunda a Sexta, das 8h às 18h.\n\nPor favor, descreva detalhadamente o problema encontrado para que possamos ajudá-lo melhor.',
-                    'Se você está enfrentando problemas ou tem dúvidas, nossa equipe de suporte está à disposição. Você pode nos contatar por e-mail, telefone ou diretamente pelo chat. Não se esqueça de informar:\n- O que você estava tentando fazer\n- Qual mensagem de erro apareceu (se houver)\n- O navegador e sistema operacional que está usando'
+                    'Se está a enfrentar problemas ou tem dúvidas, a nossa equipa de suporte está à disposição. Pode contactar-nos por e-mail, telefone ou diretamente pelo chat. Não se esqueça de informar:\n- O que estava a tentar fazer\n- Qual mensagem de erro apareceu (se aplicável)\n- O navegador e sistema operacional que está a utilizar'
                 ]
             },
             // Agradecimento

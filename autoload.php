@@ -9,7 +9,22 @@ spl_autoload_register(function ($class) {
     
     // Tenta encontrar a classe em cada diretório
     foreach ($directories as $directory) {
+        // Try exact match first
         $file = $directory . $class . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
+        
+        // Try lowercase filename
+        $file = $directory . strtolower($class) . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
+        
+        // Try first letter lowercase
+        $file = $directory . lcfirst($class) . '.php';
         if (file_exists($file)) {
             require_once $file;
             return;
@@ -20,10 +35,7 @@ spl_autoload_register(function ($class) {
 // Inclui o arquivo de configuração do banco de dados
 require_once __DIR__ . '/DAL/config.php';
 
-// Inicializa a sessão se ainda não estiver iniciada
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// A sessão é iniciada no header.php
 
 // Define constantes úteis
 define('BASE_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/LSIS-Equipa-9');

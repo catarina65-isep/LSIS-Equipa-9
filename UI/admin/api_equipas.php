@@ -12,7 +12,7 @@ try {
     switch ($acao) {
         case 'obter':
             if (!isset($_GET['id'])) {
-                throw new Exception('ID da equipe não informado');
+                throw new Exception('ID da equipa não informado');
             }
             $equipa = $equipaBLL->obterEquipa($_GET['id']);
             echo json_encode(['sucesso' => true, 'dados' => $equipa]);
@@ -20,7 +20,7 @@ try {
             
         case 'obter_membros':
             if (!isset($_GET['equipa_id'])) {
-                throw new Exception('ID da equipe não informado');
+                throw new Exception('ID da equipa não informado');
             }
             $membros = $equipaBLL->obterMembrosEquipa($_GET['equipa_id']);
             echo json_encode(['sucesso' => true, 'dados' => $membros]);
@@ -84,7 +84,7 @@ try {
                     }
                 }
                 
-                // Garante que o coordenador está na equipe
+                // Garante que o coordenador está na equipa
                 $equipaBLL->adicionarMembro($dados['id'], $dados['coordenador_id']);
             }
             
@@ -98,7 +98,7 @@ try {
             
             $dados = json_decode(file_get_contents('php://input'), true);
             if (empty($dados['id'])) {
-                throw new Exception('ID da equipe não informado');
+                throw new Exception('ID da equipa não informado');
             }
             
             $equipaBLL->excluirEquipa($dados['id']);
