@@ -307,3 +307,10 @@
 [2025-07-04 09:37:50] Nome do perfil: Recursos Humanos
 [2025-07-04 09:37:50] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
 [2025-07-04 09:37:50] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-04 11:37:42] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-04 11:37:42] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
