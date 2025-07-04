@@ -111,6 +111,8 @@ try {
         if (!file_exists($rh_dir)) {
             mkdir($rh_dir, 0777, true);
         }
+    } elseif ($_SESSION['id_perfilacesso'] == 4) { // Perfil Colaborador
+        $redirect_url = '/LSIS-Equipa-9/UI/colaborador.php';
     } else {
         $redirect_url = '/LSIS-Equipa-9/UI/dashboard.php';
     }
