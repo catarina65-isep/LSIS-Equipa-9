@@ -591,9 +591,10 @@ $page_title = "Perfil do Colaborador";
                         <img src="/LSIS-Equipa-9/UI/assets/img/logos/tlantic-logo.jpg" alt="Tlantic Logo" class="img-fluid">
                     </div>
                     <nav class="nav-menu">
+                        <a href="#" class="active" onclick="event.preventDefault(); scrollToSection('top')"><i class='bx bx-user'></i> Perfil</a>
+                        <a href="#" class="" onclick="event.preventDefault(); scrollToSection('dadosPessoais')"><i class='bx bx-user'></i> Dados Pessoais</a>
+                        <a href="#" class="" onclick="event.preventDefault(); scrollToSection('documentos')"><i class='bx bx-file'></i> Documentos</a>
                         <a href="dashboard.php" class="active"><i class='bx bx-grid-alt'></i> Dashboard</a>
-                        <a href="colaborador.php"><i class='bx bx-user'></i> Dados Pessoais</a>
-                        <a href="colaborador.php#documentos"><i class='bx bx-file'></i> Documentos</a>
                     </nav>
                     <div class="sidebar-footer mt-auto">
                         <a href="/LSIS-Equipa-9/UI/logout.php" class="btn btn-danger w-100">
@@ -723,7 +724,7 @@ $page_title = "Perfil do Colaborador";
         </div>
 
         <!-- Seção de Dados Pessoais -->
-        <div class="card">
+        <div class="card" id="perfil">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4>Dados Pessoais</h4>
@@ -917,7 +918,7 @@ $page_title = "Perfil do Colaborador";
         </div>
 
         <!-- Seção de Documentos -->
-        <div class="card">
+        <div class="card" id="documentos">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4>Documentos</h4>
@@ -999,8 +1000,47 @@ $page_title = "Perfil do Colaborador";
         <script src="js/colaborador.js"></script>
 
         <script>
+            // Função para navegação suave entre seções
+            function scrollToSection(sectionId) {
+                // Verifica se o link já está ativo
+                const currentLink = event.currentTarget;
+                if (currentLink.classList.contains('active')) {
+                    return; // Se já está ativo, não faz nada
+                }
+
+                // Remove a classe active de todos os links
+                const navLinks = document.querySelectorAll('.nav-menu a');
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Adiciona a classe active ao link clicado
+                currentLink.classList.add('active');
+
+                // Realiza a navegação apenas se não estiver no link ativo
+                if (sectionId === 'top') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    const element = document.getElementById(sectionId);
+                    if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+
             // Inicialização de componentes
             document.addEventListener('DOMContentLoaded', function() {
+                // Destacar o item ativo na sidebar
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll('.nav-menu a');
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (currentPath.includes('colaborador.php')) {
+                        if (link.textContent.trim() === 'Perfil') {
+                            link.classList.add('active');
+                        }
+                    }
+                });
                 // Toggle sidebar em dispositivos móveis
                 document.getElementById('sidebarToggle').addEventListener('click', function() {
                     document.querySelector('.sidebar').classList.toggle('show');
