@@ -45,11 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($usuario && password_verify($senha, $usuario['password'] ?? $usuario['password_hash'])) {
             // Login bem-sucedido
-            $_SESSION['usuario_id'] = $usuario['id_utilizador'] ?? $usuario['id_colaborador'];
-            $_SESSION['usuario_email'] = $usuario['email'] ?? $usuario['email_pessoal'];
-            $_SESSION['usuario_nome'] = $usuario['username'] ?? $usuario['nome'];
-            $_SESSION['usuario_tipo'] = $tipo_usuario;
-            $_SESSION['usuario_perfil'] = $usuario['perfil'];
+            $_SESSION['utilizador_id'] = $usuario['id_utilizador'] ?? $usuario['id_colaborador'];
+            $_SESSION['utilizador_email'] = $usuario['email'] ?? $usuario['email_pessoal'];
+            $_SESSION['utilizador_nome'] = $usuario['username'] ?? $usuario['nome'];
+            $_SESSION['utilizador_tipo'] = $tipo_usuario;
+            $_SESSION['utilizador_perfil'] = $usuario['perfil'];
             
             // Registrar último login
             if (isset($usuario['id_utilizador'])) {

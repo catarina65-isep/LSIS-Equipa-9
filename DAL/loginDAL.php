@@ -10,66 +10,71 @@ class LoginDAL {
 
     public function verificarCredenciais($email, $senha) {
         try {
-            // Verifica se existem usuários na tabela
-            $query = "SELECT COUNT(*) as total FROM utilizador";
-            $stmt = $this->conn->query($query);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Busca o usuário pelo email
+            $query = "SELECT u.*, p.nome as perfil 
+                     FROM utilizador u 
+                     INNER JOIN perfilacesso p ON u.id_perfil_acesso = p.id_perfilacesso 
+                     WHERE u.email = :email AND u.ativo = 1";
             
-            if ($result['total'] > 0) {
-                // Se existirem usuários, faz a verificação normal
-                $query = "SELECT u.*, p.nome as perfil 
-                         FROM utilizador u 
-                         INNER JOIN perfilacesso p ON u.id_perfilacesso = p.id_perfilacesso 
-                         WHERE u.email = :email AND u.senha = :senha AND u.ativo = 1";
-                
-                $stmt = $this->conn->prepare($query);
-                $stmt->bindParam(':email', $email);
-                $stmt->bindParam(':senha', md5($senha));
-                $stmt->execute();
-
-                if ($stmt->rowCount() > 0) {
-                    return $stmt->fetch(PDO::FETCH_ASSOC);
-                }
-                
-                return false;
-            } else {
-                // Se não existirem usuários, cria um usuário temporário com base no email
-                $perfil = $this->obterPerfilPorEmail($email);
-                
-                if ($perfil === null) {
-                    return false;
-                }
-                
-                // Retorna um array simulado com os dados do usuário
-                return [
-                    'id_utilizador' => 1,
-                    'email' => $email,
-                    'nome' => 'Usuário de Teste',
-                    'id_perfilacesso' => $perfil,
-                    'perfil' => $this->obterNomePerfil($perfil)
-                ];
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Verifica se encontrou o usuário e se a senha está correta
+            if ($usuario && password_verify($senha, $usuario['password_hash'])) {
+                // Atualiza o último login
+                $this->atualizarUltimoLogin($usuario['id_utilizador']);
+                return $usuario;
             }
             
-        } catch(PDOException $e) {
-            error_log('Erro ao verificar credenciais: ' . $e->getMessage());
-            // Em caso de erro, permite o acesso de qualquer forma para desenvolvimento
+            // Se não encontrou o usuário, verifica se é um usuário de teste
             $perfil = $this->obterPerfilPorEmail($email);
             
             if ($perfil === null) {
                 return false;
             }
             
-            return [
-                'id_utilizador' => 1,
-                'email' => $email,
-                'nome' => 'Usuário de Teste',
-                'id_perfilacesso' => $perfil,
-                'perfil' => $this->obterNomePerfil($perfil)
-            ];
+            // Para ambiente de desenvolvimento, permite login com qualquer senha
+            // APENAS PARA TESTES - REMOVER EM PRODUÇÃO
+            if ($this->isAmbienteDesenvolvimento()) {
+                return [
+                    'id_utilizador' => 1,
+                    'email' => $email,
+                    'username' => 'Usuário de Teste',
+                    'id_perfil_acesso' => $perfil,
+                    'perfil' => $this->obterNomePerfil($perfil)
+                ];
+            }
+            
+            return false;
+            
+        } catch(PDOException $e) {
+            error_log('Erro ao verificar credenciais: ' . $e->getMessage());
+            
+            // Em caso de erro, permite o acesso apenas em ambiente de desenvolvimento
+            if ($this->isAmbienteDesenvolvimento()) {
+                $perfil = $this->obterPerfilPorEmail($email);
+                
+                if ($perfil === null) {
+                    return false;
+                }
+                
+                return [
+                    'id_utilizador' => 1,
+                    'email' => $email,
+                    'username' => 'Usuário de Teste',
+                    'id_perfil_acesso' => $perfil,
+                    'perfil' => $this->obterNomePerfil($perfil)
+                ];
+            }
+            
+            return false;
         }
     }
 
-    private function obterNomePerfil($idPerfil) {
+    public function obterNomePerfil($idPerfil) {
         $perfis = [
             1 => 'Administrador',
             2 => 'Recursos Humanos',
@@ -80,42 +85,78 @@ class LoginDAL {
         return $perfis[$idPerfil] ?? 'Desconhecido';
     }
     
-    public function obterPerfilPorEmail($email) {
+    /**
+     * Atualiza a data e IP do último login do usuário
+     */
+    private function atualizarUltimoLogin($idUsuario) {
         try {
-            // Extrai o domínio do email (parte após o @)
-            $partes = explode('@', $email);
-            if (count($partes) !== 2) {
-                return null;
-            }
+            $ip = $_SERVER['REMOTE_ADDR'];
+            $dataAtual = date('Y-m-d H:i:s');
             
-            $dominio = strtolower($partes[1]); // Pega a parte após o @
+            $query = "UPDATE utilizador SET 
+                     ultimo_login = :data_login,
+                     ip_ultimo_login = :ip
+                     WHERE id_utilizador = :id";
+                     
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':data_login', $dataAtual);
+            $stmt->bindParam(':ip', $ip);
+            $stmt->bindParam(':id', $idUsuario);
             
-            // Remove o .com ou outro TLD do final
-            $dominio = preg_replace('/\\.[^.\\s]{2,}$/', '', $dominio);
-            
-            // Mapeia domínios para perfis
-            $mapeamentoPerfis = [
-                'administrador' => 1,
-                'recursoshumanos' => 2,
-                'rh' => 2, // Alternativa para recursos humanos
-                'coordenador' => 3,
-                'colaborador' => 4,
-                'tlantic' => 1 // Domínio tlanic.pt mapeado para administrador
-            ];
-            
-            // Verifica se o domínio está mapeado
-            foreach ($mapeamentoPerfis as $chave => $valor) {
-                if (strpos($dominio, $chave) !== false) {
-                    return $valor;
-                }
-            }
-            
-            return null; // Retorna null se não encontrar um perfil correspondente
-            
-        } catch (Exception $e) {
-            error_log('Erro ao obter perfil por email: ' . $e->getMessage());
-            throw new Exception('Erro ao identificar perfil do usuário.');
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Erro ao atualizar último login: " . $e->getMessage());
+            return false;
         }
+    }
+    
+    /**
+     * Verifica se está em ambiente de desenvolvimento
+     */
+    private function isAmbienteDesenvolvimento() {
+        // Verifica se é localhost ou 127.0.0.1
+        $serverName = $_SERVER['SERVER_NAME'] ?? '';
+        $serverAddr = $_SERVER['SERVER_ADDR'] ?? '';
+        
+        return in_array($serverName, ['localhost', '127.0.0.1']) || 
+               strpos($serverAddr, '127.') === 0 || 
+               strpos($serverAddr, '192.168.') === 0;
+    }
+    
+    public function obterPerfilPorEmail($email) {
+        // Retorna o perfil baseado no email 
+        // 1 - Admin
+        // 2 - RH
+        // 3 - Coordenador
+        // 4 - Colaborador (padrão)
+        
+        // Converte o email para minúsculas para facilitar a comparação
+        $email = strtolower(trim($email));
+        
+        // Verifica se é admin
+        if (strpos($email, 'admin@') === 0) {
+            return 1; // Admin
+        }
+        
+        // Verifica se é RH
+        if (strpos($email, 'rh@') === 0) {
+            return 2; // RH
+        }
+        
+        // Verifica se é coordenador
+        if (strpos($email, 'coordenador@') === 0) {
+            return 3; // Coordenador
+        }
+        
+        // Por padrão, retorna Colaborador
+        return 4; // Colaborador
+    }
+    
+    /**
+     * Retorna a conexão com o banco de dados
+     */
+    public function getConnection() {
+        return $this->conn;
     }
 }
 ?>

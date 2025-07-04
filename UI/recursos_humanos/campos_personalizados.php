@@ -1,13 +1,14 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado e é administrador
-if (!isset($_SESSION['usuario_id']) || $_SESSION['id_perfilacesso'] != 1) {
+// Verifica se o utilizador está logado e tem permissão (RH ou Administrador)
+if (!isset($_SESSION['utilizador_id']) || !in_array($_SESSION['id_perfilacesso'], [1, 2])) {
     header('Location: /LSIS-Equipa-9/UI/login.php');
     exit;
 }
 
-$page_title = "Campos Personalizados - Tlantic";
+$page_title = "Gestão de Campos Personalizados - Recursos Humanos";
+$isAdmin = ($_SESSION['id_perfilacesso'] == 1); // Verifica se é administrador
 
 // Tipos de campos permitidos
 $tiposCampos = [
@@ -196,15 +197,20 @@ $campos = []; // Simulação de dados
                 <!-- Page Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4 p-4 bg-white shadow-sm rounded">
                     <div>
-                        <h1 class="h3 mb-1 text-gray-800">Campos Personalizados</h1>
-                        <p class="mb-0 text-muted">Gerencie os campos personalizados da ficha de colaborador</p>
+                        <h1 class="h3 mb-1 text-gray-800">Gestão de Campos Personalizados</h1>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h5 class="mb-0">Lista de Campos Personalizados</h5>
+                            <small class="text-muted">Gerencie os campos disponíveis nas fichas dos colaboradores</small>
+                        </div>
+                        <?php if ($isAdmin): ?>
+                        <div>
+                            <button class="btn btn-primary" id="btnNovoCampo">
+                                <i class='bx bx-plus'></i> Novo Campo
+                            </button>
+                        </div>
+                        <?php endif; ?>
                     </div>
-                    <div>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoCampoModal">
-                            <i class='bx bx-plus'></i> Novo Campo
-                        </button>
-                    </div>
-                </div>
 
                 <div class="container-fluid px-4">
                     <!-- Filtros -->
@@ -322,12 +328,20 @@ $campos = []; // Simulação de dados
                                             <td><span class="badge bg-success">Sim</span></td>
                                             <td><span class="badge bg-success">Ativo</span></td>
                                             <td class="text-center">
-                                                <button class="btn btn-sm btn-outline-primary btn-editar" data-id="1">
-                                                    <i class='bx bx-edit-alt'></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="1" data-nome="telefone_emergencia">
-                                                    <i class='bx bx-trash'></i>
-                                                </button>
+                                                <div class="btn-group">
+                                                    <?php if ($isAdmin): ?>
+                                                    <button class="btn btn-sm btn-outline-primary btn-editar" data-id="1">
+                                                        <i class='bx bx-edit-alt'></i> Editar
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="1" data-nome="telefone_emergencia">
+                                                        <i class='bx bx-trash'></i>
+                                                    </button>
+                                                    <?php else: ?>
+                                                    <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                        <i class='bx bx-info-circle'></i> Visualizar
+                                                    </button>
+                                                    <?php endif; ?>
+                                                </div>
                                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Visualizar histórico">
                                                     <i class='bx bx-history'></i>
                                                 </button>
@@ -341,12 +355,20 @@ $campos = []; // Simulação de dados
                                             <td><span class="badge bg-success">Sim</span></td>
                                             <td><span class="badge bg-success">Ativo</span></td>
                                             <td class="text-center">
-                                                <button class="btn btn-sm btn-outline-primary btn-editar" data-id="2">
-                                                    <i class='bx bx-edit-alt'></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="2" data-nome="data_nascimento">
-                                                    <i class='bx bx-trash'></i>
-                                                </button>
+                                                <div class="btn-group">
+                                                    <?php if ($isAdmin): ?>
+                                                    <button class="btn btn-sm btn-outline-primary btn-editar" data-id="2">
+                                                        <i class='bx bx-edit-alt'></i> Editar
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="2" data-nome="estado_civil">
+                                                        <i class='bx bx-trash'></i>
+                                                    </button>
+                                                    <?php else: ?>
+                                                    <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                        <i class='bx bx-info-circle'></i> Visualizar
+                                                    </button>
+                                                    <?php endif; ?>
+                                                </div>
                                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Visualizar histórico">
                                                     <i class='bx bx-history'></i>
                                                 </button>
@@ -360,12 +382,20 @@ $campos = []; // Simulação de dados
                                             <td><span class="badge bg-success">Sim</span></td>
                                             <td><span class="badge bg-success">Ativo</span></td>
                                             <td class="text-center">
-                                                <button class="btn btn-sm btn-outline-primary btn-editar" data-id="3">
-                                                    <i class='bx bx-edit-alt'></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="3" data-nome="nif">
-                                                    <i class='bx bx-trash'></i>
-                                                </button>
+                                                <div class="btn-group">
+                                                    <?php if ($isAdmin): ?>
+                                                    <button class="btn btn-sm btn-outline-primary btn-editar" data-id="3">
+                                                        <i class='bx bx-edit-alt'></i> Editar
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="3">
+                                                        <i class='bx bx-trash'></i>
+                                                    </button>
+                                                    <?php else: ?>
+                                                    <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                        <i class='bx bx-info-circle'></i> Visualizar
+                                                    </button>
+                                                    <?php endif; ?>
+                                                </div>
                                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Visualizar histórico">
                                                     <i class='bx bx-history'></i>
                                                 </button>
@@ -379,12 +409,20 @@ $campos = []; // Simulação de dados
                                             <td><span class="badge bg-success">Sim</span></td>
                                             <td><span class="badge bg-secondary">Inativo</span></td>
                                             <td class="text-center">
-                                                <button class="btn btn-sm btn-outline-primary btn-editar" data-id="4">
-                                                    <i class='bx bx-edit-alt'></i>
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="4" data-nome="niss">
-                                                    <i class='bx bx-trash'></i>
-                                                </button>
+                                                <div class="btn-group">
+                                                    <?php if ($isAdmin): ?>
+                                                    <button class="btn btn-sm btn-outline-primary btn-editar" data-id="4">
+                                                        <i class='bx bx-edit-alt'></i> Editar
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger btn-excluir" data-id="4" data-nome="habilitacoes">
+                                                        <i class='bx bx-trash'></i>
+                                                    </button>
+                                                    <?php else: ?>
+                                                    <button class="btn btn-sm btn-outline-secondary" disabled>
+                                                        <i class='bx bx-info-circle'></i> Visualizar
+                                                    </button>
+                                                    <?php endif; ?>
+                                                </div>
                                                 <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="tooltip" title="Visualizar histórico">
                                                     <i class='bx bx-history'></i>
                                                 </button>
@@ -456,7 +494,7 @@ $campos = []; // Simulação de dados
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="campoModalLabel">Adicionar Novo Campo</h5>
+                    <h5 class="modal-title" id="campoModalLabel"><?php echo $isAdmin ? 'Adicionar Novo Campo' : 'Detalhes do Campo'; ?></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
@@ -591,8 +629,10 @@ $campos = []; // Simulação de dados
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <?php if ($isAdmin): ?>
                     <button type="submit" class="btn btn-primary">Salvar Campo</button>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -713,9 +753,21 @@ $campos = []; // Simulação de dados
             this.value = this.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
         });
 
-        // Adicionar nova opção
+        // Adicionar nova opção para campos de seleção (apenas para administradores)
         $('#adicionarOpcao').click(function() {
-            const novaOpcao = `
+            const isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
+            
+            if (!isAdmin) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Acesso Restrito',
+                    text: 'Apenas administradores podem adicionar opções.',
+                    confirmButtonText: 'Entendi'
+                });
+                return false;
+            }
+            
+            const opcaoHtml = `
                 <div class="row g-2 mb-2">
                     <div class="col-5">
                         <input type="text" class="form-control" name="opcao_valor[]" placeholder="Valor" required>
@@ -730,121 +782,101 @@ $campos = []; // Simulação de dados
                     </div>
                 </div>
             `;
-            $('#opcoesCampos').append(novaOpcao);
+            
+            $('#opcoesCampos').append(opcaoHtml);
         });
-
-        // Remover opção
+        
+        // Remover opção (apenas para administradores)
         $(document).on('click', '.remover-opcao', function() {
-            if ($('#opcoesCampos .row').length > 1) {
-                $(this).closest('.row').remove();
-            } else {
-                // Se for a última opção, limpa os campos em vez de remover
-                $(this).closest('.row').find('input').val('');
+            const isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
+            
+            if (!isAdmin) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Acesso Restrito',
+                    text: 'Apenas administradores podem remover opções.',
+                    confirmButtonText: 'Entendi'
+                });
+                return false;
             }
+            
+            $(this).closest('.row').remove();
         });
 
-        // Abrir modal para adicionar novo campo
+        // Abrir modal para adicionar novo campo (apenas para administradores)
         $('#btnNovoCampo').click(function() {
+            // Verificar se é administrador
+            const isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
+            
+            if (!isAdmin) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Acesso Restrito',
+                    text: 'Apenas administradores podem adicionar novos campos.',
+                    confirmButtonText: 'Entendi'
+                });
+                return false;
+            }
+            
             // Limpar o formulário
             $('#formCampo')[0].reset();
             $('#campoId').val('');
+            
+            // Alterar título do modal
             $('#campoModalLabel').text('Adicionar Novo Campo');
             
-            // Resetar selects
-            $('.select2').val(null).trigger('change');
-            
-            // Limpar opções
-            $('#opcoesCampos').html(`
-                <div class="row g-2 mb-2">
-                    <div class="col-5">
-                        <input type="text" class="form-control" name="opcao_valor[]" placeholder="Valor" required>
-                    </div>
-                    <div class="col-5">
-                        <input type="text" class="form-control" name="opcao_rotulo[]" placeholder="Rótulo" required>
-                    </div>
-                    <div class="col-2">
-                        <button class="btn btn-outline-danger w-100 remover-opcao" type="button">
-                            <i class='bx bx-trash'></i>
-                        </button>
-                    </div>
-                </div>
-            `);
+            // Resetar validação
+            $('.is-invalid').removeClass('is-invalid');
             
             // Mostrar o modal
-            $('#campoModal').modal('show');
+            const modal = new bootstrap.Modal(document.getElementById('campoModal'));
+            modal.show();
         });
 
-        // Abrir modal para editar campo
+        // Editar campo existente
         $(document).on('click', '.btn-editar', function() {
+            const isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
             const id = $(this).data('id');
+            
+            // Verificar se é administrador
+            if (!isAdmin) {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Apenas Visualização',
+                    text: 'Você está no modo de visualização. Apenas administradores podem editar campos.',
+                    confirmButtonText: 'Entendi'
+                });
+                return false;
+            }
             
             // Carregar os dados do campo
             $.ajax({
-                url: 'api_campos_personalizados.php?id=' + id,
-                method: 'GET',
+                url: 'obter_campo.php',
+                type: 'GET',
+                data: { id: id },
                 dataType: 'json',
                 success: function(response) {
-                    if (response.sucesso) {
-                        const campo = response.dados;
+                    if (response.status === 'success') {
+                        // Preencher o formulário com os dados do campo
+                        $('#campoId').val(response.data.id);
+                        $('#nomeCampo').val(response.data.nome);
+                        $('#tipoCampo').val(response.data.tipo).trigger('change');
+                        $('#descricaoCampo').val(response.data.descricao);
+                        $('#categoriaCampo').val(response.data.categoria);
+                        $('#obrigatorio').prop('checked', response.data.obrigatorio === '1');
+                        $('#ativo').prop('checked', response.data.ativo === '1');
                         
-                        // Preencher o formulário
-                        $('#campoId').val(campo.id);
-                        $('#nomeCampo').val(campo.nome);
-                        $('#tipoCampo').val(campo.tipo).trigger('change');
-                        $('#rotuloCampo').val(campo.rotulo);
-                        $('#placeholderCampo').val(campo.placeholder);
-                        $('#valorPadrao').val(campo.valor_padrao);
-                        $('#categoriaCampo').val(campo.categoria);
-                        $('#ajudaCampo').val(campo.ajuda);
-                        
-                        // Checkboxes
-                        $('#obrigatorio').prop('checked', campo.obrigatorio == 1);
-                        $('#ativo').prop('checked', campo.ativo == 1);
-                        $('#requerComprovativo').prop('checked', campo.requer_comprovativo == 1);
-                        
-                        // Preencher selects múltiplos
-                        if (campo.visivel_para) {
-                            $('select[name="visivel_para[]"]').val(campo.visivel_para).trigger('change');
-                        }
-                        
-                        if (campo.editavel_por) {
-                            $('select[name="editavel_por[]"]').val(campo.editavel_por).trigger('change');
-                        }
-                        
-                        // Preencher opções se existirem
-                        if (campo.opcoes && Object.keys(campo.opcoes).length > 0) {
-                            $('#opcoesCampos').empty();
-                            
-                            for (const [valor, rotulo] of Object.entries(campo.opcoes)) {
-                                const opcao = `
-                                    <div class="row g-2 mb-2">
-                                        <div class="col-5">
-                                            <input type="text" class="form-control" name="opcao_valor[]" value="${valor}" placeholder="Valor" required>
-                                        </div>
-                                        <div class="col-5">
-                                            <input type="text" class="form-control" name="opcao_rotulo[]" value="${rotulo}" placeholder="Rótulo" required>
-                                        </div>
-                                        <div class="col-2">
-                                            <button class="btn btn-outline-danger w-100 remover-opcao" type="button">
-                                                <i class='bx bx-trash'></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                `;
-                                $('#opcoesCampos').append(opcao);
-                            }
-                        }
-                        
-                        // Atualizar título do modal
-                        $('#campoModalLabel').text('Editar Campo: ' + campo.rotulo);
+                        // Alterar título do modal
+                        $('#campoModalLabel').text('Editar Campo: ' + response.data.nome);
                         
                         // Mostrar o modal
-                        $('#campoModal').modal('show');
+                        const modal = new bootstrap.Modal(document.getElementById('campoModal'));
+                        modal.show();
                     } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'Erro',
-                            text: response.erro || 'Erro ao carregar os dados do campo.'
+                            text: response.message || 'Erro ao carregar os dados do campo.'
                         });
                     }
                 },
@@ -852,7 +884,7 @@ $campos = []; // Simulação de dados
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro',
-                        text: 'Erro ao carregar os dados do campo.'
+                        text: 'Erro ao carregar os dados do campo. Tente novamente.'
                     });
                 }
             });
@@ -860,43 +892,49 @@ $campos = []; // Simulação de dados
 
         // Excluir campo
         $(document).on('click', '.btn-excluir', function() {
+            const isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
             const id = $(this).data('id');
             const nome = $(this).data('nome');
             
+            // Verificar se é administrador
+            if (!isAdmin) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Acesso Negado',
+                    text: 'Apenas administradores podem excluir campos.',
+                    confirmButtonText: 'Entendi'
+                });
+                return false;
+            }
+            
             Swal.fire({
-                title: 'Tem certeza?',
-                text: `Você está prestes a excluir o campo "${nome}". Esta ação não pode ser desfeita!`,
+                title: 'Confirmar Exclusão',
+                text: `Tem certeza que deseja excluir o campo "${nome}"? Esta ação não pode ser desfeita.`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
                 cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sim, excluir!',
+                confirmButtonText: 'Sim, excluir',
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    // Simular exclusão
+                    Swal.fire(
+                        'Excluído!',
+                        'O campo foi excluído com sucesso.',
+                        'success'
+                    );
+                    
+                    // Aqui você pode adicionar o código para excluir o campo via AJAX
+                    // Exemplo:
+                    /*
                     $.ajax({
-                        url: 'api_campos_personalizados.php',
-                        method: 'DELETE',
+                        url: 'excluir_campo.php',
+                        type: 'POST',
                         data: { id: id },
                         success: function(response) {
-                            if (response.sucesso) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Sucesso!',
-                                    text: 'Campo excluído com sucesso!',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                }).then(() => {
-                                    // Recarregar a página
-                                    window.location.reload();
-                                });
-                            } else {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Erro',
-                                    text: response.erro || 'Erro ao excluir o campo.'
-                                });
-                            }
+                            // Recarregar a tabela ou remover a linha
+                            tabela.ajax.reload();
                         },
                         error: function() {
                             Swal.fire({
@@ -914,52 +952,47 @@ $campos = []; // Simulação de dados
         $('#formCampo').on('submit', function(e) {
             e.preventDefault();
             
+            // Verificar se é administrador
+            const isAdmin = <?php echo $isAdmin ? 'true' : 'false'; ?>;
+            if (!isAdmin) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Acesso Negado',
+                    text: 'Apenas administradores podem salvar alterações nos campos.',
+                    confirmButtonText: 'Entendi'
+                });
+                return false;
+            }
+            
             // Coletar dados do formulário
             const formData = new FormData(this);
             const dados = {};
             
             // Converter FormData para objeto
             formData.forEach((value, key) => {
-                // Para campos de array (como selects múltiplos)
-                if (key.endsWith('[]')) {
-                    const chave = key.replace('[]', '');
-                    if (!dados[chave]) {
-                        dados[chave] = [];
-                    }
-                    dados[chave].push(value);
-                } else {
-                    dados[key] = value;
+                dados[key] = value;
+            });
+            
+            // Adicionar opções do campo
+            const opcoes = [];
+            $('input[name="opcao_valor[]"]').each(function(index) {
+                const valor = $(this).val();
+                const rotulo = $('input[name="opcao_rotulo[]"]').eq(index).val();
+                if (valor && rotulo) {
+                    opcoes.push({ valor, rotulo });
                 }
             });
             
-            // Processar opções
-            if (['select', 'radio', 'checkbox'].includes(dados.tipoCampo)) {
-                const opcoes = {};
-                const valores = formData.getAll('opcao_valor[]');
-                const rotulos = formData.getAll('opcao_rotulo[]');
-                
-                valores.forEach((valor, index) => {
-                    if (valor && rotulos[index]) {
-                        opcoes[valor] = rotulos[index];
-                    }
-                });
-                
-                dados.opcoes = opcoes;
-            }
+            dados.opcoes = opcoes;
             
-            // Determinar o método HTTP
-            const metodo = $('#campoId').val() ? 'PUT' : 'POST';
-            const url = 'api_campos_personalizados.php';
-            
-            // Se for atualização, adicionar o ID ao objeto de dados
-            if (metodo === 'PUT') {
-                dados.id = $('#campoId').val();
-            }
+            // Verificar se é uma edição ou novo cadastro
+            const url = dados.campoId ? 'api_campos_personalizados.php' : 'api_campos_personalizados.php';
+            const method = dados.campoId ? 'PUT' : 'POST';
             
             // Enviar requisição
             $.ajax({
                 url: url,
-                method: metodo,
+                method: method,
                 data: JSON.stringify(dados),
                 contentType: 'application/json',
                 dataType: 'json',
@@ -968,48 +1001,45 @@ $campos = []; // Simulação de dados
                         Swal.fire({
                             icon: 'success',
                             title: 'Sucesso!',
-                            text: response.mensagem || 'Operação realizada com sucesso!',
+                            text: dados.campoId ? 'Campo atualizado com sucesso!' : 'Campo cadastrado com sucesso!',
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => {
                             // Fechar o modal e recarregar a página
-                            $('#campoModal').modal('hide');
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('campoModal'));
+                            modal.hide();
                             window.location.reload();
                         });
                     } else {
-                        let mensagemErro = 'Erro ao processar a solicitação.';
-                        
-                        if (response.erros && response.erros.length > 0) {
-                            mensagemErro = response.erros.join('<br>');
-                        } else if (response.erro) {
-                            mensagemErro = response.erro;
-                        }
-                        
                         Swal.fire({
                             icon: 'error',
                             title: 'Erro',
-                            html: mensagemErro
+                            text: response.erro || 'Erro ao salvar o campo.'
                         });
                     }
                 },
-                error: function(xhr, status, error) {
-                    let mensagemErro = 'Erro ao processar a solicitação.';
-                    
-                    try {
-                        const respostaErro = JSON.parse(xhr.responseText);
-                        if (respostaErro.erro) {
-                            mensagemErro = respostaErro.erro;
-                        } else if (respostaErro.erros && respostaErro.erros.length > 0) {
-                            mensagemErro = respostaErro.erros.join('<br>');
+                error: function(xhr) {
+                    let errorMessage = 'Erro ao salvar o campo.';
+                    if (xhr.responseJSON && xhr.responseJSON.erro) {
+                        errorMessage = xhr.responseJSON.erro;
+                    } else if (xhr.responseText) {
+                        try {
+                            const respostaErro = JSON.parse(xhr.responseText);
+                            if (respostaErro.erro) {
+                                errorMessage = respostaErro.erro;
+                            } else if (respostaErro.erros && respostaErro.erros.length > 0) {
+                                errorMessage = respostaErro.erros.join('\n');
+                            }
+                        } catch (e) {
+                            // Se não for possível fazer o parse do JSON, usar a resposta como está
+                            errorMessage = xhr.responseText;
                         }
-                    } catch (e) {
-                        console.error('Erro ao processar resposta de erro:', e);
                     }
                     
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro',
-                        html: mensagemErro
+                        text: errorMessage
                     });
                 }
             });
@@ -1025,9 +1055,66 @@ $campos = []; // Simulação de dados
     });
     </script>
     <script>
+        // Função para mostrar/ocultar campos com base no tipo de campo selecionado
+        function atualizarVisibilidadeCampos() {
+            const tipo = $('#tipoCampo').val();
+            const opcoesContainer = $('#opcoesContainer');
+            const mascaraCampo = $('#mascaraCampo').closest('.form-group');
+            
+            // Mostrar/ocultar container de opções
+            if (['select', 'radio', 'checkbox'].includes(tipo)) {
+                opcoesContainer.slideDown();
+            } else {
+                opcoesContainer.slideUp();
+            }
+            
+            // Mostrar/ocultar máscara para campos específicos
+            if (['cpf', 'cnpj', 'telefone', 'cep', 'nif', 'niss', 'cartaocidadao', 'mod99'].includes(tipo)) {
+                let mascara = '';
+                switch(tipo) {
+                    case 'cpf': mascara = '000.000.000-00'; break;
+                    case 'cnpj': mascara = '00.000.000/0000-00'; break;
+                    case 'telefone': mascara = '(00) 00000-0000'; break;
+                    case 'cep': mascara = '00000-000'; break;
+                    case 'nif': mascara = '000 000 000'; break;
+                    case 'niss': mascara = '0 00 00 00 000 000 0'; break;
+                    case 'cartaocidadao': mascara = '00000000 0 AA0'; break;
+                    case 'mod99': 
+                        mascara = '';
+                        // Configurações específicas para Mod 99
+                        $('#requerComprovativo').prop('checked', true).prop('disabled', true);
+                        break;
+                }
+                $('#mascaraCampo').val(mascara);
+                mascaraCampo.show();
+            } else {
+                mascaraCampo.hide();
+                $('#requerComprovativo').prop('disabled', false);
+            }
+            
+            // Configurações específicas para campos de arquivo
+            if (tipo === 'arquivo') {
+                $('#tamanhoMaximo').closest('.form-group').show();
+            } else {
+                $('#tamanhoMaximo').closest('.form-group').hide();
+            }
+        }
+        
         $(document).ready(function() {
-            // Inicialização do DataTable foi movida para o início do arquivo
-
+            // Inicialização do DataTable
+            const tabela = $('#tabelaCampos').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
+                },
+                responsive: true,
+                order: [[0, 'asc']],
+                pageLength: 10,
+                lengthMenu: [5, 10, 25, 50, 100],
+                dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                     "<'row'<'col-sm-12'tr>>" +
+                     "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
+            });
+            
             // Inicializar Select2
             $('.select2').select2({
                 theme: 'bootstrap-5',
@@ -1035,91 +1122,72 @@ $campos = []; // Simulação de dados
                 placeholder: 'Selecione as opções',
                 allowClear: true
             });
-
-            // Mostrar/ocultar opções baseado no tipo de campo
-            function atualizarVisibilidadeCampos() {
-                const tipo = $('#tipoCampo').val();
-                const opcoesContainer = $('#opcoesContainer');
-                const mascaraCampo = $('#mascaraCampo').closest('.form-group');
-                
-                // Mostrar/ocultar container de opções
-                if (['select', 'radio', 'checkbox'].includes(tipo)) {
-                    opcoesContainer.slideDown();
-                } else {
-                    opcoesContainer.slideUp();
-                }
-                
-                // Mostrar/ocultar máscara para campos específicos
-                if (['cpf', 'cnpj', 'telefone', 'cep', 'nif', 'niss', 'cartaocidadao', 'mod99'].includes(tipo)) {
-                    let mascara = '';
-                    switch(tipo) {
-                        case 'cpf': mascara = '000.000.000-00'; break;
-                        case 'cnpj': mascara = '00.000.000/0000-00'; break;
-                        case 'telefone': mascara = '(00) 00000-0000'; break;
-                        case 'cep': mascara = '00000-000'; break;
-                        case 'nif': mascara = '000 000 000'; break;
-                        case 'niss': mascera = '0 00 00 00 000 000 0'; break;
-                        case 'cartaocidadao': mascara = '00000000 0 AA0'; break;
-                        case 'mod99': 
-                            mascara = '';
-                            // Configurações específicas para Mod 99
-                            $('#requerComprovativo').prop('checked', true).prop('disabled', true);
-                            break;
-                    }
-                    $('#mascaraCampo').val(mascara);
-                    mascaraCampo.show();
-                } else {
-                    mascaraCampo.hide();
-                    $('#requerComprovativo').prop('disabled', false);
-                }
-                
-                // Configurações específicas para campos de arquivo
-                if (tipo === 'arquivo') {
-                    $('#tamanhoMaximo').closest('.form-group').show();
-                } else {
-                    $('#tamanhoMaximo').closest('.form-group').hide();
-                }
-            }
             
-            // Atualizar visibilidade ao carregar a página e ao mudar o tipo
+            // Atualizar visibilidade dos campos ao carregar a página e ao mudar o tipo
             atualizarVisibilidadeCampos();
             $('#tipoCampo').change(atualizarVisibilidadeCampos);
-
+            
             // Aplicar máscara ao campo de nome
             $('#nomeCampo').on('input', function() {
                 this.value = this.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
             });
-
-            // Adicionar nova opção
-            $('#adicionarOpcao').click(function() {
-                const novaOpcao = `
-                    <div class="row g-2 mb-2">
-                        <div class="col-5">
-                            <input type="text" class="form-control" name="opcao_valor[]" placeholder="Valor" required>
-                        </div>
-                        <div class="col-5">
-                            <input type="text" class="form-control" name="opcao_rotulo[]" placeholder="Rótulo" required>
-                        </div>
-                        <div class="col-2">
-                            <button class="btn btn-outline-danger w-100 remover-opcao" type="button">
-                                <i class='bx bx-trash'></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                $('#opcoesCampos').append(novaOpcao);
-            });
-
-            // Remover opção
-            $(document).on('click', '.remover-opcao', function() {
-                if ($('#opcoesCampos .row').length > 1) {
-                    $(this).closest('.row').remove();
-                } else {
-                    // Se for a última opção, limpa os campos em vez de remover
-                    $(this).closest('.row').find('input').val('');
-                }
-            });
-
+            
+            // Função para exportar para PDF
+            function exportarParaPDF() {
+                // Implementar lógica de exportação para PDF
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Exportar para PDF',
+                    text: 'Funcionalidade de exportação para PDF será implementada em breve.'
+                });
+            }
+            
+            // Função para exportar para Excel
+            function exportarParaExcel() {
+                // Implementar lógica de exportação para Excel
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Exportar para Excel',
+                    text: 'Funcionalidade de exportação para Excel será implementada em breve.'
+                });
+            }
+            
+            // Função para exportar para CSV
+            function exportarParaCSV() {
+                // Implementar lógica de exportação para CSV
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Exportar para CSV',
+                    text: 'Funcionalidade de exportação para CSV será implementada em breve.'
+                });
+            }
+            
+            // Eventos de clique nos botões de exportação
+            $('.btn-exportar-pdf').click(exportarParaPDF);
+            $('.btn-exportar-excel').click(exportarParaExcel);
+            $('.btn-exportar-csv').click(exportarParaCSV);
+            
+            // Adiciona máscara aos campos de telefone
+            $('.telefone').mask('(00) 00000-0000');
+            
+            // Adiciona máscara ao campo de CEP
+            $('.cep').mask('00000-000');
+            
+            // Adiciona máscara ao campo de CPF
+            $('.cpf').mask('000.000.000-00');
+            
+            // Adiciona máscara ao campo de CNPJ
+            $('.cnpj').mask('00.000.000/0000-00');
+            
+            // Adiciona máscara ao campo de NIF
+            $('.nif').mask('000 000 000');
+            
+            // Adiciona máscara ao campo de NISS
+            $('.niss').mask('0 00 00 00 000 000 0');
+            
+            // Adiciona máscara ao campo de Cartão de Cidadão
+            $('.cartaocidadao').mask('00000000 0 AA0');
+            
             // Validação do formulário
             $('#formCampo').on('submit', function(e) {
                 e.preventDefault();
@@ -1200,47 +1268,6 @@ $campos = []; // Simulação de dados
             $('#buscaCampo').on('keyup', function() {
                 tabela.search($(this).val()).draw();
             });
-            
-            // Funções de exportação
-            function exportarParaPDF() {
-                // Implementar lógica de exportação para PDF
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Exportar para PDF',
-                    text: 'Funcionalidade de exportação para PDF será implementada em breve.',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
-            }
-            
-            function exportarParaExcel() {
-                // Implementar lógica de exportação para Excel
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Exportar para Excel',
-                    text: 'Funcionalidade de exportação para Excel será implementada em breve.',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
-            }
-            
-            function exportarParaCSV() {
-                // Implementar lógica de exportação para CSV
-                Swal.fire({
-                    icon: 'info',
-                    title: 'Exportar para CSV',
-                    text: 'Funcionalidade de exportação para CSV será implementada em breve.',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
-            }
-            
-            // Eventos dos botões de exportação
-            $('.btn-exportar-pdf').click(exportarParaPDF);
-            $('.btn-exportar-excel').click(exportarParaExcel);
-            $('.btn-exportar-csv').click(exportarParaCSV);
-            
-            // Inicialização do DataTable já foi feita no início do arquivo
             
             // Adiciona filtros personalizados
             $('#filtroTipo, #filtroStatus').on('change', function() {

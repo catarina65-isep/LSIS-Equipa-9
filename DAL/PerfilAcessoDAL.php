@@ -158,7 +158,8 @@ class PerfilAcessoDAL {
                     )";
             
             $stmt = $this->pdo->prepare($sql);
-            $stmt->bindParam(':descricao', $dados['descricao'], PDO::PARAM_STR);
+            // Usa 'nome_perfil' do array $dados para preencher o campo 'descricao' na tabela
+            $stmt->bindParam(':descricao', $dados['nome_perfil'], PDO::PARAM_STR);
             $stmt->bindParam(':nivel_acesso', $dados['nivel_acesso'], PDO::PARAM_INT);
             $stmt->bindParam(':permissoes', $dados['permissoes'], PDO::PARAM_STR);
             $stmt->bindParam(':ativo', $dados['ativo'], PDO::PARAM_INT);
@@ -178,6 +179,46 @@ class PerfilAcessoDAL {
                 $this->pdo->rollBack();
             }
             error_log('Erro ao inserir perfil: ' . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Atualiza um perfil de acesso existente
+     * @param int $id ID do perfil a ser atualizado
+     * @param array $dados Novos dados do perfil
+     * @return bool True em caso de sucesso, False caso contrário
+     */
+    public function atualizar($id, $dados) {
+        try {
+            $this->pdo->beginTransaction();
+            
+            $sql = "UPDATE perfilacesso SET 
+                        descricao = :descricao, 
+                        nivel_acesso = :nivel_acesso, 
+                        permissoes = :permissoes, 
+                        ativo = :ativo,
+                        data_atualizacao = NOW()
+                    WHERE id_perfil_acesso = :id";
+            
+            $stmt = $this->pdo->prepare($sql);
+            // Usa 'nome_perfil' do array $dados para atualizar o campo 'descricao' na tabela
+            $stmt->bindParam(':descricao', $dados['nome_perfil'], PDO::PARAM_STR);
+            $stmt->bindParam(':nivel_acesso', $dados['nivel_acesso'], PDO::PARAM_INT);
+            $stmt->bindParam(':permissoes', $dados['permissoes'], PDO::PARAM_STR);
+            $stmt->bindParam(':ativo', $dados['ativo'], PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            
+            $resultado = $stmt->execute();
+            $this->pdo->commit();
+            
+            return $resultado;
+            
+        } catch (Exception $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            error_log('Erro ao atualizar perfil: ' . $e->getMessage());
             return false;
         }
     }

@@ -5,13 +5,11 @@ session_start();
 // Incluir arquivos necessários
 require_once __DIR__ . '/../../autoload.php';
 
-// Verificar se o usuário está autenticado (comentado temporariamente para desenvolvimento)
-/*
-if (!isset($_SESSION['usuario_id']) || $_SESSION['perfil'] !== 'admin') {
+// Verificar se o usuário está autenticado e tem perfil de RH (ID 2) ou Administrador (ID 1)
+if (!isset($_SESSION['utilizador_id']) || !in_array($_SESSION['id_perfilacesso'], [1, 2])) {
     header('Location: /LSIS-Equipa-9/UI/login.php');
     exit();
 }
-*/
 
 // Inicializar variáveis
 $mensagem = '';
@@ -30,6 +28,14 @@ try {
     
     // Obter lista de coordenadores
     $coordenadores = $utilizadorBLL->obterCoordenadores();
+    
+    // Debug: Mostrar dados dos coordenadores
+    echo '<div style="display:none;">';
+    echo '<h4>Debug - Dados dos Coordenadores:</h4>';
+    echo '<pre>';
+    var_dump($coordenadores);
+    echo '</pre>';
+    echo '</div>';
     
     // Obter lista de funcionários
     $funcionarios = $utilizadorBLL->obterFuncionarios();
@@ -192,7 +198,7 @@ try {
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h1 class="h3 mb-1 fw-bold text-gray-800">Gestão de Equipas</h1>
-                            <p class="mb-0 text-muted">Gerencie as equipes da sua organização</p>
+                            <p class="mb-0 text-muted">Gerencie as equipas da sua organização</p>
                         </div>
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEquipa">
                             <i class="fas fa-plus me-2"></i> Nova Equipa
@@ -214,7 +220,7 @@ try {
                         <?php if (empty($equipas)): ?>
                             <div class="col-12">
                                 <div class="alert alert-info">
-                                    <i class="fas fa-info-circle me-2"></i> Nenhuma equipe cadastrada. Clique em "Nova Equipa" para começar.
+                                    <i class="fas fa-info-circle me-2"></i> Nenhuma equipa cadastrada. Clique em "Nova Equipa" para começar.
                                 </div>
                             </div>
                         <?php else: ?>
@@ -279,12 +285,14 @@ try {
                         <input type="hidden" name="id" id="equipa_id">
                         
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <label class="form-label">Nome da Equipa *</label>
                                 <input type="text" name="nome" class="form-control" required>
                             </div>
-                            
-                            <div class="mb-3">
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
                                 <label class="form-label">Membros da Equipa</label>
                                 <select name="membros[]" class="form-select select2" multiple="multiple" style="width: 100%;">
                                     <?php 
@@ -332,26 +340,23 @@ try {
                         
                         <div class="mb-3">
                             <label class="form-label">Coordenador *</label>
-                            <select name="coordenador_id" class="form-select" required>
+                            <select name="coordenador_id" class="form-select select2" required>
                                 <option value="">Selecione um coordenador</option>
-                                <?php foreach ($coordenadores as $coordenador): ?>
-                                    <option value="<?= $coordenador['id'] ?>">
-                                        <?= htmlspecialchars($coordenador['nome'] . ' ' . ($coordenador['apelido'] ?? '')) ?>
-                                    </option>
-                                <?php endforeach; ?>
+                                <?php if (!empty($coordenadores)): ?>
+                                    <?php foreach ($coordenadores as $coordenador): 
+                                        $nomeCompleto = !empty($coordenador['nome_completo']) ? $coordenador['nome_completo'] : 
+                                                      (isset($coordenador['username']) ? $coordenador['username'] : 'Coordenador sem nome');
+                                    ?>
+                                        <option value="<?= $coordenador['id_utilizador'] ?? $coordenador['id'] ?>">
+                                            <?= htmlspecialchars($nomeCompleto) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <option value="" disabled>Nenhum coordenador disponível</option>
+                                <?php endif; ?>
                             </select>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Membros da Equipa</label>
-                            <select name="membros[]" class="form-select" multiple>
-                                <?php foreach ($funcionarios as $funcionario): ?>
-                                    <option value="<?= $funcionario['id'] ?>">
-                                        <?= htmlspecialchars($funcionario['nome'] . ' ' . ($funcionario['apelido'] ?? '')) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -401,25 +406,119 @@ try {
             $('#formEquipa').on('submit', function(e) {
                 e.preventDefault();
                 
-                // Aqui você pode adicionar a lógica para salvar os dados
-                // usando AJAX ou redirecionando para outra página
+                // Obter os dados do formulário
+                const formData = {
+                    nome: $('[name="nome"]').val().trim(),
+                    descricao: $('[name="descricao"]').val().trim() || '',
+                    coordenador_id: $('[name="coordenador_id"]').val()
+                };
                 
-                // Exemplo de feedback ao usuário
+                // Obter membros selecionados (se houver)
+                const membrosSelect = $('[name="membros[]"]');
+                if (membrosSelect.length) {
+                    formData.membros = membrosSelect.val() || [];
+                }
+                
+                console.log('Dados do formulário:', formData);
+                
+                // Validar campos obrigatórios
+                if (!formData.nome) {
+                    Swal.fire('Erro!', 'O nome da equipa é obrigatório.', 'error');
+                    return false;
+                }
+                
+                if (!formData.coordenador_id) {
+                    Swal.fire('Erro!', 'O coordenador é obrigatório.', 'error');
+                    return false;
+                }
+                
+                // Determinar se é uma criação ou atualização
+                const acao = $('[name="acao"]').val();
+                const url = `api_equipas.php?acao=${acao === 'editar' ? 'atualizar' : 'criar'}`;
+                
+                // Se for atualização, adicionar o ID
+                if (acao === 'editar') {
+                    const id = $('[name="id"]').val();
+                    if (id) {
+                        formData.id = id;
+                    } else {
+                        console.error('ID não encontrado para edição');
+                        Swal.fire('Erro!', 'ID da equipa não encontrado para edição.', 'error');
+                        return false;
+                    }
+                }
+                
+                // Mostrar loading
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Sucesso!',
-                    text: 'Equipa salva com sucesso!',
-                    showConfirmButton: false,
-                    timer: 1500
+                    title: 'A processar...',
+                    text: 'Por favor, aguarde.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
                 });
                 
-                // Fechar o modal após o envio
-                $('#modalEquipa').modal('hide');
-                
-                // Recarregar a página para atualizar a lista
-                setTimeout(function() {
-                    location.reload();
-                }, 1500);
+                // Enviar dados via AJAX
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: JSON.stringify(formData),
+                    contentType: 'application/json',
+                    success: function(response) {
+                        Swal.close();
+                        
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Sucesso!',
+                                text: response.message || 'Equipa salva com sucesso!',
+                                showConfirmButton: false,
+                                timer: 1500
+                            });
+                            
+                            // Fechar o modal
+                            $('#modalEquipa').modal('hide');
+                            
+                            // Recarregar a página para atualizar a lista
+                            setTimeout(() => location.reload(), 1500);
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Erro!',
+                                text: response.message || 'Ocorreu um erro ao salvar a equipa.'
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.close();
+                        let errorMessage = 'Ocorreu um erro ao processar a requisição.';
+                        let responseText = xhr.responseText;
+                        
+                        console.error('Erro na requisição:', {
+                            status: xhr.status,
+                            statusText: xhr.statusText,
+                            response: responseText,
+                            error: error
+                        });
+                        
+                        try {
+                            const response = JSON.parse(responseText);
+                            if (response && response.message) {
+                                errorMessage = response.message;
+                            }
+                        } catch (e) {
+                            console.error('Erro ao analisar resposta:', e);
+                            errorMessage = responseText || errorMessage;
+                        }
+                        
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erro!',
+                            html: `<p>${errorMessage}</p><p class="small text-muted">Status: ${xhr.status} ${xhr.statusText}</p>`,
+                            confirmButtonText: 'Entendi'
+                        });
+                    }
+                });
             });
         });
         
@@ -493,62 +592,6 @@ try {
         }
     </script>
 </body>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Coordenador *</label>
-                            <select name="coordenador_id" class="form-select" required>
-                                <option value="">Selecione um coordenador</option>
-                                <?php foreach ($coordenadores as $coordenador): ?>
-                                    <option value="<?= $coordenador['id'] ?>">
-                                        <?= htmlspecialchars($coordenador['nome'] . ' ' . ($coordenador['apelido'] ?? '')) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Membros da Equipa</label>
-                            <select name="membros[]" class="form-select" multiple>
-                                <?php foreach ($funcionarios as $funcionario): ?>
-                                    <option value="<?= $funcionario['id'] ?>">
-                                        <?= htmlspecialchars($funcionario['nome'] . ' ' . ($funcionario['apelido'] ?? '')) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Salvar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function editarEquipa(id) {
-            // Implementar lógica de edição
-            alert('Editar equipe: ' + id);
-        }
-        
-        function confirmarExclusao(id) {
-            if (confirm('Tem certeza que deseja excluir esta equipe?')) {
-                // Implementar lógica de exclusão
-                alert('Excluir equipe: ' + id);
-            }
-        }
-        
-        // Inicializar tooltips
-        document.addEventListener('DOMContentLoaded', function() {
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        });
-    </script>
+</html>
 </body>
 </html>

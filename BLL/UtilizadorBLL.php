@@ -50,6 +50,132 @@ class UtilizadorBLL {
     }
     
     /**
+     * Conta o número total de usuários ativos
+     * 
+     * @return int Número total de usuários ativos
+     */
+    public function contarTotal() {
+        try {
+            return $this->utilizadorDAL->contarTotal();
+        } catch (Exception $e) {
+            error_log('Erro ao contar usuários: ' . $e->getMessage());
+            return 0;
+        }
+    }
+    
+    /**
+     * Obtém estatísticas de usuários
+     * 
+     * @return array Estatísticas de usuários
+     */
+    public function obterEstatisticas() {
+        try {
+            $totalUsuarios = $this->contarTotal();
+            $usuariosUltimoMes = $this->contarUsuariosUltimoMes();
+            $usuariosMesAnterior = $this->contarUsuariosPorPeriodo(
+                date('Y-m-01', strtotime('first day of last month')),
+                date('Y-m-t', strtotime('last day of last month'))
+            );
+            
+            $variacao = $usuariosMesAnterior > 0 
+                ? round((($usuariosUltimoMes - $usuariosMesAnterior) / $usuariosMesAnterior) * 100) 
+                : ($usuariosUltimoMes > 0 ? 100 : 0);
+            
+            return [
+                'total_usuarios' => $totalUsuarios,
+                'novos_ultimo_mes' => $usuariosUltimoMes,
+                'variacao_usuarios' => $variacao,
+                'distribuicao_perfil' => $this->obterDistribuicaoPorPerfil(),
+                'usuarios_por_equipa' => $this->contarUsuariosPorEquipa()
+            ];
+        } catch (Exception $e) {
+            error_log('Erro ao obter estatísticas de usuários: ' . $e->getMessage());
+            return [
+                'total_usuarios' => 0,
+                'novos_ultimo_mes' => 0,
+                'variacao_usuarios' => 0,
+                'distribuicao_perfil' => [],
+                'usuarios_por_equipa' => []
+            ];
+        }
+    }
+    
+    /**
+     * Conta usuários criados no último mês
+     * 
+     * @return int Número de usuários criados no último mês
+     */
+    public function contarUsuariosUltimoMes() {
+        try {
+            $primeiroDiaMesAtual = date('Y-m-01');
+            $ultimoDiaMesAtual = date('Y-m-t');
+            
+            return $this->contarUsuariosPorPeriodo($primeiroDiaMesAtual, $ultimoDiaMesAtual);
+        } catch (Exception $e) {
+            error_log('Erro ao contar usuários do último mês: ' . $e->getMessage());
+            return 0;
+        }
+    }
+    
+    /**
+     * Conta usuários criados em um período específico
+     * 
+     * @param string $dataInicio Data de início (YYYY-MM-DD)
+     * @param string $dataFim Data de fim (YYYY-MM-DD)
+     * @return int Número de usuários criados no período
+     */
+    public function contarUsuariosPorPeriodo($dataInicio, $dataFim) {
+        try {
+            return $this->utilizadorDAL->contarPorPeriodo($dataInicio, $dataFim);
+        } catch (Exception $e) {
+            error_log('Erro ao contar usuários por período: ' . $e->getMessage());
+            return 0;
+        }
+    }
+    
+    /**
+     * Obtém a distribuição de usuários por perfil
+     * 
+     * @return array Distribuição de usuários por perfil
+     */
+    public function obterDistribuicaoPorPerfil() {
+        try {
+            return $this->utilizadorDAL->obterDistribuicaoPorPerfil();
+        } catch (Exception $e) {
+            error_log('Erro ao obter distribuição por perfil: ' . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Conta usuários por equipe
+     * 
+     * @return array Contagem de usuários por equipe
+     */
+    public function contarUsuariosPorEquipa() {
+        try {
+            return $this->utilizadorDAL->contarUsuariosPorEquipa();
+        } catch (Exception $e) {
+            error_log('Erro ao contar usuários por equipe: ' . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Obtém dados para o dashboard
+     * 
+     * @return array Dados para o dashboard
+     */
+    public function obterDadosParaDashboard() {
+        return [
+            'total_usuarios' => $this->contarTotal(),
+            'novos_usuarios_ultimo_mes' => $this->contarUsuariosUltimoMes(),
+            'distribuicao_perfil' => $this->obterDistribuicaoPorPerfil(),
+            'usuarios_por_equipa' => $this->contarUsuariosPorEquipa()
+        ];
+    }
+
+    /**
      * Obtém a lista de coordenadores (usuários com perfil de coordenador)
      * @return array Lista de coordenadores
      */

@@ -5,6 +5,17 @@
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- JavaScript do Colaborador -->
+    <script src="js/colaborador.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/locale/pt.js"></script>
+    
+    <!-- Date Range Picker -->
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    
     <!-- DataTables -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -17,12 +28,6 @@
     <!-- Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     
-    <!-- Moment.js -->
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/locale/pt.js"></script>
-    
-    <!-- Date Range Picker -->
-    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.5/dist/sweetalert2.all.min.js"></script>
@@ -323,45 +328,3 @@
             return false;
         }
     </script>
-            // Tema escuro/claro
-            const themeToggle = document.getElementById('themeToggle');
-            if (themeToggle) {
-                themeToggle.addEventListener('click', function() {
-                    const html = document.documentElement;
-                    const currentTheme = html.getAttribute('data-bs-theme');
-                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                    
-                    html.setAttribute('data-bs-theme', newTheme);
-                    localStorage.setItem('theme', newTheme);
-                    
-                    // Atualiza o ícone
-                    const icon = this.querySelector('i');
-                    icon.className = newTheme === 'dark' ? 'bx bx-sun' : 'bx bx-moon';
-                });
-                
-                // Verifica o tema salvo
-                const savedTheme = localStorage.getItem('theme') || 'light';
-                document.documentElement.setAttribute('data-bs-theme', savedTheme);
-                
-                // Atualiza o ícone inicial
-                const icon = themeToggle.querySelector('i');
-                icon.className = savedTheme === 'dark' ? 'bx bx-sun' : 'bx bx-moon';
-            }
-            
-            // Sidebar toggle para mobile
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', function() {
-                    document.body.classList.toggle('sidebar-toggled');
-                    localStorage.setItem('sidebarToggled', document.body.classList.contains('sidebar-toggled'));
-                });
-                
-                // Verifica o estado do sidebar
-                if (localStorage.getItem('sidebarToggled') === 'true') {
-                    document.body.classList.add('sidebar-toggled');
-                }
-            }
-        });
-    </script>
-</body>
-</html>

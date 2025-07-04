@@ -1,9 +1,9 @@
 <?php
 // A sessão já é iniciada no header.php
-// Verificar se o usuário está logado
-if (!isset($_SESSION['usuario_id'])) {
+// Verificar se o utilizador está logado
+if (!isset($_SESSION['utilizador_id'])) {
     // Se não estiver logado, redireciona para a página de login
-    header('Location: ' . dirname(dirname($_SERVER['PHP_SELF'])) . '/login.php');
+    header('Location: /LSIS-Equipa-9/UI/login.php');
     exit();
 }
 
@@ -28,7 +28,7 @@ if (isset($_SESSION['id_perfilacesso'])) {
             $permitirAcesso = true;
         } else {
             // Para outras páginas, redirecionar para o painel
-            header('Location: ' . dirname(dirname($_SERVER['PHP_SELF'])) . '/dashboard.php');
+            header('Location: /LSIS-Equipa-9/UI/dashboard.php');
             exit();
         }
     }
@@ -36,7 +36,7 @@ if (isset($_SESSION['id_perfilacesso'])) {
 
 if (!$permitirAcesso) {
     // Se não tiver permissão, redireciona para a página inicial
-    header('Location: ' . dirname(dirname($_SERVER['PHP_SELF'])) . '/index.php');
+    header('Location: /LSIS-Equipa-9/UI/index.php');
     exit();
 }
 ?>

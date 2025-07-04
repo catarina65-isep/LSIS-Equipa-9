@@ -1,13 +1,77 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado e é administrador
-if (!isset($_SESSION['usuario_id']) || $_SESSION['id_perfilacesso'] != 1) {
+// Verifica se o usuário está logado e tem permissão (apenas RH)
+if (!isset($_SESSION['utilizador_id']) || $_SESSION['id_perfilacesso'] != 2) {
     header('Location: ../login.php');
     exit;
 }
 
-$page_title = "Gerenciar Usuários - Tlantic";
+$page_title = "Recursos Humanos - Tlantic";
+
+// Inclui os arquivos necessários
+require_once __DIR__ . '/../../DAL/config.php';
+require_once __DIR__ . '/../../DAL/UtilizadorDAL.php';
+
+// Obtém a instância da conexão e cria uma instância do UtilizadorDAL
+$pdo = Database::getInstance();
+$utilizadorDAL = new UtilizadorDAL();
+
+// Obtém a lista de utilizadores (exceto administradores)
+$utilizadores = $utilizadorDAL->listarUtilizadoresRH();
+
+// Conta estatísticas
+$total_utilizadores = count($utilizadores);
+$ativos = 0;
+$inativos = 0;
+
+foreach ($utilizadores as $utilizador) {
+    if ($utilizador['ativo'] == 1) {
+        $ativos++;
+    } else {
+        $inativos++;
+    }
+}
+
+// Filtros
+$filtro_status = isset($_GET['status']) ? $_GET['status'] : '';
+$filtro_perfil = isset($_GET['perfil']) ? intval($_GET['perfil']) : 0;
+$pesquisa = isset($_GET['pesquisa']) ? trim($_GET['pesquisa']) : '';
+
+// Aplicar filtros
+if ($filtro_status || $filtro_perfil || $pesquisa) {
+    $utilizadores = array_filter($utilizadores, function($user) use ($filtro_status, $filtro_perfil, $pesquisa) {
+        $match = true;
+        
+        if ($filtro_status && $user['ativo'] != ($filtro_status === 'ativo' ? 1 : 0)) {
+            $match = false;
+        }
+        
+        if ($filtro_perfil && $user['id_perfilacesso'] != $filtro_perfil) {
+            $match = false;
+        }
+        
+        if ($pesquisa) {
+            $search = strtolower($pesquisa);
+            $nome = strtolower($user['nome']);
+            $email = strtolower($user['email']);
+            $username = strtolower($user['username']);
+            
+            if (strpos($nome, $search) === false && 
+                strpos($email, $search) === false && 
+                strpos($username, $search) === false) {
+                $match = false;
+            }
+        }
+        
+        return $match;
+    });
+}
+
+// Ordenar por nome
+usort($utilizadores, function($a, $b) {
+    return strcmp($a['nome'], $b['nome']);
+});
 ?>
 <!DOCTYPE html>
 <html lang="pt-PT">
@@ -304,12 +368,12 @@ $page_title = "Gerenciar Usuários - Tlantic";
                 <!-- Page Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4 p-4 bg-white rounded-3 shadow-sm">
                     <div>
-                        <h1 class="h3 mb-1 fw-bold text-gray-800">Usuários</h1>
-                        <p class="mb-0 text-muted">Gerencie os usuários e permissões do sistema</p>
+                        <h1 class="h3 mb-1 fw-bold text-gray-800">Recursos Humanos</h1>
+                        <p class="mb-0 text-muted">Gerencie os utilizadores e permissões do sistema</p>
                     </div>
                     <div>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoUsuarioModal">
-                            <i class='bx bx-plus me-2'></i> Adicionar Usuário
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoUtilizadorModal">
+                            <i class='bx bx-plus me-2'></i> Adicionar Utilizador
                         </button>
                     </div>
                 </div>
@@ -318,13 +382,13 @@ $page_title = "Gerenciar Usuários - Tlantic";
                 <div class="container-fluid px-4">
                     <!-- Cards de Estatísticas -->
                     <div class="row g-4 mb-4">
-                        <!-- Total de Usuários -->
+                        <!-- Total de Utilizadores -->
                         <div class="col-12 col-sm-6 col-lg-3">
                             <div class="card summary-card border-left-primary h-100">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-start">
                                         <div>
-                                            <span class="text-uppercase text-muted small fw-bold">Total de Usuários</span>
+                                            <span class="text-uppercase text-muted small fw-bold">Total de Utilizadores</span>
                                             <h2 class="count mt-1 mb-0">48</h2>
                                             <div class="mt-2">
                                                 <span class="text-success small"><i class='bx bx-up-arrow-alt'></i> 12%</span>
@@ -339,7 +403,7 @@ $page_title = "Gerenciar Usuários - Tlantic";
                             </div>
                         </div>
                         
-                        <!-- Usuários Ativos -->
+                        <!-- Utilizadores Ativos -->
                         <div class="col-12 col-sm-6 col-lg-3">
                             <div class="card summary-card border-left-success h-100">
                                 <div class="card-body">
@@ -407,7 +471,7 @@ $page_title = "Gerenciar Usuários - Tlantic";
                     <!-- Barra de Pesquisa e Filtros -->
                     <div class="card border-0 mb-4">
                         <div class="card-body p-4">
-                            <form id="filtroUsuarios">
+                            <form id="filtroUtilizadores">
                                 <div class="row g-3">
                                     <!-- Campo de Pesquisa -->
                                     <div class="col-12 col-md-4">
@@ -475,10 +539,10 @@ $page_title = "Gerenciar Usuários - Tlantic";
                         </div>
                     </div>
 
-                    <!-- Tabela de Usuários -->
+                    <!-- Tabela de Utilizadores -->
                     <div class="card border-0">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-                            <h5 class="mb-0">Lista de Usuários</h5>
+                            <h5 class="mb-0">Lista de Utilizadores</h5>
                             <div class="d-flex">
                                 <button class="btn btn-sm btn-outline-secondary me-2">
                                     <i class='bx bx-export me-1'></i> Exportar
@@ -498,11 +562,11 @@ $page_title = "Gerenciar Usuários - Tlantic";
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table id="usuariosTable" class="table table-hover align-middle mb-0">
+                                <table id="utilizadoresTable" class="table table-hover align-middle mb-0">
                                     <thead class="table-light">
                                         <tr>
                                             <th style="width: 50px;">#</th>
-                                            <th>Usuário</th>
+                                            <th>Utilizador</th>
                                             <th>E-mail</th>
                                             <th>Perfil</th>
                                             <th>Status</th>
@@ -582,7 +646,7 @@ $page_title = "Gerenciar Usuários - Tlantic";
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
                 <div class="modal-body">
-                    Tem certeza de que deseja excluir este usuário? Esta ação não pode ser desfeita.
+                    Tem certeza de que deseja excluir este utilizador? Esta ação não pode ser desfeita.
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -599,7 +663,7 @@ $page_title = "Gerenciar Usuários - Tlantic";
     <script>
         $(document).ready(function() {
             // Inicialização da DataTable
-            var table = $('#usuariosTable').DataTable({
+            var table = $('#utilizadoresTable').DataTable({
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json'
                 },
@@ -622,12 +686,12 @@ $page_title = "Gerenciar Usuários - Tlantic";
                 var deleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
                 deleteModal.show();
                 
-                // Armazena o ID do usuário a ser excluído
+                // Armazena o ID do utilizador a ser excluído
                 var userId = $(this).data('user-id');
                 
                 $('#confirmDeleteBtn').off('click').on('click', function() {
-                    // Aqui você adicionaria a lógica para excluir o usuário
-                    console.log('Excluindo usuário ID:', userId);
+                    // Aqui você adicionaria a lógica para excluir o utilizador
+                    console.log('Excluindo utilizador ID:', userId);
                     // Simulando uma requisição AJAX
                     setTimeout(function() {
                         // Atualiza a tabela após a exclusão
@@ -635,7 +699,7 @@ $page_title = "Gerenciar Usuários - Tlantic";
                         deleteModal.hide();
                         
                         // Mostra uma mensagem de sucesso
-                        alert('Usuário excluído com sucesso!');
+                        alert('Utilizador excluído com sucesso!');
                     }, 1000);
                 });
             });

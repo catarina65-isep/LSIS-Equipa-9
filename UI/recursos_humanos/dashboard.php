@@ -1,24 +1,47 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado e é administrador
-if (!isset($_SESSION['usuario_id']) || $_SESSION['id_perfilacesso'] != 1) {
+// Verifica se o utilizador está logado e tem perfil de RH (ID 2)
+if (!isset($_SESSION['utilizador_id']) || $_SESSION['id_perfilacesso'] != 2) {
     header('Location: ../login.php');
     exit;
 }
 
 $page_title = "Painel de Administração - Tlantic";
 
-// Dados simulados para o dashboard
-$total_usuarios = 24;
-$total_colaboradores = 156;
-$alertas_pendentes = 8;
-$atualizacoes_recentes = 3;
+require_once __DIR__ . '/../../BLL/UtilizadorBLL.php';
+require_once __DIR__ . '/../../BLL/ColaboradorBLL.php';
+require_once __DIR__ . '/../../BLL/EquipaBLL.php';
+require_once __DIR__ . '/../../BLL/DocumentoBLL.php';
+
+$utilizadorBLL = new UtilizadorBLL();
+$colaboradorBLL = new ColaboradorBLL();
+$equipaBLL = new EquipaBLL();
+$documentoBLL = new DocumentoBLL();
+
+// Obter totais
+$total_utilizadores = $utilizadorBLL->contarTotal();
+$total_colaboradores = $colaboradorBLL->contarTotal();
+$total_equipas = $equipaBLL->contarTotal();
+$documentos_pendentes = $documentoBLL->contarPendentes();
+
+// Obter estatísticas
+$estatisticas = $colaboradorBLL->obterEstatisticas();
+$equipas = $equipaBLL->listarComEstatisticas();
+$documentos_vencendo = $documentoBLL->listarProximosVencimentos(5);
 
 // Dados para gráficos
 $meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-$usuarios_por_mes = [5, 8, 12, 15, 18, 20, 22, 23, 23, 23, 24, 24];
-$colaboradores_por_mes = [120, 125, 130, 135, 140, 145, 148, 150, 152, 154, 155, 156];
+$admissoes_ultimos_12_meses = $colaboradorBLL->obterAdmissoesUltimos12Meses();
+$distribuicao_equipas = $equipaBLL->obterDistribuicaoPorEquipa();
+
+// Preparar dados para os gráficos
+$labels_equipas = [];
+$dados_equipas = [];
+foreach ($distribuicao_equipas as $equipa) {
+    $labels_equipas[] = $equipa['nome_equipa'];
+    $dados_equipas[] = $equipa['total_colaboradores'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-PT">
@@ -148,14 +171,55 @@ $colaboradores_por_mes = [120, 125, 130, 135, 140, 145, 148, 150, 152, 154, 155,
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
+            background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3);
         }
         
-        .stat-card i {
+        .stat-card.bg-primary {
+            background: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .stat-card.bg-success {
+            background: linear-gradient(135deg, #4cc9f0 0%, #4895ef 100%);
+            box-shadow: 0 4px 20px rgba(76, 201, 240, 0.3);
+        }
+        
+        .stat-card.bg-warning {
+            background: linear-gradient(135deg, #f8961e 0%, #f3722c 100%);
+            box-shadow: 0 4px 20px rgba(248, 150, 30, 0.3);
+        }
+        
+        .stat-card.bg-info {
+            background: linear-gradient(135deg, #7209b7 0%, #b5179e 100%);
+            box-shadow: 0 4px 20px rgba(114, 9, 183, 0.3);
+        }
+        
+        .stat-card.bg-danger {
+            background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
+            box-shadow: 0 4px 20px rgba(247, 37, 133, 0.3);
+        }
+        
+        .stat-card.bg-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            box-shadow: 0 4px 20px rgba(108, 117, 125, 0.3);
+        }
+        
+        .stat-icon {
             position: absolute;
             right: 20px;
             top: 20px;
-            font-size: 4rem;
+            font-size: 3.5rem;
             opacity: 0.2;
+            width: auto;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .stat-icon i {
+            font-size: 3.5rem;
         }
         
         .stat-card .stat-value {
@@ -329,64 +393,96 @@ $colaboradores_por_mes = [120, 125, 130, 135, 140, 145, 148, 150, 152, 154, 155,
             </div>
         </div>
 
-        <!-- Cards de Métricas -->
+        <!-- Estatísticas -->
         <div class="row g-4 mb-4">
-            <div class="col-6 col-md-4 col-lg-2">
+            <div class="col-md-6 col-lg-3">
                 <div class="stat-card bg-primary">
-                    <i class='bx bx-group'></i>
-                    <div class="stat-value"><?= $total_colaboradores ?></div>
-                    <div class="stat-label">Total Colaboradores</div>
-                    <div class="stat-change">
-                        <i class='bx bx-line-chart-up text-success'></i> 5% no último mês
+                    <div class="stat-icon">
+                        <i class='bx bx-user'></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-value"><?= number_format($total_utilizadores) ?></h3>
+                        <p class="stat-label">Utilizadores Ativos</p>
+                    </div>
+                    <?php 
+                    $variacao_usuarios = $utilizadorBLL->obterDadosParaDashboard()['novos_usuarios_ultimo_mes'];
+                    $tendencia_usuarios = $variacao_usuarios >= 0 ? 'light' : 'light';
+                    $icone_tendencia = $variacao_usuarios >= 0 ? 'up' : 'down';
+                    ?>
+                    <div class="stat-trend text-<?= $tendencia_usuarios ?>">
+                        <i class='bx bx-<?= $icone_tendencia ?>-arrow-alt'></i>
+                        <?= abs($variacao_usuarios) ?>% este mês
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-4 col-lg-2">
-                <div class="stat-card bg-success">
-                    <i class='bx bx-user-plus'></i>
-                    <div class="stat-value">12</div>
-                    <div class="stat-label">Novas Contratações</div>
-                    <div class="stat-change">
-                        <small>Mês atual</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-md-4 col-lg-2">
+            <div class="col-md-6 col-lg-3">
                 <div class="stat-card bg-info">
-                    <i class='bx bx-time-five'></i>
-                    <div class="stat-value">8</div>
-                    <div class="stat-label">Em Experiência</div>
-                    <div class="stat-change">
-                        <small>Período experimental</small>
+                    <div class="stat-icon">
+                        <i class='bx bx-group'></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-value"><?= number_format($total_colaboradores) ?></h3>
+                        <p class="stat-label">Colaboradores</p>
+                    </div>
+                    <?php 
+                    $variacao_colaboradores = $estatisticas['variacao'] ?? 0;
+                    $tendencia_colab = $variacao_colaboradores >= 0 ? 'light' : 'light';
+                    $icone_colab = $variacao_colaboradores >= 0 ? 'up' : 'down';
+                    ?>
+                    <div class="stat-trend text-<?= $tendencia_colab ?>">
+                        <i class='bx bx-<?= $icone_colab ?>-arrow-alt'></i>
+                        <?= abs($variacao_colaboradores) ?>% este mês
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-md-4 col-lg-2">
+            <div class="col-md-6 col-lg-3">
                 <div class="stat-card bg-warning">
-                    <i class='bx bx-mobile-alt'></i>
-                    <div class="stat-value">5</div>
-                    <div class="stat-label">Vouchers a Expirar</div>
-                    <div class="stat-change">
-                        <small>Próximos 30 dias</small>
+                    <div class="stat-icon">
+                        <i class='bx bx-file'></i>
                     </div>
+                    <div class="stat-info">
+                        <h3 class="stat-value"><?= number_format($documentos_pendentes) ?></h3>
+                        <p class="stat-label">Documentos Pendentes</p>
+                    </div>
+                    <a href="documentos.php?status=pending" class="btn btn-sm btn-light mt-2">Ver Todos</a>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card bg-success">
+                    <div class="stat-icon">
+                        <i class='bx bx-group'></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-value"><?= number_format($total_equipas) ?></h3>
+                        <p class="stat-label">Equipas Ativas</p>
+                    </div>
+                    <a href="equipas.php" class="btn btn-sm btn-light mt-2">Ver Equipas</a>
                 </div>
             </div>
             <div class="col-6 col-md-4 col-lg-2">
                 <div class="stat-card bg-danger">
-                    <i class='bx bx-file'></i>
-                    <div class="stat-value">18</div>
-                    <div class="stat-label">Documentos Pendentes</div>
-                    <div class="stat-change">
+                    <div class="stat-icon">
+                        <i class='bx bx-file'></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-value">18</h3>
+                        <p class="stat-label">Documentos Pendentes</p>
+                    </div>
+                    <div class="stat-trend">
                         <small>Por aprovar</small>
                     </div>
                 </div>
             </div>
             <div class="col-6 col-md-4 col-lg-2">
                 <div class="stat-card bg-secondary">
-                    <i class='bx bx-calendar-event'></i>
-                    <div class="stat-value">7</div>
-                    <div class="stat-label">Aniversários</div>
-                    <div class="stat-change">
+                    <div class="stat-icon">
+                        <i class='bx bx-calendar-event'></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 class="stat-value">7</h3>
+                        <p class="stat-label">Aniversários</p>
+                    </div>
+                    <div class="stat-trend">
                         <small>Este mês</small>
                     </div>
                 </div>
@@ -395,48 +491,35 @@ $colaboradores_por_mes = [120, 125, 130, 135, 140, 145, 148, 150, 152, 154, 155,
 
         <!-- Gráficos -->
         <div class="row g-4 mb-4">
-            <div class="col-lg-8">
+            <div class="col-md-6">
                 <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Crescimento de Usuários e Colaboradores</h5>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-sm btn-outline-secondary active" data-period="year">Anual</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" data-period="month">Mensal</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" data-period="week">Semanal</button>
-                        </div>
+                    <div class="card-header">
+                        <h5 class="mb-0">Distribuição por Função</h5>
                     </div>
-                    <div class="card-body">
-                        <div class="chart-container">
-                            <canvas id="growthChart"></canvas>
-                        </div>
+                    <div class="card-body p-0">
+                        <div id="chart1" class="chart-container"></div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
+            <div class="col-md-6">
                 <div class="card h-100">
                     <div class="card-header">
-                        <h5 class="mb-0">Distribuição por Departamento</h5>
+                        <h5 class="mb-0">Distribuição por Género</h5>
                     </div>
-                    <div class="card-body d-flex align-items-center justify-content-center">
-                        <div class="chart-container" style="max-width: 250px;">
-                            <canvas id="departmentChart"></canvas>
-                        </div>
+                    <div class="card-body p-0">
+                        <div id="chart2" class="chart-container"></div>
                     </div>
-                    <div class="card-footer bg-transparent">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="badge bg-primary me-2">TI</span>
-                                <span>25%</span>
-                            </div>
-                            <div>
-                                <span class="badge bg-success me-2">RH</span>
-                                <span>20%</span>
-                            </div>
-                            <div>
-                                <span class="badge bg-warning me-2">Vendas</span>
-                                <span>15%</span>
-                            </div>
-                        </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Evolução da Remuneração Média</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="chart3" class="chart-container" style="min-height: 400px;"></div>
                     </div>
                 </div>
             </div>
@@ -561,10 +644,59 @@ $colaboradores_por_mes = [120, 125, 130, 135, 140, 145, 148, 150, 152, 154, 155,
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Carregar Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Verificar se o Chart.js foi carregado corretamente -->
+    <script>
+        if (typeof Chart === 'undefined') {
+            console.error('ERRO: Chart.js não foi carregado corretamente!');
+            // Tenta carregar de um CDN alternativo
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxEF9nTlK5l7l5f5q5f5q5f5q5f5q5f5q5f5q5f5q5f5q5" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
+        } else {
+            console.log('Chart.js carregado com sucesso! Versão:', Chart.version);
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <style>
+        /* Estilos para os contêineres dos gráficos */
+        .chart-container {
+            width: 100% !important;
+            height: 400px !important;
+            min-height: 400px !important;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Garantir que os elementos de gráfico tenham dimensões explícitas */
+        #chart1, #chart2, #chart3 {
+            width: 100% !important;
+            height: 100% !important;
+            min-height: 400px !important;
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Garantir que os cartões tenham altura suficiente */
+        .card {
+            min-height: 500px;
+            margin-bottom: 20px;
+        }
+        
+        /* Estilo para mensagens de erro */
+        .chart-error {
+            padding: 20px;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 4px;
+            color: #721c24;
+            margin: 10px 0;
+        }
+    </style>
     
     <script>
         // Inicialização de componentes
@@ -633,10 +765,10 @@ $colaboradores_por_mes = [120, 125, 130, 135, 140, 145, 148, 150, 152, 154, 155,
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
+                        legend: { // <-- corrigido aqui
                             position: 'top',
                         },
-                        tooltip: {
+                        tooltip: { // <-- corrigido aqui
                             mode: 'index',
                             intersect: false,
                         }
@@ -778,6 +910,254 @@ $colaboradores_por_mes = [120, 125, 130, 135, 140, 145, 148, 150, 152, 154, 155,
                 card.style.transform = 'translateY(0)';
             });
         });
-    </script>
+
+        // Função para verificar se um elemento existe e está visível
+        function elementIsReady(selector) {
+            const element = document.querySelector(selector);
+            if (!element) {
+                console.error('Elemento não encontrado:', selector);
+                return null;
+            }
+            if (element.offsetParent === null) {
+                console.warn('Elemento não está visível:', selector);
+            }
+            return element;
+        }
+
+        // Inicializar gráficos quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('=== INÍCIO DA INICIALIZAÇÃO DOS GRÁFICOS ===');
+            console.log('Verificando se o Chart.js está disponível...');
+            
+            // Verificar se o Chart.js está disponível
+            if (typeof Chart === 'undefined') {
+                const errorMsg = 'ERRO: Chart.js não foi carregado corretamente!';
+                console.error(errorMsg);
+                const chart1 = elementIsReady('#chart1');
+                if (chart1) {
+                    chart1.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4>Erro ao carregar a biblioteca de gráficos</h4>
+                            <p>${errorMsg}</p>
+                            <p>Por favor, verifique sua conexão com a internet e atualize a página.</p>
+                        </div>`;
+                }
+                return;
+            }
+            
+            console.log('Chart.js está disponível. Versão:', Chart.version);
+            
+            try {
+                // Verificar se os elementos dos gráficos existem
+                const chart1El = elementIsReady('#chart1');
+                const chart2El = elementIsReady('#chart2');
+                const chart3El = elementIsReady('#chart3');
+                
+                if (!chart1El || !chart2El || !chart3El) {
+                    const errorMsg = 'Um ou mais elementos de gráfico não foram encontrados na página.';
+                    console.error(errorMsg);
+                    if (chart1El) {
+                        chart1El.innerHTML = `
+                            <div class="alert alert-warning">
+                                <h4>Erro ao carregar os gráficos</h4>
+                                <p>${errorMsg}</p>
+                                <p>Por favor, atualize a página e tente novamente.</p>
+                            </div>`;
+                    }
+                    return;
+                }
+                
+                // Gráfico 1 - Distribuição por Função (Barras)
+                console.log('Iniciando renderização do gráfico 1...');
+                const ctx1 = chart1El.getContext('2d');
+                if (!ctx1) {
+                    throw new Error('Não foi possível obter o contexto 2D para o gráfico 1');
+                }
+                
+                new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Engenharia', 'Marketing', 'Vendas', 'RH', 'Financeiro'],
+                        datasets: [{
+                            label: 'Número de Colaboradores',
+                            data: [40, 25, 30, 10, 15],
+                            backgroundColor: [
+                                'rgba(67, 97, 238, 0.7)',
+                                'rgba(76, 201, 240, 0.7)',
+                                'rgba(63, 55, 201, 0.7)',
+                                'rgba(111, 66, 193, 0.7)',
+                                'rgba(33, 150, 243, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(67, 97, 238, 1)',
+                                'rgba(76, 201, 240, 1)',
+                                'rgba(63, 55, 201, 1)',
+                                'rgba(111, 66, 193, 1)',
+                                'rgba(33, 150, 243, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Distribuição por Função',
+                                font: {
+                                    size: 16
+                                }
+                            },
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Número de Colaboradores'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Função'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Gráfico 2 - Distribuição por Gênero (Pizza)
+                console.log('Iniciando renderização do gráfico 2...');
+                const ctx2 = chart2El.getContext('2d');
+                if (!ctx2) {
+                    throw new Error('Não foi possível obter o contexto 2D para o gráfico 2');
+                }
+                
+                new Chart(ctx2, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Masculino', 'Feminino', 'Outro'],
+                        datasets: [{
+                            data: [55, 43, 2],
+                            backgroundColor: [
+                                'rgba(67, 97, 238, 0.7)',
+                                'rgba(76, 201, 240, 0.7)',
+                                'rgba(63, 55, 201, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(67, 97, 238, 1)',
+                                'rgba(76, 201, 240, 1)',
+                                'rgba(63, 55, 201, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Distribuição por Gênero',
+                                font: {
+                                    size: 16
+                                }
+                            },
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+                
+                // Gráfico 3 - Evolução da Remuneração Média (Linha)
+                console.log('Iniciando renderização do gráfico 3...');
+                const ctx3 = chart3El.getContext('2d');
+                if (!ctx3) {
+                    throw new Error('Não foi possível obter o contexto 2D para o gráfico 3');
+                }
+                
+                new Chart(ctx3, {
+                    type: 'line',
+                    data: {
+                        labels: [2019, 2020, 2021, 2022, 2023],
+                        datasets: [{
+                            label: 'Remuneração Média (€)',
+                            data: [30000, 32000, 35000, 37000, 40000],
+                            fill: false,
+                            borderColor: 'rgba(67, 97, 238, 1)',
+                            backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                            tension: 0.1,
+                            borderWidth: 3,
+                            pointBackgroundColor: 'rgba(67, 97, 238, 1)',
+                            pointRadius: 5,
+                            pointHoverRadius: 7
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Evolução da Remuneração Média',
+                                font: {
+                                    size: 16
+                                }
+                            },
+                            legend: {
+                                position: 'bottom'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                title: {
+                                    display: true,
+                                    text: 'Valor (€)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return '€' + value.toLocaleString();
+                                    }
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Ano'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                console.log('Gráficos renderizados com sucesso!');
+                
+            } catch (error) {
+                console.error('Erro ao renderizar gráficos:', error);
+                
+                // Mostrar mensagem de erro no lugar do gráfico 1
+                const chart1 = document.getElementById('chart1');
+                if (chart1) {
+                    chart1.innerHTML = 
+                        '<div class="alert alert-danger">' +
+                        '   <h4>Erro ao carregar os gráficos</h4>' +
+                        '   <p>Ocorreu um erro ao carregar os gráficos. Por favor, verifique o console para mais detalhes.</p>' +
+                        '   <p>Erro: ' + error.message + '</p>' +
+                        '</div>';
+                }
+            }
+        });
+        
+        // Ajustar tamanho dos gráficos quando a janela for redimensionada
+        window.addEventListener('resize', function() {
+            // O Chart.js já lida com o redimensionamento automaticamente
+        });</script>
 </body>
 </html>

@@ -1,11 +1,14 @@
 <?php
 require_once __DIR__ . '/../DAL/equipaDAL.php';
+require_once __DIR__ . '/../DAL/ColaboradorDAL.php';
 
 class EquipaBLL {
     private $equipaDAL;
+    private $colaboradorDAL;
 
     public function __construct() {
         $this->equipaDAL = new EquipaDAL();
+        $this->colaboradorDAL = new ColaboradorDAL();
     }
     
     /**
@@ -372,5 +375,93 @@ class EquipaBLL {
         
         return $equipa;
     }
+
+    /**
+     * Conta o número total de equipes ativas
+     * 
+     * @return int Número total de equipes ativas
+     */
+    public function contarTotal() {
+        return $this->equipaDAL->contarTotal();
+    }
+    
+    /**
+     * Lista as equipes com estatísticas básicas
+     * 
+     * @return array Lista de equipes com estatísticas
+     */
+    public function listarComEstatisticas() {
+        $equipas = $this->equipaDAL->listarTodas();
+        
+        foreach ($equipas as &$equipa) {
+            $equipa['total_membros'] = $this->contarMembros($equipa['id_equipa']);
+            $equipa['membros_ativos'] = $this->contarMembrosAtivos($equipa['id_equipa']);
+            $equipa['membros_afastados'] = $this->contarMembrosAfastados($equipa['id_equipa']);
+            $equipa['ultima_atualizacao'] = $this->obterUltimaAtualizacao($equipa['id_equipa']);
+        }
+        
+        return $equipas;
+    }
+    
+    /**
+     * Obtém a distribuição de colaboradores por equipe
+     * 
+     * @return array Distribuição de colaboradores por equipe
+     */
+    public function obterDistribuicaoPorEquipa() {
+        return $this->equipaDAL->obterDistribuicaoPorEquipa();
+    }
+    
+    /**
+     * Conta o número de membros de uma equipe
+     * 
+     * @param int $idEquipa ID da equipe
+     * @return int Número de membros
+     */
+    private function contarMembros($idEquipa) {
+        return $this->equipaDAL->contarMembros($idEquipa);
+    }
+    
+    /**
+     * Conta o número de membros ativos de uma equipe
+     * 
+     * @param int $idEquipa ID da equipe
+     * @return int Número de membros ativos
+     */
+    private function contarMembrosAtivos($idEquipa) {
+        return $this->equipaDAL->contarMembrosPorStatus($idEquipa, 'Ativo');
+    }
+    
+    /**
+     * Conta o número de membros afastados de uma equipe
+     * 
+     * @param int $idEquipa ID da equipe
+     * @return int Número de membros afastados
+     */
+    private function contarMembrosAfastados($idEquipa) {
+        return $this->equipaDAL->contarMembrosPorStatus($idEquipa, 'Afastado');
+    }
+    
+    /**
+     * Obtém a data da última atualização de uma equipe
+     * 
+     * @param int $idEquipa ID da equipe
+     * @return string Data da última atualização
+     */
+    private function obterUltimaAtualizacao($idEquipa) {
+        return $this->equipaDAL->obterUltimaAtualizacao($idEquipa);
+    }
+    
+    /**
+     * Obtém dados para o dashboard
+     * 
+     * @return array Dados para o dashboard
+     */
+    public function obterDadosParaDashboard() {
+        return [
+            'total_equipas' => $this->contarTotal(),
+            'distribuicao_equipas' => $this->obterDistribuicaoPorEquipa(),
+            'equipas' => $this->listarComEstatisticas()
+        ];
+    }
 }
-?>

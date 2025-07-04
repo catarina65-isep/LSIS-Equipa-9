@@ -9,6 +9,117 @@ class UtilizadorDAL {
     }
     
     /**
+     * Conta o número total de usuários ativos
+     * 
+     * @return int Número total de usuários ativos
+     */
+    public function contarTotal() {
+        $sql = "SELECT COUNT(*) as total FROM utilizador WHERE ativo = 1";
+        $stmt = $this->pdo->query($sql);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int) $result['total'];
+    }
+    
+    /**
+     * Conta usuários criados em um período específico
+     * 
+     * @param string $dataInicio Data de início (YYYY-MM-DD)
+     * @param string $dataFim Data de fim (YYYY-MM-DD)
+     * @return int Número de usuários criados no período
+     */
+    public function contarPorPeriodo($dataInicio, $dataFim) {
+        $sql = "SELECT COUNT(*) as total 
+                FROM utilizador 
+                WHERE data_criacao BETWEEN :data_inicio AND :data_fim";
+        
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':data_inicio' => $dataInicio,
+            ':data_fim' => $dataFim
+        ]);
+        
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return (int) $result['total'];
+    }
+    
+    /**
+     * Obtém a distribuição de usuários por perfil
+     * 
+     * @return array Distribuição de usuários por perfil
+     */
+    /**
+     * Lista todos os usuários visíveis para o RH (exceto administradores)
+     * 
+     * @return array Lista de usuários
+     */
+    public function listarUtilizadoresRH() {
+        try {
+            // Consulta simplificada que não depende da estrutura da tabela perfilacesso
+            $sql = "SELECT 
+                        u.*,
+                        CASE 
+                            WHEN u.id_perfilacesso = 1 THEN 'Administrador'
+                            WHEN u.id_perfilacesso = 2 THEN 'Recursos Humanos'
+                            WHEN u.id_perfilacesso = 3 THEN 'Gestor'
+                            WHEN u.id_perfilacesso = 4 THEN 'Colaborador'
+                            ELSE 'Perfil ' . u.id_perfilacesso
+                        END as perfil_nome
+                    FROM utilizador u 
+                    WHERE u.id_perfilacesso != 1  -- Exclui administradores
+                    ORDER BY u.nome ASC";
+            
+            $stmt = $this->pdo->query($sql);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+        } catch (PDOException $e) {
+            // Em caso de erro, logar o erro e retornar um array vazio
+            error_log("Erro em listarUtilizadoresRH: " . $e->getMessage());
+            return [];
+        }
+    }
+    
+    /**
+     * Obtém a distribuição de usuários por perfil
+     * 
+     * @return array Distribuição de usuários por perfil
+     */
+    public function obterDistribuicaoPorPerfil() {
+        $sql = "SELECT 
+                    p.nome as perfil,
+                    COUNT(u.id_utilizador) as total,
+                    ROUND((COUNT(u.id_utilizador) * 100.0) / (SELECT COUNT(*) FROM utilizador WHERE ativo = 1), 2) as percentual
+                FROM perfilacesso p
+                LEFT JOIN utilizador u ON p.id_perfilacesso = u.id_perfilacesso AND u.ativo = 1
+                GROUP BY p.id_perfilacesso, p.nome
+                ORDER BY total DESC";
+        
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    /**
+     * Conta usuários por equipe
+     * 
+     * @return array Contagem de usuários por equipe
+     */
+    public function contarUsuariosPorEquipa() {
+        $sql = "SELECT 
+                    e.nome as equipa,
+                    COUNT(DISTINCT u.id_utilizador) as total_usuarios,
+                    COUNT(DISTINCT c.id_colaborador) as total_colaboradores
+                FROM equipa e
+                LEFT JOIN equipa_membros em ON e.id_equipa = em.equipa_id
+                LEFT JOIN utilizador u ON em.utilizador_id = u.id_utilizador
+                LEFT JOIN colaborador c ON em.utilizador_id = c.id_utilizador
+                WHERE e.ativo = 1
+                GROUP BY e.id_equipa, e.nome
+                ORDER BY total_usuarios DESC";
+        
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    /**
      * Conta quantos usuários estão associados a um perfil específico
      * @param int $idPerfil ID do perfil de acesso
      * @return int Número de usuários associados ao perfil
@@ -47,8 +158,9 @@ class UtilizadorDAL {
                         c.foto
                     FROM utilizador u
                     LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
-                    WHERE u.id_perfilacesso = :id_perfilacesso 
+                    WHERE u.id_perfil_acesso = :id_perfilacesso 
                     AND u.ativo = 1
+                    AND u.username != 'rh'  -- Remove apenas o usuário genérico 'rh'
                     ORDER BY COALESCE(c.nome, u.username)";
             
             $stmt = $this->pdo->prepare($sql);
@@ -74,13 +186,22 @@ class UtilizadorDAL {
                         c.nome,
                         c.apelido,
                         u.username,
-                        COALESCE(CONCAT(c.nome, ' ', c.apelido), u.username) as nome_completo,
+                        CONCAT(c.nome, ' ', c.apelido) as nome_completo,
                         u.email,
                         c.foto
                     FROM utilizador u
-                    LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
+                    INNER JOIN colaborador c ON u.id_colaborador = c.id_colaborador
                     WHERE u.ativo = 1
-                    ORDER BY COALESCE(c.nome, u.username)";
+                    AND u.id_colaborador IS NOT NULL
+                    AND u.id_utilizador NOT IN (
+                        SELECT id_utilizador 
+                        FROM utilizador 
+                        WHERE username = 'admin' 
+                        OR email = 'admin@tlantic.pt'
+                        OR username = 'rh' 
+                        OR username = 'coordenador'
+                    )
+                    ORDER BY c.nome, c.apelido";
             
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();

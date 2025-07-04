@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado e é administrador
-if (!isset($_SESSION['usuario_id']) || $_SESSION['id_perfilacesso'] != 1) {
+// Verifica se o usuário está logado e tem perfil de RH (ID 2) ou Administrador (ID 1)
+if (!isset($_SESSION['utilizador_id']) || ($_SESSION['id_perfilacesso'] != 1 && $_SESSION['id_perfilacesso'] != 2)) {
     header('HTTP/1.1 403 Forbidden');
     echo json_encode(['success' => false, 'message' => 'Acesso negado.']);
     exit;

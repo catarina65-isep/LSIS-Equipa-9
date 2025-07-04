@@ -20,11 +20,6 @@ class LoginBLL {
                 throw new Exception('Por favor, insira um email válido.');
             }
             
-            // Verifica se o email está no formato correto (algo@perfil.com ou algo@tlantic.pt)
-            if (!preg_match('/^[^@]+@(administrador|recursoshumanos|rh|coordenador|colaborador|tlantic\.pt)(\.[^.]*)?$/', $email)) {
-                throw new Exception('O email deve estar no formato: usuario@perfil.com ou usuario@tlantic.pt, onde perfil pode ser administrador, recursoshumanos, coordenador ou colaborador');
-            }
-
             // Obtém o perfil com base no domínio do email
             $idPerfil = $this->loginDAL->obterPerfilPorEmail($email);
             
@@ -36,20 +31,50 @@ class LoginBLL {
             $usuario = $this->loginDAL->verificarCredenciais($email, $senha);
             
             if ($usuario === false) {
-                throw new Exception('Email ou senha incorretos.');
+                throw new Exception('Credenciais inválidas.');
             }
 
             // Verifica se o perfil do usuário corresponde ao domínio do email
-            if ($usuario['id_perfilacesso'] != $idPerfil) {
-                throw new Exception('Acesso não autorizado para este perfil.');
+            if ($usuario['id_perfil_acesso'] != $idPerfil) {
+                // Se não corresponder, tenta atualizar o perfil do usuário
+                if ($this->atualizarPerfilUsuario($usuario['id_utilizador'], $idPerfil)) {
+                    $usuario['id_perfil_acesso'] = $idPerfil;
+                    $usuario['perfil'] = $this->loginDAL->obterNomePerfil($idPerfil);
+                } else {
+                    throw new Exception('Acesso não autorizado para este perfil.');
+                }
             }
 
-            // Retorna os dados do usuário sem a senha
-            unset($usuario['senha']);
+            // Remove dados sensíveis antes de retornar
+            unset($usuario['password_hash']);
+            unset($usuario['token_recuperacao']);
+            unset($usuario['token_expiracao']);
+            
             return $usuario;
 
+        } catch (PDOException $e) {
+            error_log('Erro na autenticação: ' . $e->getMessage());
+            throw new Exception('Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.');
         } catch (Exception $e) {
+            // Relança a exceção para ser tratada pelo chamador
             throw $e;
+        }
+    }
+    
+    /**
+     * Atualiza o perfil de um usuário no banco de dados
+     */
+    private function atualizarPerfilUsuario($idUsuario, $idPerfil) {
+        try {
+            $query = "UPDATE utilizador SET id_perfil_acesso = :perfil WHERE id_utilizador = :id";
+            $stmt = $this->loginDAL->getConnection()->prepare($query);
+            $stmt->bindParam(':perfil', $idPerfil, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $idUsuario, PDO::PARAM_INT);
+            
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log('Erro ao atualizar perfil do usuário: ' . $e->getMessage());
+            return false;
         }
     }
 }

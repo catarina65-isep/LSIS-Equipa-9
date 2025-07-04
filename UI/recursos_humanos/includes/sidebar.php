@@ -26,12 +26,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     </a>
                 </li>
                 
+
                 <li class="nav-item">
-                    <a href="usuarios.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'usuarios.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
-                        <div class="icon-wrapper <?php echo ($current_page == 'usuarios.php') ? 'bg-white bg-opacity-10' : 'bg-success bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
-                            <i class='bx bxs-user <?php echo ($current_page == 'usuarios.php') ? 'text-white' : 'text-success'; ?>'></i>
+                    <a href="utilizadores.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'utilizadores.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'utilizadores.php') ? 'bg-white bg-opacity-10' : 'bg-success bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-user <?php echo ($current_page == 'utilizadores.php') ? 'text-white' : 'text-success'; ?>'></i>
                         </div>
-                        <span>Usuários</span>
+                        <span>Utilizadores</span>
                     </a>
                 </li>
                 

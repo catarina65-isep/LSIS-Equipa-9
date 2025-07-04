@@ -1,10 +1,31 @@
  <?php
-session_start();
-require_once __DIR__ . '/../DAL/database.php';
+// Inicia a sessão se ainda não estiver iniciada
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Verificar se já está logado
-if (isset($_SESSION['usuario_id'])) {
-    header('Location: ../index.php');
+// Força o logout ao acessar a página de login
+session_destroy();
+
+// Inclui o arquivo de configuração
+require_once __DIR__ . '/includes/permissions.php';
+
+// Se o usuário já estiver logado, redireciona para o dashboard apropriado
+if (isset($_SESSION['utilizador_id']) && isset($_SESSION['id_perfilacesso'])) {
+    switch ($_SESSION['id_perfilacesso']) {
+        case 1: // Admin
+        case 3: // Coordenador
+            header('Location: /LSIS-Equipa-9/UI/dashboard.php');
+            break;
+        case 2: // RH
+            header('Location: /LSIS-Equipa-9/UI/rh.php');
+            break;
+        case 4: // Colaborador
+            header('Location: /LSIS-Equipa-9/UI/colaborador.php');
+            break;
+        default:
+            header('Location: /LSIS-Equipa-9/UI/index.php');
+    }
     exit;
 }
 
@@ -397,7 +418,7 @@ $page_title = "Login Plataforma - Tlantic";
                     </div>
                 <?php endif; ?>
                 
-                <form id="loginForm" action="processa_login.php" method="POST">
+                <form id="loginForm" action="/LSIS-Equipa-9/UI/processa_login.php" method="POST">
                     <div class="form-group">
                         <div class="input-group">
                             <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Email" />

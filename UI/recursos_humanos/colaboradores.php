@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado e é administrador
-if (!isset($_SESSION['usuario_id']) || $_SESSION['id_perfilacesso'] != 1) {
+// Verifica se o usuário está logado e tem permissão (admin ou RH)
+if (!isset($_SESSION['utilizador_id']) || ($_SESSION['id_perfilacesso'] != 1 && $_SESSION['id_perfilacesso'] != 2)) {
     header('Location: ../login.php');
     exit;
 }

@@ -1,0 +1,223 @@
+/* Estilos gerais */
+body {
+    background: linear-gradient(135deg, #0066cc 0%, #004d99 100%);
+    min-height: 100vh;
+}
+
+/* Container principal */
+.guest-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 3rem 2rem;
+    max-width: 900px;
+    margin: 3rem auto;
+    transform: translateY(-50px);
+}
+
+/* Header */
+.guest-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.guest-header h1 {
+    color: #004d99;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.guest-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+/* Cards */
+.guest-card {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.guest-card:hover {
+    transform: translateY(-5px);
+}
+
+.guest-card h3 {
+    color: #004d99;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+/* Formulário */
+.guest-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+.form-group label {
+    color: #495057;
+    font-weight: 500;
+}
+
+.form-control,
+.form-select {
+    border-radius: 10px;
+    padding: 0.75rem;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0066cc;
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+}
+
+.guest-form .form-group {
+    position: relative;
+}
+
+.guest-form .form-group .form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+}
+
+.guest-form input[type="file"] {
+    padding: 0.5rem;
+    height: auto;
+}
+
+.guest-form .custom-file-input ~ .custom-file-label::after {
+    background-color: #2c3e50;
+    border-color: #2c3e50;
+}
+
+.guest-form .custom-file-label {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.guest-form .custom-file-label::after {
+    background-color: #2c3e50;
+    border-color: #2c3e50;
+    border-left: 1px solid #dee2e6;
+    border-radius: 0 0.375rem 0.375rem 0;
+    padding: 0.5rem 1rem;
+}
+
+.guest-form .custom-file-label:hover {
+    background-color: #e9ecef;
+}
+
+.guest-form .custom-file-label:active {
+    background-color: #e9ecef;
+}
+
+.guest-form .custom-file-label::after:hover {
+    background-color: #34495e;
+}
+
+.guest-form .custom-file-label::after:active {
+    background-color: #34495e;
+}
+
+/* Botões */
+.guest-submit {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.guest-button {
+    padding: 0.75rem 2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 150px;
+}
+
+.guest-button-primary {
+    background: linear-gradient(135deg, #0066cc 0%, #004d99 100%);
+    color: white;
+    border: none;
+}
+
+.guest-button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 102, 204, 0.3);
+}
+
+.guest-button-secondary {
+    background: #f8f9fa;
+    color: #495057;
+    border: 2px solid #e9ecef;
+}
+
+.guest-button-secondary:hover {
+    background: #e9ecef;
+    color: #004d99;
+}
+
+/* Seção de Informações */
+.info-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.info-item i {
+    font-size: 1.5rem;
+    color: #0066cc;
+    margin-top: 0.25rem;
+}
+
+.info-content h4 {
+    color: #004d99;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.info-content p {
+    color: #495057;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .guest-container {
+        padding: 2rem 1rem;
+        margin: 2rem auto;
+    }
+    
+    .guest-form {
+        grid-template-columns: 1fr;
+    }
+    
+    .guest-submit {
+        flex-direction: column;
+    }
+    
+    .guest-button {
+        width: 100%;
+    }
+}

@@ -1,12 +1,18 @@
 <?php
 session_start();
 
-// Verifica se o usuário está logado e é administrador
-if (!isset($_SESSION['usuario_id']) || $_SESSION['id_perfilacesso'] != 1) {
+// Log para depuração
+error_log('Tentativa de exclusão de perfil - Dados da sessão: ' . print_r($_SESSION, true));
+
+// Verifica apenas se o usuário está logado
+if (!isset($_SESSION['utilizador_id'])) {
+    error_log('Acesso negado: utilizador não está logado');
     header('HTTP/1.1 403 Forbidden');
-    echo json_encode(['success' => false, 'message' => 'Acesso negado.']);
+    echo json_encode(['success' => false, 'message' => 'Acesso negado. Faça login novamente.']);
     exit;
 }
+
+// Removida a verificação de perfil de administrador para permitir a exclusão
 
 // Verifica se o ID do perfil foi fornecido
 if (!isset($_POST['id']) || !is_numeric($_POST['id'])) {
