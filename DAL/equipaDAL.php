@@ -18,91 +18,68 @@ class EquipaDAL {
     }
 
     public function criarEquipa($nome, $descricao, $coordenadorId, $idDepartamento = null, $idEquipaPai = null, $nivel = 1) {
-        try {
-            // Verificar se a conexão com o banco de dados está ativa
-            if (!$this->pdo) {
-                throw new Exception('Não foi possível conectar ao banco de dados');
-            }
-            
-            error_log('Tentando inserir equipe no banco de dados: ' . print_r([
-                'nome' => $nome,
-                'descricao' => $descricao,
-                'id_coordenador' => $coordenadorId,
-                'id_departamento' => $idDepartamento,
-                'id_equipa_pai' => $idEquipaPai,
-                'nivel' => $nivel
-            ], true));
-            
-            // Iniciar transação
-            $this->pdo->beginTransaction();
-            
-            // Inserir a equipe
-            $sql = "INSERT INTO equipa (
-                        nome, 
-                        descricao, 
-                        id_departamento, 
-                        id_equipa_pai, 
-                        nivel, 
-                        id_coordenador, 
-                        ativo, 
-                        data_criacao
-                    ) VALUES (
-                        :nome, 
-                        :descricao, 
-                        :id_departamento, 
-                        :id_equipa_pai, 
-                        :nivel, 
-                        :id_coordenador, 
-                        1, 
-                        NOW()
-                    )";
-                    
-            $stmt = $this->pdo->prepare($sql);
-            $params = [
-                ':nome' => $nome,
-                ':descricao' => $descricao,
-                ':id_departamento' => $idDepartamento,
-                ':id_equipa_pai' => $idEquipaPai,
-                ':nivel' => $nivel,
-                ':id_coordenador' => $coordenadorId
-            ];
-            
-            error_log('SQL: ' . $sql);
-            error_log('Parâmetros: ' . print_r($params, true));
-            
-            $result = $stmt->execute($params);
-            
-            if (!$result) {
-                $errorInfo = $stmt->errorInfo();
-                throw new Exception('Erro ao executar a consulta: ' . ($errorInfo[2] ?? 'Erro desconhecido'));
-            }
-            
-            $equipaId = $this->pdo->lastInsertId();
-            error_log('Equipa criada com sucesso. ID: ' . $equipaId);
-            
-            // Adiciona o coordenador como membro da equipe
-            $this->adicionarMembroEquipa($equipaId, $coordenadorId, true);
-            
-            // Commit da transação
-            $this->pdo->commit();
-            
-            return $equipaId;
-            
-        } catch (PDOException $e) {
-            // Rollback em caso de erro
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-            error_log('Erro PDO ao criar equipe: ' . $e->getMessage());
-            throw new Exception('Erro no banco de dados: ' . $e->getMessage());
-        } catch (Exception $e) {
-            // Rollback em caso de erro
-            if ($this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-            error_log('Erro ao criar equipe: ' . $e->getMessage());
-            throw $e;
+        // Verificar se a conexão com o banco de dados está ativa
+        if (!$this->pdo) {
+            throw new Exception('Não foi possível conectar ao banco de dados');
         }
+        
+        error_log('Tentando inserir equipe no banco de dados: ' . print_r([
+            'nome' => $nome,
+            'descricao' => $descricao,
+            'id_coordenador' => $coordenadorId,
+            'id_departamento' => $idDepartamento,
+            'id_equipa_pai' => $idEquipaPai,
+            'nivel' => $nivel
+        ], true));
+        
+        // Inserir a equipe
+        $sql = "INSERT INTO equipa (
+                    nome, 
+                    descricao, 
+                    id_departamento, 
+                    id_equipa_pai, 
+                    nivel, 
+                    id_coordenador, 
+                    ativo, 
+                    data_criacao
+                ) VALUES (
+                    :nome, 
+                    :descricao, 
+                    :id_departamento, 
+                    :id_equipa_pai, 
+                    :nivel, 
+                    :id_coordenador, 
+                    1, 
+                    NOW()
+                )";
+                
+        $stmt = $this->pdo->prepare($sql);
+        $params = [
+            ':nome' => $nome,
+            ':descricao' => $descricao,
+            ':id_departamento' => $idDepartamento,
+            ':id_equipa_pai' => $idEquipaPai,
+            ':nivel' => $nivel,
+            ':id_coordenador' => $coordenadorId
+        ];
+        
+        error_log('SQL: ' . $sql);
+        error_log('Parâmetros: ' . print_r($params, true));
+        
+        $result = $stmt->execute($params);
+        
+        if (!$result) {
+            $errorInfo = $stmt->errorInfo();
+            throw new Exception('Erro ao executar a consulta: ' . ($errorInfo[2] ?? 'Erro desconhecido'));
+        }
+        
+        $equipaId = $this->pdo->lastInsertId();
+        error_log('Equipa criada com sucesso. ID: ' . $equipaId);
+        
+        // Adiciona o coordenador como membro da equipe
+        $this->adicionarMembroEquipa($equipaId, $coordenadorId, true);
+        
+        return $equipaId;
     }
 
     public function adicionarMembroEquipa($equipaId, $utilizadorId, $coordenador = false) {
@@ -120,7 +97,7 @@ class EquipaDAL {
                         NOW(),
                         1
                     ) ON DUPLICATE KEY UPDATE 
-                        coordenador = :coordenador,
+                        coordenador = :coordenador_update,
                         ativo = 1,
                         data_entrada = IF(ativo = 0, NOW(), data_entrada)";
             
@@ -132,11 +109,16 @@ class EquipaDAL {
             ], true));
             
             $stmt = $this->pdo->prepare($sql);
-            $result = $stmt->execute([
+            $params = [
                 ':equipa_id' => $equipaId,
                 ':utilizador_id' => $utilizadorId,
-                ':coordenador' => $coordenador ? 1 : 0
-            ]);
+                ':coordenador' => $coordenador ? 1 : 0,
+                ':coordenador_update' => $coordenador ? 1 : 0
+            ];
+            
+            error_log('Parâmetros finais: ' . print_r($params, true));
+            
+            $result = $stmt->execute($params);
             
             if (!$result) {
                 $errorInfo = $stmt->errorInfo();
@@ -526,14 +508,17 @@ class EquipaDAL {
     public function contarMembrosPorStatus($idEquipa, $status) {
         $sql = "SELECT COUNT(*) as total 
                 FROM equipa_membros em
-                JOIN colaborador c ON em.utilizador_id = c.id_utilizador
+                JOIN utilizador u ON em.utilizador_id = u.id_utilizador
                 WHERE em.equipa_id = :id_equipa 
-                AND c.status = :status";
+                AND u.ativo = :ativo";
+        
+        // Mapear o status para o valor booleano correspondente
+        $ativo = ($status === 'Ativo') ? 1 : 0;
         
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([
             ':id_equipa' => $idEquipa,
-            ':status' => $status
+            ':ativo' => $ativo
         ]);
         
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -547,14 +532,14 @@ class EquipaDAL {
      * @return string Data da última atualização
      */
     public function obterUltimaAtualizacao($idEquipa) {
-        $sql = "SELECT data_atualizacao 
+        $sql = "SELECT data_criacao 
                 FROM equipa 
-                WHERE id = :id_equipa";
+                WHERE id_equipa = :id_equipa";
         
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([':id_equipa' => $idEquipa]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        return $result ? $result['data_atualizacao'] : null;
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? $result['data_criacao'] : date('Y-m-d H:i:s');
     }
 }

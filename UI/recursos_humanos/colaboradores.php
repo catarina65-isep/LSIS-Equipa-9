@@ -131,16 +131,120 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
         }
     </style>
     <style>
+        /* Estilos gerais */
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #6c757d;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+        }
+        
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        /* Estatísticas */
+        .stat-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+        }
+        
+        .stat-card .card-body {
+            padding: 1.25rem;
+        }
+        
+        .stat-card i {
+            font-size: 1.75rem;
+            opacity: 0.8;
+        }
+        
+        /* Tabela */
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead th {
+            border-bottom: 1px solid #e3e6f0;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+            color: #4e73df;
+            padding: 1rem;
+            background-color: #f8f9fc;
+        }
+        
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-color: #e3e6f0;
+        }
+        
+        /* Botões de ação */
+        .btn-action {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 2px;
+        }
+        
+        /* Badges */
+        .badge {
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+        }
+        
+        /* Formulário de filtro */
+        .filter-card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 15px;
+            }
+            
+            .stat-card {
+                margin-bottom: 1rem;
+            }
+            
+            .table-responsive {
+                border-radius: 0.35rem;
+            }
+        }
+        
         /* Estilos da Sidebar */
         .sidebar {
             min-height: 100vh;
             background: linear-gradient(180deg, #1a2a3a 0%, #2c3e50 100%);
             color: #fff;
             padding: 20px 0;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            position: fixed;
-            width: 16.666667%;
-            z-index: 1000;
+            position: sticky;
+            top: 0;
         }
         
         /* Estilos dos links de navegação */
@@ -262,11 +366,7 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                             </ol>
                         </nav>
                     </div>
-                    <div>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoColaboradorModal">
-                            <i class='bx bx-plus me-2'></i>Novo Colaborador
-                        </button>
-                    </div>
+                    <!-- Botão removido para evitar duplicação -->
                 </div>
 
                 <!-- Stats Cards -->
@@ -279,7 +379,7 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-uppercase text-muted mb-2 small">Total de Colaboradores</h6>
-                                            <h2 class="mb-0">248</h2>
+                                            <h2 class="mb-0 total-colaboradores">0</h2>
                                         </div>
                                         <div class="bg-primary bg-opacity-10 p-3 rounded-circle">
                                             <i class='bx bx-group text-primary' style="font-size: 1.5rem;"></i>
@@ -296,7 +396,7 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-uppercase text-muted mb-2 small">Ativos</h6>
-                                            <h2 class="mb-0">230</h2>
+                                            <h2 class="mb-0 ativos">0</h2>
                                         </div>
                                         <div class="bg-success bg-opacity-10 p-3 rounded-circle">
                                             <i class='bx bx-check-circle text-success' style="font-size: 1.5rem;"></i>
@@ -313,7 +413,7 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-uppercase text-muted mb-2 small">Em Férias</h6>
-                                            <h2 class="mb-0">15</h2>
+                                            <h2 class="mb-0 ferias">0</h2>
                                         </div>
                                         <div class="bg-warning bg-opacity-10 p-3 rounded-circle">
                                             <i class='bx bx-sun text-warning' style="font-size: 1.5rem;"></i>
@@ -330,7 +430,7 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="text-uppercase text-muted mb-2 small">Em Treinamento</h6>
-                                            <h2 class="mb-0">3</h2>
+                                            <h2 class="mb-0 treinamento">0</h2>
                                         </div>
                                         <div class="bg-info bg-opacity-10 p-3 rounded-circle">
                                             <i class='bx bx-book-reader text-info' style="font-size: 1.5rem;"></i>
@@ -339,191 +439,76 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="card bg-success bg-opacity-10 border-0">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-success mb-1">Ativos</h6>
-                                            <h2 class="mb-0">215</h2>
-                                        </div>
-                                        <div class="bg-success bg-opacity-25 p-3 rounded-circle">
-                                            <i class='bx bx-check-circle text-success' style="font-size: 1.5rem;"></i>
-                                        </div>
-                                    </div>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <!-- Barra de ferramentas e filtros -->
+                <div class="card border-0 mb-4">
+                    <div class="card-body p-3">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white"><i class='bx bx-search'></i></span>
+                                    <input type="text" id="searchInput" class="form-control" placeholder="Pesquisar por nome ou email...">
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-warning bg-opacity-10 border-0">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-warning mb-1">Férias</h6>
-                                            <h2 class="mb-0">18</h2>
-                                        </div>
-                                        <div class="bg-warning bg-opacity-25 p-3 rounded-circle">
-                                            <i class='bx bx-sun text-warning' style="font-size: 1.5rem;"></i>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-md-2">
+                                <select id="filterDepartment" class="form-select">
+                                    <option value="">Todos os departamentos</option>
+                                    <option>TI</option>
+                                    <option>RH</option>
+                                    <option>Financeiro</option>
+                                    <option>Vendas</option>
+                                    <option>Marketing</option>
+                                </select>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-info bg-opacity-10 border-0">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="text-uppercase text-info mb-1">Novos (30d)</h6>
-                                            <h2 class="mb-0">15</h2>
-                                        </div>
-                                        <div class="bg-info bg-opacity-25 p-3 rounded-circle">
-                                            <i class='bx bx-user-plus text-info' style="font-size: 1.5rem;"></i>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-md-2">
+                                <select id="filterStatus" class="form-select">
+                                    <option value="">Todos os status</option>
+                                    <option>Ativo</option>
+                                    <option>Inativo</option>
+                                    <option>Férias</option>
+                                    <option>Em Treinamento</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button id="btnFilter" class="btn btn-outline-primary w-100">
+                                    <i class='bx bx-filter-alt me-1'></i> Filtrar
+                                </button>
+                            </div>
+                            <div class="col-md-2 ms-auto">
+                                <button type="button" class="btn btn-primary w-100 btn-novo-colaborador">
+                                    <i class='bx bx-plus me-2'></i>Novo
+                                </button>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Search and Filter -->
-                    <div class="card border-0 mb-4">
-                        <div class="card-body p-3">
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-transparent"><i class='bx bx-search'></i></span>
-                                        <input type="text" class="form-control" placeholder="Pesquisar colaboradores...">
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="form-select">
-                                        <option value="">Todos departamentos</option>
-                                        <option>TI</option>
-                                        <option>RH</option>
-                                        <option>Financeiro</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="form-select">
-                                        <option value="">Status</option>
-                                        <option>Ativo</option>
-                                        <option>Inativo</option>
-                                        <option>Férias</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <button class="btn btn-outline-primary w-100">
-                                        <i class='bx bx-filter-alt me-1'></i> Filtrar
-                                    </button>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card bg-success bg-opacity-10 border-0">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h6 class="text-uppercase text-success mb-1">Ativos</h6>
-                                                <h2 class="mb-0">215</h2>
-                                            </div>
-                                            <div class="bg-success bg-opacity-25 p-3 rounded-circle">
-                                                <i class='bx bx-check-circle text-success' style="font-size: 1.5rem;"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card bg-warning bg-opacity-10 border-0">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h6 class="text-uppercase text-warning mb-1">Férias</h6>
-                                                <h2 class="mb-0">18</h2>
-                                            </div>
-                                            <div class="bg-warning bg-opacity-25 p-3 rounded-circle">
-                                                <i class='bx bx-sun text-warning' style="font-size: 1.5rem;"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="card bg-info bg-opacity-10 border-0">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <h6 class="text-uppercase text-info mb-1">Novos (30d)</h6>
-                                                <h2 class="mb-0">15</h2>
-                                            </div>
-                                            <div class="bg-info bg-opacity-25 p-3 rounded-circle">
-                                                <i class='bx bx-user-plus text-info' style="font-size: 1.5rem;"></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Search and Filter -->
-                        <div class="card border-0 mb-4">
-                            <div class="card-body p-3">
-                                <div class="row g-3">
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <span class="input-group-text bg-transparent"><i class='bx bx-search'></i></span>
-                                            <input type="text" class="form-control" placeholder="Pesquisar colaboradores...">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="form-select">
-                                            <option value="">Todos departamentos</option>
-                                            <option>TI</option>
-                                            <option>RH</option>
-                                            <option>Financeiro</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <select class="form-select">
-                                            <option value="">Status</option>
-                                            <option>Ativo</option>
-                                            <option>Inativo</option>
-                                            <option>Férias</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button class="btn btn-outline-primary w-100">
-                                            <i class='bx bx-filter-alt me-1'></i> Filtrar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                </div>
 
                     <!-- Tabela de Colaboradores -->
-                    <div class="card border-0">
+                    <div class="card border-0 shadow-sm">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
                             <div class="d-flex align-items-center">
                                 <h5 class="mb-0 me-3">Lista de Colaboradores</h5>
-                                <div class="d-flex">
-                                    <button class="btn btn-sm btn-outline-secondary me-2">
-                                        <i class='bx bx-export me-1'></i> Exportar
+                                <span class="badge bg-primary rounded-pill total-colaboradores">0</span>
+                            </div>
+                            <div class="d-flex">
+                                <button class="btn btn-sm btn-outline-secondary me-2" id="btnExport">
+                                    <i class='bx bx-export me-1'></i> Exportar
+                                </button>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class='bx bx-dots-horizontal-rounded'></i>
                                     </button>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class='bx bx-dots-horizontal-rounded'></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-start" aria-labelledby="dropdownMenuButton1">
-                                            <li><a class="dropdown-item" href="#"><i class='bx bx-show me-2'></i>Visualizar Colunas</a></li>
-                                            <li><a class="dropdown-item" href="#"><i class='bx bx-download me-2'></i>Exportar Dados</a></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item text-danger" href="#"><i class='bx bx-reset me-2'></i>Redefinir Filtros</a></li>
-                                        </ul>
-                                    </div>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                        <li><a class="dropdown-item" href="#" id="btnShowColumns"><i class='bx bx-show me-2'></i>Visualizar Colunas</a></li>
+                                        <li><a class="dropdown-item" href="#" id="btnExportData"><i class='bx bx-download me-2'></i>Exportar Dados</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger" href="#" id="btnResetFilters"><i class='bx bx-reset me-2'></i>Redefinir Filtros</a></li>
+                                    </ul>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#novoColaboradorModal">
-                                <i class='bx bx-plus me-2'></i>Novo Colaborador
-                            </button>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
@@ -540,31 +525,7 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td><img src="https://randomuser.me/api/portraits/men/1.jpg" alt="" class="avatar-sm"></td>
-                                            <td>
-                                                <div class="fw-bold">João Silva</div>
-                                                <small class="text-muted">joao.silva@email.com</small>
-                                            </td>
-                                            <td>TI</td>
-                                            <td>Desenvolvedor Sênior</td>
-                                            <td><span class="status-badge status-active"></span> Ativo</td>
-                                            <td>10/06/2023</td>
-                                            <td>
-                                                <div class="d-flex">
-                                                    <button class="btn btn-sm btn-link text-primary p-1 me-1" title="Visualizar">
-                                                        <i class='bx bx-show fs-5'></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-link text-warning p-1 me-1" title="Editar">
-                                                        <i class='bx bx-edit fs-5'></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-link text-danger p-1" title="Desativar">
-                                                        <i class='bx bx-user-x fs-5'></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <!-- Mais linhas aqui -->
+                                        <!-- As linhas serão preenchidas dinamicamente pelo JavaScript -->
                                     </tbody>
                                 </table>
                             </div>
@@ -575,74 +536,76 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
         </div>
     </div>
 
-    <!-- Modal Novo Colaborador -->
-    <div class="modal fade" id="novoColaboradorModal" tabindex="-1" aria-labelledby="novoColaboradorModalLabel" aria-hidden="true">
+    <!-- Modal Novo/Editar Colaborador -->
+    <div class="modal fade" id="colaboradorModal" tabindex="-1" aria-labelledby="colaboradorModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="novoColaboradorModalLabel"><i class='bx bx-user-plus me-2'></i>Novo Colaborador</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="colaboradorModalLabel">Novo Colaborador</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
                 </div>
-                <form id="novoColaboradorForm">
+                <form id="colaboradorForm">
+                    <input type="hidden" id="colaboradorId">
                     <div class="modal-body">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="nome" class="form-label">Nome Completo <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="nome" required>
-                                </div>
+                                <label for="nome" class="form-label">Nome Completo *</label>
+                                <input type="text" class="form-control" id="nome" name="nome" required>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">E-mail <span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control" id="email" required>
-                                </div>
+                                <label for="email" class="form-label">E-mail *</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="departamento" class="form-label">Departamento</label>
-                                    <select class="form-select" id="departamento">
-                                        <option value="">Selecione...</option>
-                                        <option value="TI">TI</option>
-                                        <option value="RH">Recursos Humanos</option>
-                                        <option value="Financeiro">Financeiro</option>
-                                        <option value="Comercial">Comercial</option>
-                                    </select>
-                                </div>
+                                <label for="departamento" class="form-label">Departamento *</label>
+                                <select class="form-select select2" id="departamento" name="departamento" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="TI">TI</option>
+                                    <option value="RH">Recursos Humanos</option>
+                                    <option value="Financeiro">Financeiro</option>
+                                    <option value="Vendas">Vendas</option>
+                                    <option value="Marketing">Marketing</option>
+                                </select>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="cargo" class="form-label">Cargo</label>
-                                    <input type="text" class="form-control" id="cargo">
-                                </div>
+                                <label for="cargo" class="form-label">Cargo *</label>
+                                <input type="text" class="form-control" id="cargo" name="cargo" required>
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="telefone" class="form-label">Telefone</label>
-                                    <input type="tel" class="form-control" id="telefone">
-                                </div>
+                                <label for="telefone" class="form-label">Telefone</label>
+                                <input type="tel" class="form-control" id="telefone" name="telefone">
                             </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="dataAdmissao" class="form-label">Data de Admissão</label>
-                                    <input type="date" class="form-control" id="dataAdmissao">
-                                </div>
+                                <label for="dataAdmissao" class="form-label">Data de Admissão</label>
+                                <input type="date" class="form-control" id="dataAdmissao" name="dataAdmissao">
                             </div>
                             <div class="col-12">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" id="statusAtivo" checked>
-                                    <label class="form-check-label" for="statusAtivo">Ativo</label>
+                                <label class="form-label">Status</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusAtivo" value="Ativo" checked>
+                                    <label class="form-check-label" for="statusAtivo">
+                                        Ativo
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusFerias" value="Férias">
+                                    <label class="form-check-label" for="statusFerias">
+                                        Férias
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="status" id="statusTreinamento" value="Em Treinamento">
+                                    <label class="form-check-label" for="statusTreinamento">
+                                        Em Treinamento
+                                    </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer bg-light">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                            <i class='bx bx-x me-1'></i>Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-primary">
-                            <i class='bx bx-save me-1'></i>Salvar Colaborador
-                        </button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -679,9 +642,155 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // Inicialização da DataTable
-            $('#colaboradoresTable').DataTable({
+        // Função para obter colaboradores do localStorage ou retornar dados padrão
+        function obterColaboradores() {
+            const colaboradoresSalvos = localStorage.getItem('colaboradores');
+            if (colaboradoresSalvos) {
+                return JSON.parse(colaboradoresSalvos);
+            } else {
+                // Dados iniciais caso não haja nada salvo
+                const dadosIniciais = [
+                    {
+                        id: 1,
+                        nome: "João Silva",
+                        email: "joao.silva@email.com",
+                        departamento: "TI",
+                        cargo: "Desenvolvedor Sênior",
+                        status: "Ativo",
+                        dataAdmissao: "2022-01-15",
+                        emFerias: false,
+                        emTreinamento: false
+                    },
+                    {
+                        id: 2,
+                        nome: "Maria Santos",
+                        email: "maria.santos@email.com",
+                        departamento: "RH",
+                        cargo: "Gerente de Recursos Humanos",
+                        status: "Ativo",
+                        dataAdmissao: "2021-11-10",
+                        emFerias: false,
+                        emTreinamento: false
+                    },
+                    {
+                        id: 3,
+                        nome: "Carlos Oliveira",
+                        email: "carlos.oliveira@email.com",
+                        departamento: "Financeiro",
+                        cargo: "Analista Financeiro",
+                        status: "Férias",
+                        dataAdmissao: "2022-03-05",
+                        emFerias: true,
+                        emTreinamento: false
+                    },
+                    {
+                        id: 4,
+                        nome: "Ana Pereira",
+                        email: "ana.pereira@email.com",
+                        departamento: "Marketing",
+                        cargo: "Especialista em Mídias Sociais",
+                        status: "Em Treinamento",
+                        dataAdmissao: "2023-01-20",
+                        emFerias: false,
+                        emTreinamento: true
+                    },
+                    {
+                        id: 5,
+                        nome: "Pedro Alves",
+                        email: "pedro.alves@email.com",
+                        departamento: "Vendas",
+                        cargo: "Representante de Vendas",
+                        status: "Ativo",
+                        dataAdmissao: "2022-08-12",
+                        emFerias: false,
+                        emTreinamento: false
+                    }
+                ];
+                // Salva os dados iniciais no localStorage
+                localStorage.setItem('colaboradores', JSON.stringify(dadosIniciais));
+                return dadosIniciais;
+            }
+        }
+        
+        // Variável global para armazenar os colaboradores
+        let colaboradores = obterColaboradores();
+        
+        // Função para salvar os colaboradores no localStorage
+        function salvarColaboradores() {
+            localStorage.setItem('colaboradores', JSON.stringify(colaboradores));
+        }
+        
+        // Função para atualizar as estatísticas
+        function atualizarEstatisticas() {
+            const total = colaboradores.length;
+            const ativos = colaboradores.filter(c => c.status === 'Ativo').length;
+            const ferias = colaboradores.filter(c => c.status === 'Férias').length;
+            const treinamento = colaboradores.filter(c => c.status === 'Em Treinamento').length;
+            
+            // Atualiza os valores nos cartões
+            $('.total-colaboradores').text(total);
+            $('.ativos').text(ativos);
+            $('.ferias').text(ferias);
+            $('.treinamento').text(treinamento);
+            
+            // Atualiza o contador de registros na tabela
+            if ($.fn.DataTable.isDataTable('#colaboradoresTable')) {
+                $('#colaboradoresTable').DataTable().draw(false);
+            }
+        }
+        
+        // Função para renderizar a tabela com os dados atuais
+        function renderizarTabela() {
+            // Limpa a tabela
+            if ($.fn.DataTable.isDataTable('#colaboradoresTable')) {
+                $('#colaboradoresTable').DataTable().destroy();
+            }
+            
+            // Limpa o corpo da tabela
+            $('#colaboradoresTable tbody').empty();
+            
+            // Adiciona as linhas dos colaboradores
+            colaboradores.forEach(colaborador => {
+                const statusClass = {
+                    'Ativo': 'bg-success',
+                    'Inativo': 'bg-secondary',
+                    'Férias': 'bg-warning',
+                    'Em Treinamento': 'bg-info'
+                }[colaborador.status] || 'bg-secondary';
+                
+                const statusBadge = `<span class="badge ${statusClass}">${colaborador.status}</span>`;
+                
+                const row = `
+                    <tr data-id="${colaborador.id}">
+                        <td><img src="https://ui-avatars.com/api/?name=${encodeURIComponent(colaborador.nome)}&background=random" alt="" class="rounded-circle" width="40" height="40"></td>
+                        <td>
+                            <div class="fw-bold">${colaborador.nome}</div>
+                            <small class="text-muted">${colaborador.email}</small>
+                        </td>
+                        <td>${colaborador.departamento || '-'}</td>
+                        <td>${colaborador.cargo || '-'}</td>
+                        <td>${statusBadge}</td>
+                        <td>${new Date(colaborador.dataAdmissao).toLocaleDateString('pt-PT')}</td>
+                        <td>
+                            <div class="d-flex">
+                                <button type="button" class="btn btn-sm btn-link text-primary p-1 me-1 btn-visualizar" title="Visualizar">
+                                    <i class='bx bx-show fs-5'></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-link text-warning p-1 me-1 btn-editar" title="Editar" data-id="${colaborador.id}">
+                                    <i class='bx bx-edit fs-5'></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-link text-danger p-1 btn-excluir" title="Excluir" data-id="${colaborador.id}">
+                                    <i class='bx bx-trash fs-5'></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                $('#colaboradoresTable tbody').append(row);
+            });
+            
+            // Reinicializa a DataTable
+            table = $('#colaboradoresTable').DataTable({
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
                     search: "",
@@ -704,6 +813,17 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                      "<'row'<'col-sm-12'tr>>" +
                      "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>"
             });
+            
+            // Atualiza as estatísticas
+            atualizarEstatisticas();
+        }
+        
+        // Variável global para a DataTable
+        let table;
+
+        $(document).ready(function() {
+            // Renderiza a tabela com os dados iniciais
+            renderizarTabela();
 
             // Inicialização do Select2
             $('.select2').select2({
@@ -713,12 +833,78 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                 allowClear: true
             });
 
-            // Máscaras de entrada
+            // Máscara para o telefone
             $('#telefone').mask('(00) 00000-0000');
-            $('#dataAdmissao').mask('00/00/0000');
 
+            // Função para carregar dados do colaborador no formulário de edição
+            function carregarDadosColaborador(id) {
+                // Verifica se o ID é válido
+                if (isNaN(id) || id <= 0) {
+                    console.error('ID do colaborador inválido:', id);
+                    return;
+                }
+                
+                // Encontra o colaborador pelo ID
+                const colaborador = colaboradores.find(c => c.id === id);
+                
+                if (!colaborador) {
+                    console.error('Colaborador não encontrado com o ID:', id);
+                    return;
+                }
+                
+                console.log('Carregando dados do colaborador:', colaborador);
+                
+                // Preenche o formulário com os dados do colaborador
+                $('#colaboradorId').val(colaborador.id);
+                $('#nome').val(colaborador.nome || '');
+                $('#email').val(colaborador.email || '');
+                
+                // Define o departamento e dispara o evento de mudança
+                if (colaborador.departamento) {
+                    $('#departamento').val(colaborador.departamento).trigger('change');
+                } else {
+                    $('#departamento').val('').trigger('change');
+                }
+                
+                $('#cargo').val(colaborador.cargo || '');
+                $('#telefone').val(colaborador.telefone || '');
+                
+                // Formata a data de admissão para o formato YYYY-MM-DD
+                if (colaborador.dataAdmissao) {
+                    const data = new Date(colaborador.dataAdmissao);
+                    const dataFormatada = data.toISOString().split('T')[0];
+                    $('#dataAdmissao').val(dataFormatada);
+                } else {
+                    $('#dataAdmissao').val('');
+                }
+                
+                // Define o status correto
+                if (colaborador.status) {
+                    $(`input[name="status"]`).prop('checked', false);
+                    $(`input[name="status"][value="${colaborador.status}"]`).prop('checked', true);
+                }
+                
+                // Atualiza o título do modal
+                $('#colaboradorModalLabel').text('Editar Colaborador');
+                
+                // Abre o modal
+                const modal = new bootstrap.Modal(document.getElementById('colaboradorModal'));
+                modal.show();
+            }
+            
+            // Abre o modal para novo colaborador
+            $('.btn-novo-colaborador').on('click', function() {
+                $('#colaboradorForm')[0].reset();
+                $('#colaboradorId').val('');
+                $('#colaboradorModalLabel').text('Novo Colaborador');
+                
+                // Abre o modal
+                const modal = new bootstrap.Modal(document.getElementById('colaboradorModal'));
+                modal.show();
+            });
+            
             // Validação do formulário
-            $('#novoColaboradorForm').on('submit', function(e) {
+            $('#colaboradorForm').on('submit', function(e) {
                 e.preventDefault();
                 
                 // Validação dos campos obrigatórios
@@ -739,38 +925,120 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                     return;
                 }
                 
-                // Simulação de envio do formulário
+                // Obtém os dados do formulário
                 const formData = {
+                    id: $('#colaboradorId').val() ? parseInt($('#colaboradorId').val()) : null,
                     nome: $('#nome').val(),
                     email: $('#email').val(),
                     departamento: $('#departamento').val(),
                     cargo: $('#cargo').val(),
                     telefone: $('#telefone').val(),
                     dataAdmissao: $('#dataAdmissao').val(),
-                    status: $('#statusAtivo').is(':checked') ? 'Ativo' : 'Inativo'
+                    status: $('input[name="status"]:checked').val()
                 };
                 
-                console.log('Dados do formulário:', formData);
+                if (formData.id) {
+                    // Atualiza o colaborador existente
+                    const index = colaboradores.findIndex(c => c.id === formData.id);
+                    if (index !== -1) {
+                        colaboradores[index] = {
+                            ...colaboradores[index],
+                            nome: formData.nome,
+                            email: formData.email,
+                            departamento: formData.departamento,
+                            cargo: formData.cargo,
+                            telefone: formData.telefone,
+                            dataAdmissao: formData.dataAdmissao,
+                            status: formData.status,
+                            emFerias: formData.status === 'Férias',
+                            emTreinamento: formData.status === 'Em Treinamento'
+                        };
+                    }
+                } else {
+                    // Adiciona um novo colaborador
+                    const novoId = colaboradores.length > 0 ? Math.max(...colaboradores.map(c => c.id)) + 1 : 1;
+                    colaboradores.push({
+                        id: novoId,
+                        nome: formData.nome,
+                        email: formData.email,
+                        departamento: formData.departamento,
+                        cargo: formData.cargo,
+                        telefone: formData.telefone,
+                        dataAdmissao: formData.dataAdmissao || new Date().toISOString().split('T')[0],
+                        status: formData.status,
+                        emFerias: formData.status === 'Férias',
+                        emTreinamento: formData.status === 'Em Treinamento'
+                    });
+                }
                 
-                // Aqui você faria a requisição AJAX para salvar os dados
-                // Por enquanto, apenas exibimos uma mensagem de sucesso
+                // Salva no localStorage
+                salvarColaboradores();
+                
+                // Renderiza a tabela novamente
+                renderizarTabela();
+                
+                // Fecha o modal e limpa o formulário
+                const modal = bootstrap.Modal.getInstance(document.getElementById('colaboradorModal'));
+                modal.hide();
+                
+                // Exibe mensagem de sucesso
                 const toast = new bootstrap.Toast(document.getElementById('toastSuccess'));
+                $('.toast-body', '#toastSuccess').html('<i class="bx bx-check-circle me-2"></i> ' + 
+                    (formData.id ? 'Colaborador atualizado com sucesso!' : 'Colaborador adicionado com sucesso!'));
                 toast.show();
-                
-                // Fecha o modal após 1,5 segundos
-                setTimeout(() => {
-                    $('#novoColaboradorModal').modal('hide');
-                    this.reset();
-                    // Recarrega a tabela após adicionar um novo colaborador
-                    $('#colaboradoresTable').DataTable().ajax.reload();
-                }, 1500);
             });
             
             // Limpa os erros ao fechar o modal
-            $('#novoColaboradorModal').on('hidden.bs.modal', function () {
+            $('#colaboradorModal').on('hidden.bs.modal', function () {
                 $(this).find('form')[0].reset();
                 $(this).find('.is-invalid').removeClass('is-invalid');
             });
+            
+            // Evento de clique no botão de editar
+            $(document).on('click', '.btn-editar', function(e) {
+                console.log('Botão editar clicado');
+                console.log('Elemento clicado:', this);
+                
+                const id = parseInt($(this).data('id'));
+                console.log('ID do colaborador:', id);
+                
+                if (id) {
+                    console.log('Chamando carregarDadosColaborador com ID:', id);
+                    carregarDadosColaborador(id);
+                } else {
+                    console.error('ID do colaborador não encontrado no botão');
+                    console.log('Atributos do botão:', this.attributes);
+                }
+            });
+
+            // Evento de clique no botão de excluir
+            $(document).on('click', '.btn-excluir', function() {
+                const id = parseInt($(this).data('id'));
+                const row = $(this).closest('tr');
+                
+                if (confirm('Tem certeza que deseja excluir este colaborador?')) {
+                    // Remove o colaborador do array
+                    colaboradores = colaboradores.filter(c => c.id !== id);
+                    
+                    // Salva no localStorage
+                    salvarColaboradores();
+                    
+                    // Remove a linha da tabela
+                    row.fadeOut(400, function() {
+                        $(this).remove();
+                        // Atualiza as estatísticas
+                        atualizarEstatisticas();
+                    });
+                    
+                    // Exibe mensagem de sucesso
+                    const toast = new bootstrap.Toast(document.getElementById('toastSuccess'));
+                    $('.toast-body', '#toastSuccess').html('<i class="bx bx-check-circle me-2"></i> Colaborador excluído com sucesso!');
+                    toast.show();
+                }
+            });
+
+            // Inicializa a tabela
+            renderizarTabela();
         });
     </script>
 </body>

@@ -1,0 +1,156 @@
+/* Estilos para a página de campos personalizados */
+
+/* Container principal */
+.campos-personalizados-container {
+    padding: 20px;
+}
+
+/* Cabeçalho */
+.cabecalho-campos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Filtros */
+.filtros-campos {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    min-width: 200px;
+}
+
+.filtro-grupo label {
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+/* Tabela de campos */
+.tabela-campos {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.tabela-campos table {
+    margin-bottom: 0;
+}
+
+.tabela-campos th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.tabela-campos td, 
+.tabela-campos th {
+    vertical-align: middle;
+    padding: 12px 15px;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* Botões de ação */
+.btn-acoes .btn {
+    margin-right: 5px;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Modal de edição */
+.modal-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Opções de campo */
+.container-opcoes {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.opcao-campo {
+    margin-bottom: 10px;
+}
+
+.opcao-campo:last-child {
+    margin-bottom: 0;
+}
+
+/* Mensagens */
+#mensagens {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 1060;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+/* Loading */
+#loading {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1060;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .cabecalho-campos {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .filtros-campos {
+        width: 100%;
+    }
+    
+    .filtro-grupo {
+        flex: 1;
+        min-width: 100%;
+    }
+    
+    .tabela-campos {
+        overflow-x: auto;
+    }
+    
+    .btn-acoes .btn {
+        margin-bottom: 5px;
+    }
+}

@@ -9,6 +9,15 @@ class UtilizadorBLL {
     }
     
     /**
+     * Obtém a instância PDO
+     * 
+     * @return \PDO
+     */
+    public function getPDO() {
+        return $this->utilizadorDAL->getPDO();
+    }
+    
+    /**
      * Conta quantos usuários estão associados a um perfil específico
      * @param int $idPerfil ID do perfil de acesso
      * @return int Número de usuários associados ao perfil
@@ -36,18 +45,98 @@ class UtilizadorBLL {
         }
     }
 
+    /**
+     * Obtém a lista de coordenadores ativos
+     * 
+     * @return array Lista de coordenadores com id_utilizador e nome
+     */
+    public function obterCoordenadores() {
+        try {
+            // Primeiro tenta buscar pelo perfil de coordenador (ID 2)
+            $coordenadores = $this->utilizadorDAL->listarPorPerfil(2);
+            
+            // Se não encontrar coordenadores, tenta buscar administradores e gestores
+            if (empty($coordenadores)) {
+                $sql = "SELECT 
+                            u.id_utilizador as id,
+                            COALESCE(CONCAT(c.nome, ' ', c.apelido), u.username) as nome,
+                            u.email
+                        FROM utilizador u
+                        LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
+                        WHERE u.ativo = 1
+                        AND u.id_perfil_acesso IN (1, 2, 3)  -- Administrador, RH ou Gestor
+                        AND u.username != 'rh'  -- Remove o usuário genérico 'rh'
+                        ORDER BY COALESCE(c.nome, u.username)";
+                
+                $stmt = $this->utilizadorDAL->getPDO()->prepare($sql);
+                $stmt->execute();
+                $coordenadores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+            
+            // Verifica se os dados estão no formato correto
+            $resultado = [];
+            foreach ($coordenadores as $coordenador) {
+                $resultado[] = [
+                    'id_utilizador' => $coordenador['id'] ?? $coordenador['id_utilizador'] ?? 0,
+                    'nome' => $coordenador['nome'] ?? ($coordenador['username'] ?? 'Desconhecido'),
+                    'email' => $coordenador['email'] ?? ''
+                ];
+            }
+            
+            return $resultado;
+            
+        } catch (Exception $e) {
+            error_log('Erro ao listar coordenadores: ' . $e->getMessage());
+            return [];
+        }
+    }
+    
+
+
     public function obterPorId($id) {
         try {
             if (!is_numeric($id) || $id <= 0) {
-                throw new Exception('ID de usuário inválido');
+                return false;
             }
             
-            return $this->utilizadorDAL->obterPorId($id);
+            // Busca o usuário no banco de dados
+            $sql = "SELECT 
+                        u.*, 
+                        c.id_colaborador,
+                        c.nome as nome_colaborador,
+                        c.apelido as apelido_colaborador,
+                        p.descricao as perfil
+                    FROM utilizador u
+                    LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
+                    LEFT JOIN perfilacesso p ON u.id_perfil_acesso = p.id_perfil_acesso
+                    WHERE u.id_utilizador = :id";
+                    
+            $stmt = $this->getPDO()->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$usuario) {
+                return false;
+            }
+            
+            // Formata os dados para manter compatibilidade
+            return [
+                'id_utilizador' => $usuario['id_utilizador'],
+                'username' => $usuario['username'],
+                'email' => $usuario['email'],
+                'id_perfil_acesso' => $usuario['id_perfil_acesso'],
+                'perfil' => $usuario['perfil'],
+                'id_colaborador' => $usuario['id_colaborador'],
+                'nome' => $usuario['nome_colaborador'] . ' ' . $usuario['apelido_colaborador'],
+                'ativo' => $usuario['ativo']
+            ];
         } catch (Exception $e) {
             error_log('Erro ao obter usuário: ' . $e->getMessage());
             return null;
         }
     }
+    
+
     
     /**
      * Obtém um usuário pelo ID (alias para obterPorId para compatibilidade)
@@ -185,20 +274,7 @@ class UtilizadorBLL {
         ];
     }
 
-    /**
-     * Obtém a lista de coordenadores (usuários com perfil de coordenador)
-     * @return array Lista de coordenadores
-     */
-    public function obterCoordenadores() {
-        try {
-            // Assumindo que o perfil de coordenador tem ID 2
-            // Ajuste o ID conforme sua estrutura de perfis
-            return $this->utilizadorDAL->listarPorPerfil(2);
-        } catch (Exception $e) {
-            error_log('Erro ao obter coordenadores: ' . $e->getMessage());
-            return [];
-        }
-    }
+
     
     /**
      * Obtém a lista de funcionários (usuários ativos que podem ser membros de equipe)

@@ -22,7 +22,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class='bx bxs-dashboard <?php echo ($current_page == 'dashboard.php') ? 'text-white' : 'text-primary'; ?>'></i>
                         </div>
                         <span>Dashboard</span>
-                        <span class="badge <?php echo ($current_page == 'dashboard.php') ? 'bg-white text-primary' : 'bg-primary'; ?> rounded-pill ms-auto">5</span>
                     </a>
                 </li>
                 
@@ -55,9 +54,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </li>
                 
                 <li class="nav-item">
-                    <a href="campos_personalizados.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-white-80 hover-bg-dark-10">
-                        <div class="icon-wrapper bg-warning bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
-                            <i class='bx bxs-edit-alt text-warning'></i>
+                    <a href="campos_personalizados.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'campos_personalizados.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'campos_personalizados.php') ? 'bg-white bg-opacity-10' : 'bg-warning bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-edit-alt <?php echo ($current_page == 'campos_personalizados.php') ? 'text-white' : 'text-warning'; ?>'></i>
                         </div>
                         <span>Campos Personalizados</span>
                     </a>
@@ -69,7 +68,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class='bx bxs-report text-danger'></i>
                         </div>
                         <span>Relatórios</span>
-                        <span class="badge bg-danger rounded-pill ms-auto">3</span>
                     </a>
                 </li>
                 
@@ -107,27 +105,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
             </div>
         </nav>
         
-        <!-- User Profile -->
-        <div class="p-3 border-top border-dark border-opacity-25">
-            <div class="d-flex align-items-center">
-                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="rounded-circle me-2" width="40" height="40">
-                <div class="ms-2">
-                    <div class="text-white fw-medium">Admin User</div>
-                    <small class="text-white-50">Administrador</small>
-                </div>
-                <div class="dropdown ms-auto">
-                    <a href="#" class="text-white-50" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class='bx bx-dots-vertical-rounded'></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class='bx bx-user me-2'></i>Perfil</a></li>
-                        <li><a class="dropdown-item" href="#"><i class='bx bx-cog me-2'></i>Configurações</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#"><i class='bx bx-log-out me-2'></i>Sair</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+
     </div>
     
     <style>

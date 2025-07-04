@@ -183,7 +183,7 @@ class CampoPersonalizadoDAL {
         $params = [':nome' => $nome];
         
         if ($id !== null) {
-            $query .= " AND id != :id";
+            $query .= " AND id_campo != :id";
             $params[':id'] = $id;
         }
         
@@ -192,6 +192,100 @@ class CampoPersonalizadoDAL {
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         
         return $result['total'] > 0;
+    }
+
+    /**
+     * Obtém campos por categoria
+     */
+    public function obterCamposPorCategoria($categoria = null, $somenteAtivos = true) {
+        $query = "SELECT * FROM campo_personalizado WHERE 1=1";
+        $params = [];
+        
+        if ($categoria !== null) {
+            $query .= " AND categoria = :categoria";
+            $params[':categoria'] = $categoria;
+        }
+        
+        if ($somenteAtivos) {
+            $query .= " AND ativo = 1";
+        }
+        
+        $query .= " ORDER BY ordem ASC, rotulo ASC";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute($params);
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Obtém as categorias de campos personalizados
+     */
+    public function obterCategorias() {
+        $query = "SELECT DISTINCT categoria FROM campo_personalizado WHERE ativo = 1 ORDER BY categoria";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    /**
+     * Obtém os valores de um campo para um colaborador específico
+     */
+    public function obterValorCampo($idColaborador, $idCampo) {
+        $query = "SELECT * FROM campo_personalizado_valor 
+                 WHERE id_entidade = :id_colaborador AND id_campo = :id_campo";
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute([
+            ':id_colaborador' => $idColaborador,
+            ':id_campo' => $idCampo
+        ]);
+        
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Salva o valor de um campo para um colaborador
+     */
+    public function salvarValorCampo($idColaborador, $idCampo, $valor, $idUsuario) {
+        try {
+            $this->conn->beginTransaction();
+            
+            // Verifica se já existe um valor para este campo
+            $valorExistente = $this->obterValorCampo($idColaborador, $idCampo);
+            
+            if ($valorExistente) {
+                // Atualiza o valor existente
+                $query = "UPDATE campo_personalizado_valor 
+                         SET valor = :valor, 
+                             data_atualizacao = NOW(),
+                             id_utilizador_atualizacao = :id_usuario
+                         WHERE id_entidade = :id_colaborador AND id_campo = :id_campo";
+            } else {
+                // Insere um novo valor
+                $query = "INSERT INTO campo_personalizado_valor 
+                         (id_entidade, id_campo, valor, data_criacao, data_atualizacao, id_utilizador_criacao)
+                         VALUES (:id_colaborador, :id_campo, :valor, NOW(), NOW(), :id_usuario)";
+            }
+            
+            $stmt = $this->conn->prepare($query);
+            $params = [
+                ':id_colaborador' => $idColaborador,
+                ':id_campo' => $idCampo,
+                ':valor' => $valor,
+                ':id_usuario' => $idUsuario
+            ];
+            
+            $stmt->execute($params);
+            $this->conn->commit();
+            
+            return true;
+            
+        } catch (Exception $e) {
+            $this->conn->rollBack();
+            throw $e;
+        }
     }
 }
 ?>

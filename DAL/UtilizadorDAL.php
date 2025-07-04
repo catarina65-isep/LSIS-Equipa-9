@@ -9,6 +9,15 @@ class UtilizadorDAL {
     }
     
     /**
+     * Obtém a instância PDO
+     * 
+     * @return \PDO
+     */
+    public function getPDO() {
+        return $this->pdo;
+    }
+    
+    /**
      * Conta o número total de usuários ativos
      * 
      * @return int Número total de usuários ativos

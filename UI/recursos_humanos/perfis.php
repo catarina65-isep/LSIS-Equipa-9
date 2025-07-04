@@ -16,11 +16,8 @@ $utilizadorBLL = new UtilizadorBLL();
 // Obter lista de perfis
 $perfis = $perfilBLL->listarTodos();
 
-// Contar usuários por perfil
+// Inicializar array de contagem de usuários (não será mais usado, mas mantido para compatibilidade)
 $contagemUsuarios = [];
-foreach ($perfis as $perfil) {
-    $contagemUsuarios[$perfil['id_perfilacesso']] = $utilizadorBLL->contarPorPerfil($perfil['id_perfilacesso']);
-}
 
 $page_title = "Gerenciar Perfis de Acesso";
 ?>
@@ -230,71 +227,50 @@ $page_title = "Gerenciar Perfis de Acesso";
                     <!-- Cards de Estatísticas -->
                     <div class="row g-4 mb-4">
                         <!-- Total de Perfis -->
-                        <div class="col-md-3">
-                            <div class="card bg-primary bg-opacity-10 border-0">
+                        <div class="col-md-4">
+                            <div class="card card-total-perfis">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-wrapper rounded-circle bg-primary bg-opacity-10 p-3 me-3">
-                                            <i class='bx bx-group text-primary' style="font-size: 1.75rem;"></i>
-                                        </div>
+                                    <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <h6 class="mb-1 text-muted">Total de Perfis</h6>
+                                            <h6 class="text-muted mb-1">Total de Perfis</h6>
                                             <h3 class="mb-0"><?= count($perfis) ?></h3>
                                         </div>
+                                        <div class="bg-primary-light rounded p-3">
+                                            <i class='bx bx-group text-primary' style="font-size: 1.75rem;"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
+                        
                         <!-- Perfis Ativos -->
-                        <div class="col-md-3">
-                            <div class="card bg-success bg-opacity-10 border-0">
+                        <div class="col-md-4">
+                            <div class="card card-ativos">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-wrapper rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-muted mb-1">Ativos</h6>
+                                            <h3 class="mb-0"><?= count(array_filter($perfis, fn($p) => $p['ativo'])) ?></h3>
+                                        </div>
+                                        <div class="bg-success-light rounded p-3">
                                             <i class='bx bx-check-circle text-success' style="font-size: 1.75rem;"></i>
                                         </div>
-                                        <div>
-                                            <h6 class="mb-1 text-muted">Perfis Ativos</h6>
-                                            <h3 class="mb-0">
-                                                <?= count(array_filter($perfis, fn($p) => $p['ativo'])) ?>
-                                            </h3>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Total de Usuários -->
-                        <div class="col-md-3">
-                            <div class="card bg-info bg-opacity-10 border-0">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-wrapper rounded-circle bg-info bg-opacity-10 p-3 me-3">
-                                            <i class='bx bx-user text-info' style="font-size: 1.75rem;"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="mb-1 text-muted">Total de Usuários</h6>
-                                            <h3 class="mb-0"><?= array_sum($contagemUsuarios) ?></h3>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                        
                         <!-- Última Atualização -->
-                        <div class="col-md-3">
-                            <div class="card bg-warning bg-opacity-10 border-0">
+                        <div class="col-md-4">
+                            <div class="card card-atualizacao">
                                 <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-wrapper rounded-circle bg-warning bg-opacity-10 p-3 me-3">
-                                            <i class='bx bx-time-five text-warning' style="font-size: 1.75rem;"></i>
-                                        </div>
+                                    <div class="d-flex justify-content-between align-items-center">
                                         <div>
-                                            <h6 class="mb-1 text-muted">Última Atualização</h6>
-                                            <h6 class="mb-0">
-                                                <?= date('d/m/Y H:i') ?>
-                                            </h6>
+                                            <h6 class="text-muted mb-1">Última Atualização</h6>
+                                            <h6 class="mb-0">Carregando...</h6>
+                                        </div>
+                                        <div class="bg-warning-light rounded p-3">
+                                            <i class='bx bx-time-five text-warning' style="font-size: 1.75rem;"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -514,6 +490,93 @@ $page_title = "Gerenciar Perfis de Acesso";
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <script>
+        // Função para atualizar os cartões de estatísticas
+        function atualizarEstatisticas() {
+            // Mostra um indicador de carregamento
+            $('.card h3').html('<i class="bx bx-loader bx-spin"></i>');
+            
+            // Adiciona classe de carregamento
+            $('.card').addClass('loading');
+            
+            // Faz uma requisição para obter os dados mais recentes
+            $.ajax({
+                url: 'obter_estatisticas_perfis.php',
+                type: 'GET',
+                dataType: 'json',
+                timeout: 5000, // 5 segundos de timeout
+                success: function(response) {
+                    if (response && response.success) {
+                        // Atualiza o total de perfis
+                        $('.card-total-perfis h3').text(response.totalPerfis || 0);
+                        
+                        // Atualiza o total de perfis ativos
+                        $('.card-ativos h3').text(response.totalAtivos || 0);
+                        
+                        // Atualiza a data da última atualização
+                        const agora = new Date();
+                        const dataFormatada = agora.toLocaleString('pt-PT', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                        // Atualiza apenas o texto dentro do h6 que está dentro do card-atualizacao
+                        $('.card-atualizacao .card-body h6.mb-0').text(`Atualizado em: ${dataFormatada}`);
+                        
+                        // Adiciona animação de sucesso
+                        $('.card').addClass('updated');
+                        setTimeout(() => $('.card').removeClass('updated'), 1000);
+                    } else {
+                        const errorMsg = response && response.message ? response.message : 'Resposta inválida do servidor';
+                        console.error('Erro ao carregar estatísticas:', errorMsg);
+                        showError('Não foi possível carregar as estatísticas. ' + errorMsg);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    let errorMsg = 'Erro ao conectar ao servidor';
+                    if (status === 'timeout') {
+                        errorMsg = 'Tempo de espera esgotado ao carregar estatísticas';
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMsg = xhr.responseJSON.message;
+                    }
+                    console.error('Erro na requisição de estatísticas:', status, error);
+                    showError(errorMsg);
+                },
+                complete: function() {
+                    // Remove a classe de carregamento
+                    $('.card').removeClass('loading');
+                }
+            });
+        }
+        
+        // Função para exibir mensagens de erro
+        function showError(message) {
+            // Exibe um toast de erro
+            const toast = `
+                <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header bg-danger text-white">
+                            <strong class="me-auto">Erro</strong>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Fechar"></button>
+                        </div>
+                        <div class="toast-body">
+                            <i class="bx bx-error-alt me-2"></i>${message}
+                        </div>
+                    </div>
+                </div>`;
+                
+            // Remove toasts antigos e adiciona o novo
+            $('.toast-container').remove();
+            $('body').append(`<div class="toast-container">${toast}</div>`);
+            
+            // Remove o toast após 5 segundos
+            setTimeout(() => {
+                $('.toast').removeClass('show').addClass('hide');
+                setTimeout(() => $('.toast-container').remove(), 300);
+            }, 5000);
+        }
+        
         $(document).ready(function() {
             // Toggle da sidebar em telas pequenas
             $('#sidebarToggle').on('click', function(e) {
@@ -547,6 +610,10 @@ $page_title = "Gerenciar Perfis de Acesso";
             // Executar ao carregar e ao redimensionar a janela
             $(window).on('resize', handleResize);
             handleResize();
+            
+            // Atualizar estatísticas ao carregar a página
+            atualizarEstatisticas();
+            
             // Manipular clique no botão de editar perfil
             $(document).on('click', '.btn-editar', function(e) {
                 e.preventDefault();
@@ -599,8 +666,9 @@ $page_title = "Gerenciar Perfis de Acesso";
                                 icon: 'success',
                                 confirmButtonText: 'OK'
                             }).then(() => {
-                                // Recarregar a página para atualizar a lista
-                                window.location.reload();
+                                // Atualiza as estatísticas e a tabela sem recarregar a página
+                                atualizarEstatisticas();
+                                table.ajax.reload(null, false); // false para manter a paginação atual
                             });
                         } else {
                             // Exibir mensagem de erro
@@ -820,9 +888,10 @@ $page_title = "Gerenciar Perfis de Acesso";
                                 timer: 2000,
                                 showConfirmButton: false
                             }).then(() => {
-                                // Fecha o modal e recarrega a página
+                                // Fecha o modal e atualiza a interface
                                 $('#novoPerfilModal').modal('hide');
-                                location.reload();
+                                atualizarEstatisticas();
+                                table.ajax.reload(null, false); // false para manter a paginação atual
                             });
                         } else {
                             Swal.fire({
