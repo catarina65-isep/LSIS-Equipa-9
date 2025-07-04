@@ -496,8 +496,8 @@ foreach ($distribuicao_equipas as $equipa) {
                     <div class="card-header">
                         <h5 class="mb-0">Distribuição por Função</h5>
                     </div>
-                    <div class="card-body p-0">
-                        <div id="chart1" class="chart-container"></div>
+                    <div class="card-body">
+                        <canvas id="chart1" class="chart-container"></canvas>
                     </div>
                 </div>
             </div>
@@ -506,8 +506,8 @@ foreach ($distribuicao_equipas as $equipa) {
                     <div class="card-header">
                         <h5 class="mb-0">Distribuição por Género</h5>
                     </div>
-                    <div class="card-body p-0">
-                        <div id="chart2" class="chart-container"></div>
+                    <div class="card-body">
+                        <canvas id="chart2" class="chart-container"></canvas>
                     </div>
                 </div>
             </div>
@@ -518,8 +518,8 @@ foreach ($distribuicao_equipas as $equipa) {
                     <div class="card-header">
                         <h5 class="mb-0">Evolução da Remuneração Média</h5>
                     </div>
-                    <div class="card-body p-0">
-                        <div id="chart3" class="chart-container" style="min-height: 400px;"></div>
+                    <div class="card-body">
+                        <canvas id="chart3" class="chart-container"></canvas>
                     </div>
                 </div>
             </div>
@@ -644,337 +644,131 @@ foreach ($distribuicao_equipas as $equipa) {
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Carregar Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Verificar se o Chart.js foi carregado corretamente -->
+    <!-- Usando uma versão específica do Chart.js para evitar problemas de compatibilidade -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     <script>
+        // Verificar se o Chart.js foi carregado corretamente
         if (typeof Chart === 'undefined') {
             console.error('ERRO: Chart.js não foi carregado corretamente!');
-            // Tenta carregar de um CDN alternativo
-            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxEF9nTlK5l7l5f5q5f5q5f5q5f5q5f5q5f5q5f5q5f5q5" crossorigin="anonymous" referrerpolicy="no-referrer"><\/script>');
+            document.write('<div class="alert alert-danger">Erro: Não foi possível carregar a biblioteca de gráficos. Por favor, recarregue a página.</div>');
         } else {
             console.log('Chart.js carregado com sucesso! Versão:', Chart.version);
         }
+        
+        // Tratamento de erros global
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error('Erro global:', message, 'em', source, 'linha', lineno, 'coluna', colno);
+            console.error('Stack trace:', error && error.stack);
+            return false; // Permite que o manipulador de erros padrão também execute
+        };
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    
     <style>
-        /* Estilos para os contêineres dos gráficos */
+        /* Estilos para os gráficos */
         .chart-container {
-            width: 100% !important;
-            height: 400px !important;
-            min-height: 400px !important;
             position: relative;
-            margin: 0;
-            padding: 0;
+            width: 100% !important;
+            height: 300px !important;
+            min-height: 300px;
+            margin: 15px 0;
         }
         
-        /* Garantir que os elementos de gráfico tenham dimensões explícitas */
-        #chart1, #chart2, #chart3 {
+        /* Garantir que o canvas dentro do container ocupe todo o espaço */
+        .chart-container canvas {
             width: 100% !important;
             height: 100% !important;
-            min-height: 400px !important;
             display: block;
-            margin: 0;
-            padding: 0;
         }
-        
-        /* Garantir que os cartões tenham altura suficiente */
         .card {
-            min-height: 500px;
             margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
         }
-        
-        /* Estilo para mensagens de erro */
-        .chart-error {
-            padding: 20px;
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            border-radius: 4px;
-            color: #721c24;
-            margin: 10px 0;
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 0.75rem 1.25rem;
+        }
+        .card-body {
+            padding: 1.25rem;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background: #2d3748;
+            color: #fff;
+            transition: all 0.3s;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                margin-left: -250px;
+            }
+            .sidebar.show {
+                margin-left: 0;
+            }
         }
     </style>
     
     <script>
-        // Inicialização de componentes
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle sidebar em dispositivos móveis
-            document.getElementById('sidebarToggle').addEventListener('click', function() {
-                document.querySelector('.sidebar').classList.toggle('show');
-            });
-
-            // Inicializar tooltips
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-
-            // Inicializar popovers
-            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-                return new bootstrap.Popover(popoverTriggerEl);
-            });
-
-            // Inicializar Select2
-            $('.select2').select2({
-                theme: 'bootstrap-5',
-                width: '100%'
-            });
-
-
-            // Dados para os gráficos
-            const meses = <?= json_encode($meses) ?>;
-            const usuariosPorMes = <?= json_encode($usuarios_por_mes) ?>;
-            const colaboradoresPorMes = <?= json_encode($colaboradores_por_mes) ?>;
-
-            // Gráfico de crescimento
-            const growthCtx = document.getElementById('growthChart').getContext('2d');
-            const growthChart = new Chart(growthCtx, {
-                type: 'line',
-                data: {
-                    labels: meses,
-                    datasets: [
-                        {
-                            label: 'Usuários',
-                            data: usuariosPorMes,
-                            borderColor: '#4361ee',
-                            backgroundColor: 'rgba(67, 97, 238, 0.1)',
-                            tension: 0.3,
-                            fill: true,
-                            borderWidth: 2,
-                            pointRadius: 3,
-                            pointHoverRadius: 5
-                        },
-                        {
-                            label: 'Colaboradores',
-                            data: colaboradoresPorMes,
-                            borderColor: '#4cc9f0',
-                            backgroundColor: 'rgba(76, 201, 240, 0.1)',
-                            tension: 0.3,
-                            fill: true,
-                            borderWidth: 2,
-                            pointRadius: 3,
-                            pointHoverRadius: 5
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { // <-- corrigido aqui
-                            position: 'top',
-                        },
-                        tooltip: { // <-- corrigido aqui
-                            mode: 'index',
-                            intersect: false,
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                drawBorder: false
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            }
-                        }
-                    }
-                }
-            });
-
-
-            // Gráfico de departamentos
-            const deptCtx = document.getElementById('departmentChart').getContext('2d');
-            const departmentChart = new Chart(deptCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['TI', 'RH', 'Vendas', 'Marketing', 'Financeiro', 'Outros'],
-                    datasets: [{
-                        data: [24, 18, 32, 12, 8, 6],
-                        backgroundColor: [
-                            '#4361ee',
-                            '#4cc9f0',
-                            '#7209b7',
-                            '#f72585',
-                            '#4ad66d',
-                            '#ff9e00'
-                        ],
-                        borderWidth: 0,
-                        offset: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.raw || 0;
-                                    return `${label}: ${value}%`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Alternar entre visualizações de período
-            document.querySelectorAll('[data-period]').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Remover classe active de todos os botões
-                    document.querySelectorAll('[data-period]').forEach(b => b.classList.remove('active'));
-                    // Adicionar classe active ao botão clicado
-                    this.classList.add('active');
-                    
-                    // Atualizar o texto do dropdown
-                    const dropdownBtn = document.querySelector('#periodoDropdown');
-                    const periodText = this.textContent.trim();
-                    dropdownBtn.innerHTML = `<i class='bx bx-calendar me-1'></i> ${periodText}`;
-                    
-                    // Aqui você pode adicionar lógica para carregar dados diferentes
-                    // com base no período selecionado (anual/mensal/semanal)
-                    console.log('Período selecionado:', this.dataset.period);
-                    
-                    // Exemplo de atualização de dados (simulação)
-                    fetch(`api/dashboard-data.php?period=${this.dataset.period}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            // Atualizar os cards de métricas
-                            document.querySelector('.stat-card:nth-child(1) .stat-value').textContent = data.total_usuarios;
-                            document.querySelector('.stat-card:nth-child(2) .stat-value').textContent = data.total_colaboradores;
-                            document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = data.alertas_pendentes;
-                            document.querySelector('.stat-card:nth-child(4) .stat-value').textContent = data.atualizacoes_recentes;
-                            
-                            // Atualizar os gráficos
-                            growthChart.data.labels = data.meses;
-                            growthChart.data.datasets[0].data = data.usuarios_por_mes;
-                            growthChart.data.datasets[1].data = data.colaboradores_por_mes;
-                            growthChart.update();
-                            
-                            departmentChart.data.datasets[0].data = data.distribuicao_departamentos;
-                            departmentChart.update();
-                        })
-                        .catch(error => {
-                            console.error('Erro ao carregar dados:', error);
-                        });
-                });
-            });
-
-            // Inicializar DataTables
-            $('.table').DataTable({
-                pageLength: 5,
-                lengthChange: false,
-                searching: false,
-                info: false,
-                language: {
-                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json'
-                }
-            });
-
-            // Atualizar a cada 5 minutos
-            setInterval(() => {
-                // Simulação de atualização de dados em tempo real
-                const alertas = Math.floor(Math.random() * 5);
-                document.querySelector('.stat-card:nth-child(3) .stat-value').textContent = 
-                    Math.max(1, alertas); // Garante pelo menos 1 alerta
-                
-                // Atualizar contador de usuários online (simulação)
-                const online = 10 + Math.floor(Math.random() * 5);
-                document.querySelector('.bg-success + small').textContent = `Online: ${online} usuários`;
-            }, 300000); // 5 minutos
-
-            // Efeito de carregamento suave
-            const cards = document.querySelectorAll('.card, .stat-card');
-            cards.forEach((card, index) => {
-                card.style.opacity = '0';
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = `opacity 0.5s ease ${index * 0.1}s, transform 0.5s ease ${index * 0.1}s`;
-                
-                // Forçar reflow
-                void card.offsetWidth;
-                
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            });
-        });
-
-        // Função para verificar se um elemento existe e está visível
-        function elementIsReady(selector) {
-            const element = document.querySelector(selector);
-            if (!element) {
-                console.error('Elemento não encontrado:', selector);
-                return null;
+        // Verificar se o DOM já está pronto
+        function domReady(callback) {
+            if (document.readyState !== 'loading') {
+                callback();
+            } else {
+                document.addEventListener('DOMContentLoaded', callback);
             }
-            if (element.offsetParent === null) {
-                console.warn('Elemento não está visível:', selector);
-            }
-            return element;
         }
-
-        // Inicializar gráficos quando o DOM estiver pronto
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('=== INÍCIO DA INICIALIZAÇÃO DOS GRÁFICOS ===');
-            console.log('Verificando se o Chart.js está disponível...');
-            
-            // Verificar se o Chart.js está disponível
-            if (typeof Chart === 'undefined') {
-                const errorMsg = 'ERRO: Chart.js não foi carregado corretamente!';
-                console.error(errorMsg);
-                const chart1 = elementIsReady('#chart1');
-                if (chart1) {
-                    chart1.innerHTML = `
-                        <div class="alert alert-danger">
-                            <h4>Erro ao carregar a biblioteca de gráficos</h4>
-                            <p>${errorMsg}</p>
-                            <p>Por favor, verifique sua conexão com a internet e atualize a página.</p>
-                        </div>`;
+        
+        // Função para destruir gráficos existentes
+        function destroyCharts() {
+            ['chart1', 'chart2', 'chart3'].forEach(chartId => {
+                const chartElement = document.getElementById(chartId);
+                if (chartElement) {
+                    const chartInstance = Chart.getChart(chartElement);
+                    if (chartInstance) {
+                        console.log(`Destruindo gráfico existente: ${chartId}`);
+                        chartInstance.destroy();
+                    }
+                    // Limpar o canvas
+                    const ctx = chartElement.getContext('2d');
+                    if (ctx) {
+                        ctx.clearRect(0, 0, chartElement.width, chartElement.height);
+                    }
                 }
-                return;
+            });
+        }
+        
+        // Função para inicializar os gráficos
+        function initCharts() {
+            console.log('Iniciando a inicialização dos gráficos...');
+            
+            // Destruir gráficos existentes
+            destroyCharts();
+            
+            // Verificar se o Chart.js foi carregado corretamente
+            if (typeof Chart === 'undefined') {
+                console.error('Erro: Chart.js não foi carregado corretamente!');
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'alert alert-danger';
+                errorMsg.textContent = 'Erro: A biblioteca de gráficos não foi carregada corretamente.';
+                document.getElementById('chart1').parentNode.insertBefore(errorMsg, document.getElementById('chart1'));
+                return false;
             }
             
-            console.log('Chart.js está disponível. Versão:', Chart.version);
+            // Verificar se os elementos existem
+            const chart1El = document.getElementById('chart1');
+            const chart2El = document.getElementById('chart2');
+            const chart3El = document.getElementById('chart3');
             
+            if (!chart1El || !chart2El || !chart3El) {
+                console.error('Erro: Um ou mais elementos de gráfico não foram encontrados!');
+                return false;
+            }
+
             try {
-                // Verificar se os elementos dos gráficos existem
-                const chart1El = elementIsReady('#chart1');
-                const chart2El = elementIsReady('#chart2');
-                const chart3El = elementIsReady('#chart3');
-                
-                if (!chart1El || !chart2El || !chart3El) {
-                    const errorMsg = 'Um ou mais elementos de gráfico não foram encontrados na página.';
-                    console.error(errorMsg);
-                    if (chart1El) {
-                        chart1El.innerHTML = `
-                            <div class="alert alert-warning">
-                                <h4>Erro ao carregar os gráficos</h4>
-                                <p>${errorMsg}</p>
-                                <p>Por favor, atualize a página e tente novamente.</p>
-                            </div>`;
-                    }
-                    return;
-                }
-                
                 // Gráfico 1 - Distribuição por Função (Barras)
-                console.log('Iniciando renderização do gráfico 1...');
-                const ctx1 = chart1El.getContext('2d');
-                if (!ctx1) {
-                    throw new Error('Não foi possível obter o contexto 2D para o gráfico 1');
-                }
-                
-                new Chart(ctx1, {
+                console.log('Criando gráfico 1...');
+                new Chart(chart1El, {
                     type: 'bar',
                     data: {
                         labels: ['Engenharia', 'Marketing', 'Vendas', 'RH', 'Financeiro'],
@@ -1005,40 +799,25 @@ foreach ($distribuicao_equipas as $equipa) {
                             title: {
                                 display: true,
                                 text: 'Distribuição por Função',
-                                font: {
-                                    size: 16
-                                }
+                                font: { size: 16 }
                             },
-                            legend: {
-                                display: false
-                            }
+                            legend: { display: false }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Número de Colaboradores'
-                                }
+                                title: { display: true, text: 'Número de Colaboradores' }
                             },
                             x: {
-                                title: {
-                                    display: true,
-                                    text: 'Função'
-                                }
+                                title: { display: true, text: 'Função' }
                             }
                         }
                     }
                 });
                 
                 // Gráfico 2 - Distribuição por Gênero (Pizza)
-                console.log('Iniciando renderização do gráfico 2...');
-                const ctx2 = chart2El.getContext('2d');
-                if (!ctx2) {
-                    throw new Error('Não foi possível obter o contexto 2D para o gráfico 2');
-                }
-                
-                new Chart(ctx2, {
+                console.log('Criando gráfico 2...');
+                new Chart(chart2El, {
                     type: 'pie',
                     data: {
                         labels: ['Masculino', 'Feminino', 'Outro'],
@@ -1064,25 +843,16 @@ foreach ($distribuicao_equipas as $equipa) {
                             title: {
                                 display: true,
                                 text: 'Distribuição por Gênero',
-                                font: {
-                                    size: 16
-                                }
+                                font: { size: 16 }
                             },
-                            legend: {
-                                position: 'bottom'
-                            }
+                            legend: { position: 'bottom' }
                         }
                     }
                 });
                 
                 // Gráfico 3 - Evolução da Remuneração Média (Linha)
-                console.log('Iniciando renderização do gráfico 3...');
-                const ctx3 = chart3El.getContext('2d');
-                if (!ctx3) {
-                    throw new Error('Não foi possível obter o contexto 2D para o gráfico 3');
-                }
-                
-                new Chart(ctx3, {
+                console.log('Criando gráfico 3...');
+                new Chart(chart3El, {
                     type: 'line',
                     data: {
                         labels: [2019, 2020, 2021, 2022, 2023],
@@ -1092,11 +862,11 @@ foreach ($distribuicao_equipas as $equipa) {
                             fill: false,
                             borderColor: 'rgba(67, 97, 238, 1)',
                             backgroundColor: 'rgba(67, 97, 238, 0.1)',
-                            tension: 0.1,
-                            borderWidth: 3,
+                            tension: 0.3,
+                            borderWidth: 2,
                             pointBackgroundColor: 'rgba(67, 97, 238, 1)',
-                            pointRadius: 5,
-                            pointHoverRadius: 7
+                            pointRadius: 4,
+                            pointHoverRadius: 6
                         }]
                     },
                     options: {
@@ -1106,58 +876,148 @@ foreach ($distribuicao_equipas as $equipa) {
                             title: {
                                 display: true,
                                 text: 'Evolução da Remuneração Média',
-                                font: {
-                                    size: 16
-                                }
+                                font: { size: 16 }
                             },
-                            legend: {
-                                position: 'bottom'
-                            }
+                            legend: { position: 'bottom' }
                         },
                         scales: {
                             y: {
                                 beginAtZero: false,
-                                title: {
-                                    display: true,
-                                    text: 'Valor (€)'
-                                },
+                                title: { display: true, text: 'Valor (€)' },
                                 ticks: {
-                                    callback: function(value) {
-                                        return '€' + value.toLocaleString();
-                                    }
+                                    callback: function(value) { return '€' + value.toLocaleString(); }
                                 }
                             },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Ano'
-                                }
-                            }
+                            x: { title: { display: true, text: 'Ano' } }
                         }
                     }
                 });
                 
-                console.log('Gráficos renderizados com sucesso!');
+                console.log('Gráficos criados com sucesso!');
+                return true;
                 
             } catch (error) {
-                console.error('Erro ao renderizar gráficos:', error);
+                console.error('Erro ao criar gráficos:', error);
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'alert alert-danger';
+                errorMsg.innerHTML = `
+                    <h4>Erro ao carregar os gráficos</h4>
+                    <p>Ocorreu um erro ao carregar os gráficos. Por favor, verifique o console para mais detalhes.</p>
+                    <p>Erro: ${error.message}</p>
+                `;
                 
-                // Mostrar mensagem de erro no lugar do gráfico 1
-                const chart1 = document.getElementById('chart1');
-                if (chart1) {
-                    chart1.innerHTML = 
-                        '<div class="alert alert-danger">' +
-                        '   <h4>Erro ao carregar os gráficos</h4>' +
-                        '   <p>Ocorreu um erro ao carregar os gráficos. Por favor, verifique o console para mais detalhes.</p>' +
-                        '   <p>Erro: ' + error.message + '</p>' +
-                        '</div>';
+                if (chart1El) chart1El.parentNode.insertBefore(errorMsg, chart1El);
+                return false;
+            }
+        }
+
+        // Função para verificar se os elementos existem
+        function checkElements() {
+            const chart1 = document.getElementById('chart1');
+            const chart2 = document.getElementById('chart2');
+            const chart3 = document.getElementById('chart3');
+            
+            console.log('Verificando elementos dos gráficos:');
+            console.log('chart1:', chart1);
+            console.log('chart2:', chart2);
+            console.log('chart3:', chart3);
+            
+            return chart1 && chart2 && chart3;
+        }
+
+        // Inicializar quando o DOM estiver pronto
+        domReady(function() {
+            console.log('DOM carregado, verificando elementos...');
+            
+            // Verificar se os elementos existem
+            const chart1 = document.getElementById('chart1');
+            const chart2 = document.getElementById('chart2');
+            const chart3 = document.getElementById('chart3');
+            
+            if (!chart1 || !chart2 || !chart3) {
+                console.error('Erro: Elementos dos gráficos não encontrados no DOM');
+                return;
+            }
+            
+            console.log('Elementos dos gráficos encontrados, aguardando 300ms para inicializar...');
+            
+            try {
+                // Pequeno atraso para garantir que tudo esteja pronto
+                setTimeout(() => {
+                    console.log('Inicializando gráficos...');
+                    initCharts();
+                }, 300);
+                    console.log('Gráficos inicializados com sucesso!');
+                
+                // Verificar se os gráficos foram criados corretamente
+                setTimeout(function() {
+                    const charts = [
+                        { id: 'chart1', instance: Chart.getChart('chart1') },
+                        { id: 'chart2', instance: Chart.getChart('chart2') },
+                        { id: 'chart3', instance: Chart.getChart('chart3') }
+                    ];
+                    
+                    charts.forEach(chart => {
+                        console.log(`Verificando gráfico ${chart.id}:`, chart.instance ? 'OK' : 'NÃO INICIALIZADO');
+                        if (!chart.instance) {
+                            console.error(`Erro: O gráfico ${chart.id} não foi inicializado corretamente`);
+                        }
+                    });
+                }, 500);
+                
+            } catch (error) {
+                console.error('Erro ao inicializar gráficos:', error);
+                
+                // Mostrar mensagem de erro na página
+                const errorContainer = document.createElement('div');
+                errorContainer.className = 'alert alert-danger m-3';
+                errorContainer.innerHTML = `
+                    <h4>Erro ao carregar os gráficos</h4>
+                    <p>Ocorreu um erro ao tentar carregar os gráficos. Por favor, recarregue a página.</p>
+                    <p><small>Detalhes: ${error.message}</small></p>
+                    <p><small>Verifique o console do navegador (F12) para mais informações.</small></p>
+                `;
+                
+                const firstChart = document.querySelector('.card');
+                if (firstChart) {
+                    firstChart.parentNode.insertBefore(errorContainer, firstChart);
+                } else {
+                    document.body.insertBefore(errorContainer, document.body.firstChild);
                 }
             }
         });
         
-        // Ajustar tamanho dos gráficos quando a janela for redimensionada
-        window.addEventListener('resize', function() {
-            // O Chart.js já lida com o redimensionamento automaticamente
-        });</script>
-</body>
-</html>
+        // Verificar novamente quando a janela for completamente carregada
+        window.addEventListener('load', function() {
+            console.log('Janela completamente carregada, verificando gráficos...');
+            
+            const charts = [
+                { id: 'chart1', element: document.getElementById('chart1') },
+                { id: 'chart2', element: document.getElementById('chart2') },
+                { id: 'chart3', element: document.getElementById('chart3') }
+            ];
+            
+            let allChartsInitialized = true;
+            
+            charts.forEach(chart => {
+                if (!chart.element) {
+                    console.error(`Elemento não encontrado: ${chart.id}`);
+                    allChartsInitialized = false;
+                    return;
+                }
+                
+                const chartInstance = Chart.getChart(chart.element);
+                console.log(`Verificando gráfico ${chart.id}:`, chartInstance ? 'OK' : 'NÃO INICIALIZADO');
+                
+                if (!chartInstance) {
+                    allChartsInitialized = false;
+                    console.error(`Gráfico ${chart.id} não foi inicializado`);
+                }
+            });
+            
+            if (!allChartsInitialized) {
+                console.log('Alguns gráficos não foram inicializados, tentando novamente...');
+                setTimeout(initCharts, 1000);
+            }
+        });
+    </script>

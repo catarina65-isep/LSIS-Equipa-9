@@ -47,7 +47,9 @@ class EquipaBLL {
         return $this->equipaDAL->criarEquipa(
             $dados['nome'],
             $dados['descricao'] ?? '',
-            $dados['coordenador_id']
+            $dados['coordenador_id'],
+            $dados['id_departamento'] ?? null,
+            $dados['id_equipa_pai'] ?? null
         );
     }
 

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard Grupo 9 - LSIS</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #222222;
+            margin: 20px;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .chart-container {
+            width: 48%;
+            display: inline-block;
+            vertical-align: top;
+            margin-bottom: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #chart3 {
+            width: 100%;
+            margin-top: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard Grupo 9 - LSIS</h1>
+
+    <div id="chart1" class="chart-container"></div>
+    <div id="chart2" class="chart-container"></div>
+    <div id="chart3"></div>
+
+    <script>
+        // Dados do gráfico 1 - Barras (Distribuição por função)
+        var data1 = [{
+            x: ['Engenharia', 'Marketing', 'Vendas', 'RH', 'Financeiro'],
+            y: [40, 25, 30, 10, 15],
+            type: 'bar',
+            marker: {
+                color: '#636EFA'
+            }
+        }];
+
+        var layout1 = {
+            title: 'Distribuição de Colaboradores por Função',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: '#222222' },
+            yaxis: { 
+                title: 'Número de Colaboradores',
+                gridcolor: '#f0f0f0'
+            },
+            xaxis: { 
+                title: 'Função',
+                gridcolor: '#f0f0f0'
+            },
+            margin: { t: 30, l: 60, r: 30, b: 60 }
+        };
+
+        Plotly.newPlot('chart1', data1, layout1, {responsive: true});
+
+        // Dados do gráfico 2 - Pizza (Distribuição por género)
+        var data2 = [{
+            values: [55, 43, 2],
+            labels: ['Masculino', 'Feminino', 'Outro'],
+            type: 'pie',
+            marker: {
+                colors: ['#EF553B', '#00CC96', '#AB63FA']
+            },
+            textinfo: 'percent+label',
+            textposition: 'inside',
+            hoverinfo: 'label+percent',
+            textfont: {
+                size: 14
+            }
+        }];
+
+        var layout2 = {
+            title: 'Distribuição por Género',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: '#222222' },
+            showlegend: true,
+            legend: {
+                orientation: 'h',
+                y: -0.2
+            },
+            margin: { t: 30, l: 30, r: 30, b: 30 }
+        };
+
+        Plotly.newPlot('chart2', data2, layout2, {responsive: true});
+
+        // Dados do gráfico 3 - Linha (Evolução da remuneração média)
+        var data3 = [{
+            x: [2019, 2020, 2021, 2022, 2023],
+            y: [30000, 32000, 35000, 37000, 40000],
+            type: 'scatter',
+            mode: 'lines+markers',
+            line: {
+                color: '#FFA15A',
+                width: 3
+            },
+            marker: {
+                size: 8,
+                color: '#FFA15A'
+            }
+        }];
+
+        var layout3 = {
+            title: 'Evolução da Remuneração Média por Ano',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: '#222222' },
+            yaxis: { 
+                title: 'Remuneração Média (€)',
+                gridcolor: '#f0f0f0',
+                tickprefix: '€',
+                tickformat: '.2s',
+                hoverformat: '€.2f',
+                showgrid: true
+            },
+            xaxis: { 
+                title: 'Ano', 
+                dtick: 1,
+                showgrid: false
+            },
+            margin: { t: 30, l: 60, r: 30, b: 60 },
+            hovermode: 'closest'
+        };
+
+        Plotly.newPlot('chart3', data3, layout3, {responsive: true});
+
+        // Ajustar o tamanho dos gráficos quando a janela for redimensionada
+        window.addEventListener('resize', function() {
+            Plotly.Plots.resize('chart1');
+            Plotly.Plots.resize('chart2');
+            Plotly.Plots.resize('chart3');
+        });
+    </script>
+</body>
+</html>

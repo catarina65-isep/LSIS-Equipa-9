@@ -28,15 +28,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 
 
                 <li class="nav-item">
-                    <a href="utilizadores.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'utilizadores.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
-                        <div class="icon-wrapper <?php echo ($current_page == 'utilizadores.php') ? 'bg-white bg-opacity-10' : 'bg-success bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
-                            <i class='bx bxs-user <?php echo ($current_page == 'utilizadores.php') ? 'text-white' : 'text-success'; ?>'></i>
-                        </div>
-                        <span>Utilizadores</span>
-                    </a>
-                </li>
-                
-                <li class="nav-item">
                     <a href="perfis.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'perfis.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
                         <div class="icon-wrapper <?php echo ($current_page == 'perfis.php') ? 'bg-white bg-opacity-10' : 'bg-info bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
                             <i class='bx bxs-id-card <?php echo ($current_page == 'perfis.php') ? 'text-white' : 'text-info'; ?>'></i>
@@ -60,15 +51,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class='bx bxs-group <?php echo ($current_page == 'equipas.php' || $current_page == 'equipa_detalhes.php') ? 'text-white' : 'text-danger'; ?>'></i>
                         </div>
                         <span>Equipas</span>
-                    </a>
-                </li>
-                
-                <li class="nav-item">
-                    <a href="equipa_dashboard.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'equipa_dashboard.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
-                        <div class="icon-wrapper <?php echo ($current_page == 'equipa_dashboard.php') ? 'bg-white bg-opacity-10' : 'bg-pink bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
-                            <i class='bx bxs-dashboard <?php echo ($current_page == 'equipa_dashboard.php') ? 'text-white' : 'text-pink'; ?>'></i>
-                        </div>
-                        <span>Dashboard de Equipas</span>
                     </a>
                 </li>
                 

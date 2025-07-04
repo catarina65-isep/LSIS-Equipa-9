@@ -149,6 +149,13 @@ class UtilizadorDAL {
      */
     public function listarPorPerfil($idPerfil) {
         try {
+            // Log temporário para depuração
+            error_log('Buscando usuários por perfil. ID Perfil: ' . $idPerfil);
+            
+            // Verificar a estrutura da tabela
+            $checkTable = $this->pdo->query("SHOW COLUMNS FROM utilizador LIKE 'id_perfil%'");
+            $columns = $checkTable->fetchAll(PDO::FETCH_COLUMN);
+            error_log('Colunas encontradas na tabela utilizador: ' . print_r($columns, true));
             $sql = "SELECT 
                         u.id_utilizador as id,
                         COALESCE(CONCAT(c.nome, ' ', c.apelido), u.username) as nome,

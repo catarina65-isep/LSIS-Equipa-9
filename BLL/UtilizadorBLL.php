@@ -50,6 +50,16 @@ class UtilizadorBLL {
     }
     
     /**
+     * Obtém um usuário pelo ID (alias para obterPorId para compatibilidade)
+     * 
+     * @param int $id ID do usuário
+     * @return array|null Dados do usuário ou null se não encontrado
+     */
+    public function obterUtilizadorPorId($id) {
+        return $this->obterPorId($id);
+    }
+    
+    /**
      * Conta o número total de usuários ativos
      * 
      * @return int Número total de usuários ativos

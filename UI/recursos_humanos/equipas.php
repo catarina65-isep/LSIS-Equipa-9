@@ -18,29 +18,60 @@ $equipas = [];
 $coordenadores = [];
 $funcionarios = [];
 
+// Processar exclusão de equipe
+if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    try {
+        $equipaBLL = new EquipaBLL();
+        $equipaId = (int)$_GET['id'];
+        
+        // Verificar se a equipe existe
+        $equipa = $equipaBLL->obterEquipa($equipaId);
+        if (!$equipa) {
+            throw new Exception('Equipe não encontrada.');
+        }
+        
+        // Remover a equipe
+        $resultado = $equipaBLL->excluirEquipa($equipaId);
+        
+        if ($resultado) {
+            $_SESSION['mensagem'] = 'Equipe excluída com sucesso!';
+            $_SESSION['tipo_mensagem'] = 'success';
+            header('Location: equipas.php');
+            exit();
+        } else {
+            throw new Exception('Não foi possível excluir a equipe.');
+        }
+    } catch (Exception $e) {
+        $mensagem = 'Erro ao excluir equipe: ' . $e->getMessage();
+        $tipoMensagem = 'danger';
+        error_log('Erro ao excluir equipe: ' . $e->getMessage());
+    }
+}
+
 try {
     // Inicializar BLLs
     $equipaBLL = new EquipaBLL();
     $utilizadorBLL = new UtilizadorBLL();
     
+    error_log('Iniciando carregamento das equipes...');
+    
     // Obter lista de equipes
     $equipas = $equipaBLL->listarEquipas();
+    error_log('Equipas carregadas: ' . print_r($equipas, true));
+    
+    // Verificar se há equipes
+    if (empty($equipas)) {
+        error_log('Nenhuma equipe encontrada no banco de dados');
+    } else {
+        error_log('Total de equipes encontradas: ' . count($equipas));
+    }
     
     // Obter lista de coordenadores
     $coordenadores = $utilizadorBLL->obterCoordenadores();
-    
-    // Debug: Mostrar dados dos coordenadores
-    echo '<div style="display:none;">';
-    echo '<h4>Debug - Dados dos Coordenadores:</h4>';
-    echo '<pre>';
-    var_dump($coordenadores);
-    echo '</pre>';
-    echo '</div>';
+    error_log('Coordenadores carregados: ' . print_r($coordenadores, true));
     
     // Obter lista de funcionários
     $funcionarios = $utilizadorBLL->obterFuncionarios();
-    
-    // Log para depuração
     error_log('Funcionários carregados: ' . print_r($funcionarios, true));
     
 } catch (Exception $e) {
@@ -50,6 +81,7 @@ try {
     error_log('Stack trace: ' . $e->getTraceAsString());
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
@@ -80,6 +112,8 @@ try {
             background: #1a1f33;
             overflow-y: auto;
             transition: all 0.3s;
+            height: 100vh;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         }
         
         .main-content {
@@ -88,21 +122,68 @@ try {
             min-height: 100vh;
             background-color: #f5f7fb;
             transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+            width: calc(100% - 250px);
         }
         
+        /* Ajuste para dispositivos móveis */
         @media (max-width: 992px) {
             .sidebar {
                 margin-left: -250px;
+                z-index: 1050;
             }
+            
             .sidebar.active {
                 margin-left: 0;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.2);
             }
+            
             .main-content {
                 margin-left: 0;
+                width: 100%;
             }
+            
             .main-content.active {
                 margin-left: 250px;
+                width: calc(100% - 250px);
             }
+            
+            /* Ajuste para o botão de toggle no mobile */
+            .navbar-toggler {
+                z-index: 1051;
+            }
+        }
+        
+        /* Garantir que o conteúdo não fique atrás do footer */
+        body {
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+            padding-right: 0 !important; /* Remove o padding do body quando o modal estiver aberto */
+        }
+        
+        /* Ajustes para o modal */
+        .modal {
+            z-index: 1080 !important; /* Garante que o modal fique acima da sidebar */
+        }
+        
+        .modal-backdrop {
+            z-index: 1070 !important; /* Garante que o backdrop fique acima da sidebar */
+        }
+        
+        /* Garante que o modal fique centralizado verticalmente */
+        .modal-dialog {
+            display: flex;
+            align-items: center;
+            min-height: calc(100% - 1rem);
+        }
+        
+        /* Ajuste para o conteúdo do modal */
+        .modal-content {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
         }
         
         /* Estilos dos Cards */
@@ -200,18 +281,22 @@ try {
                             <h1 class="h3 mb-1 fw-bold text-gray-800">Gestão de Equipas</h1>
                             <p class="mb-0 text-muted">Gerencie as equipas da sua organização</p>
                         </div>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEquipa">
+                        <a href="criar_equipa.php" class="btn btn-primary">
                             <i class="fas fa-plus me-2"></i> Nova Equipa
-                        </button>
+                        </a>
                     </div>
                 </div>
 
                 <!-- Mensagens de Feedback -->
-                <?php if ($mensagem): ?>
-                <div class="alert alert-<?= $tipoMensagem ?> alert-dismissible fade show mb-4">
-                    <?= $mensagem ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
-                </div>
+                <?php if (isset($_SESSION['mensagem'])): ?>
+                    <div class="alert alert-<?php echo $_SESSION['tipo_mensagem']; ?> alert-dismissible fade show mb-4">
+                        <?php 
+                        echo $_SESSION['mensagem']; 
+                        unset($_SESSION['mensagem']);
+                        unset($_SESSION['tipo_mensagem']);
+                        ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+                    </div>
                 <?php endif; ?>
 
                 <!-- Conteúdo Principal -->
@@ -240,24 +325,27 @@ try {
                                                     <img src="<?= htmlspecialchars($equipa['coordenador_foto']) ?>" alt="Coordenador" class="member-avatar">
                                                 <?php else: ?>
                                                     <div class="member-avatar bg-primary text-white d-flex align-items-center justify-content-center">
-                                                        <?= substr($equipa['coordenador_nome'], 0, 1) ?>
+                                                        <?= substr($equipa['coordenador_nome'] ?? '?', 0, 1) ?>
                                                     </div>
                                                 <?php endif; ?>
-                                                <span class="ms-2"><?= htmlspecialchars($equipa['coordenador_nome']) ?></span>
+                                                <span class="ms-2"><?= htmlspecialchars($equipa['coordenador_nome'] ?? 'Não definido') ?></span>
                                             </div>
                                             
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <small class="text-muted">
                                                     <i class="fas fa-users me-1"></i> 
-                                                    <?= count($equipa['membros'] ?? []) ?> membro(s)
+                                                    <?= $equipa['total_membros'] ?? 0 ?> membro(s)
                                                 </small>
                                                 <div>
-                                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editarEquipa(<?= $equipa['id'] ?>)" title="Editar">
+                                                    <a href="editar_equipa.php?id=<?= $equipa['id_equipa'] ?>" class="btn btn-sm btn-outline-primary me-1" title="Editar">
                                                         <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger" onclick="confirmarExclusao(<?= $equipa['id'] ?>)" title="Excluir">
+                                                    </a>
+                                                    <a href="?action=delete&id=<?= $equipa['id_equipa'] ?>" 
+                                                       class="btn btn-sm btn-outline-danger" 
+                                                       title="Excluir"
+                                                       onclick="return confirm('Tem certeza que deseja excluir esta equipa? Esta ação não pode ser desfeita.')">
                                                         <i class="fas fa-trash"></i>
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -271,112 +359,13 @@ try {
         </div>
     </div>
 
-    <!-- Modal de Nova/Edição de Equipa -->
-    <div class="modal fade" id="modalEquipa" tabindex="-1" aria-labelledby="modalEquipaLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <form id="formEquipa" method="post" action="processar_equipa.php">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="modalEquipaLabel">Nova Equipa</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                    </div>
-                    <div class="modal-body">
-                        <input type="hidden" name="acao" value="criar">
-                        <input type="hidden" name="id" id="equipa_id">
-                        
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">Nome da Equipa *</label>
-                                <input type="text" name="nome" class="form-control" required>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">Membros da Equipa</label>
-                                <select name="membros[]" class="form-select select2" multiple="multiple" style="width: 100%;">
-                                    <?php 
-                                    // Log para depuração
-                                    error_log('Funcionários disponíveis: ' . print_r($funcionarios, true));
-                                    
-                                    if (!empty($funcionarios)): 
-                                        foreach ($funcionarios as $funcionario): 
-                                            // Verifica se as chaves existem antes de acessá-las
-                                            $nome = $funcionario['nome'] ?? '';
-                                            $apelido = $funcionario['apelido'] ?? '';
-                                            $username = $funcionario['username'] ?? '';
-                                            $id = $funcionario['id'] ?? '';
-                                            
-                                            // Usa nome_completo se existir, senão concatena nome e apelido, senão usa username
-                                            if (isset($funcionario['nome_completo']) && !empty($funcionario['nome_completo'])) {
-                                                $nomeCompleto = $funcionario['nome_completo'];
-                                            } else {
-                                                $nomeCompleto = trim($nome . ' ' . $apelido);
-                                                if (empty($nomeCompleto)) {
-                                                    $nomeCompleto = $username;
-                                                }
-                                            }
-                                            
-                                            if (!empty($id)): // Só adiciona a opção se tiver um ID válido
-                                    ?>
-                                        <option value="<?= htmlspecialchars($id) ?>">
-                                            <?= htmlspecialchars($nomeCompleto) ?>
-                                        </option>
-                                    <?php 
-                                            endif;
-                                        endforeach;
-                                    else: 
-                                    ?>
-                                        <option value="" disabled>Nenhum funcionário disponível</option>
-                                    <?php endif; ?>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Descrição</label>
-                            <textarea name="descricao" class="form-control" rows="3" placeholder="Descreva a finalidade desta equipe"></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label">Coordenador *</label>
-                            <select name="coordenador_id" class="form-select select2" required>
-                                <option value="">Selecione um coordenador</option>
-                                <?php if (!empty($coordenadores)): ?>
-                                    <?php foreach ($coordenadores as $coordenador): 
-                                        $nomeCompleto = !empty($coordenador['nome_completo']) ? $coordenador['nome_completo'] : 
-                                                      (isset($coordenador['username']) ? $coordenador['username'] : 'Coordenador sem nome');
-                                    ?>
-                                        <option value="<?= $coordenador['id_utilizador'] ?? $coordenador['id'] ?>">
-                                            <?= htmlspecialchars($nomeCompleto) ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <option value="" disabled>Nenhum coordenador disponível</option>
-                                <?php endif; ?>
-                            </select>
-                        </div>
-
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Salvar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <script>
         // Inicializar Select2
         $(document).ready(function() {
-            // Configuração do Select2 para os campos de seleção
             $('.select2').select2({
                 theme: 'bootstrap-5',
                 width: '100%',
@@ -394,204 +383,42 @@ try {
                     }
                 }
             });
-            
-            // Resetar formulário quando o modal for fechado
-            $('#modalEquipa').on('hidden.bs.modal', function () {
-                $('#formEquipa')[0].reset();
-                $('#equipa_id').val('');
-                $('.select2').val(null).trigger('change');
-            });
-            
-            // Configurar envio do formulário
-            $('#formEquipa').on('submit', function(e) {
-                e.preventDefault();
-                
-                // Obter os dados do formulário
-                const formData = {
-                    nome: $('[name="nome"]').val().trim(),
-                    descricao: $('[name="descricao"]').val().trim() || '',
-                    coordenador_id: $('[name="coordenador_id"]').val()
-                };
-                
-                // Obter membros selecionados (se houver)
-                const membrosSelect = $('[name="membros[]"]');
-                if (membrosSelect.length) {
-                    formData.membros = membrosSelect.val() || [];
-                }
-                
-                console.log('Dados do formulário:', formData);
-                
-                // Validar campos obrigatórios
-                if (!formData.nome) {
-                    Swal.fire('Erro!', 'O nome da equipa é obrigatório.', 'error');
-                    return false;
-                }
-                
-                if (!formData.coordenador_id) {
-                    Swal.fire('Erro!', 'O coordenador é obrigatório.', 'error');
-                    return false;
-                }
-                
-                // Determinar se é uma criação ou atualização
-                const acao = $('[name="acao"]').val();
-                const url = `api_equipas.php?acao=${acao === 'editar' ? 'atualizar' : 'criar'}`;
-                
-                // Se for atualização, adicionar o ID
-                if (acao === 'editar') {
-                    const id = $('[name="id"]').val();
-                    if (id) {
-                        formData.id = id;
-                    } else {
-                        console.error('ID não encontrado para edição');
-                        Swal.fire('Erro!', 'ID da equipa não encontrado para edição.', 'error');
-                        return false;
-                    }
-                }
-                
-                // Mostrar loading
-                Swal.fire({
-                    title: 'A processar...',
-                    text: 'Por favor, aguarde.',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-                
-                // Enviar dados via AJAX
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: JSON.stringify(formData),
-                    contentType: 'application/json',
-                    success: function(response) {
-                        Swal.close();
-                        
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Sucesso!',
-                                text: response.message || 'Equipa salva com sucesso!',
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            
-                            // Fechar o modal
-                            $('#modalEquipa').modal('hide');
-                            
-                            // Recarregar a página para atualizar a lista
-                            setTimeout(() => location.reload(), 1500);
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Erro!',
-                                text: response.message || 'Ocorreu um erro ao salvar a equipa.'
-                            });
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        Swal.close();
-                        let errorMessage = 'Ocorreu um erro ao processar a requisição.';
-                        let responseText = xhr.responseText;
-                        
-                        console.error('Erro na requisição:', {
-                            status: xhr.status,
-                            statusText: xhr.statusText,
-                            response: responseText,
-                            error: error
-                        });
-                        
-                        try {
-                            const response = JSON.parse(responseText);
-                            if (response && response.message) {
-                                errorMessage = response.message;
-                            }
-                        } catch (e) {
-                            console.error('Erro ao analisar resposta:', e);
-                            errorMessage = responseText || errorMessage;
-                        }
-                        
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Erro!',
-                            html: `<p>${errorMessage}</p><p class="small text-muted">Status: ${xhr.status} ${xhr.statusText}</p>`,
-                            confirmButtonText: 'Entendi'
-                        });
-                    }
-                });
-            });
         });
-        
-        // Função para editar equipe
-        function editarEquipa(id) {
-            // Implementar lógica para carregar os dados da equipe
-            // e preencher o formulário de edição
-            
-            // Exemplo de como abrir o modal de edição
-            $('#modalEquipa').modal('show');
-            
-            // Aqui você pode carregar os dados da equipe via AJAX
-            // e preencher o formulário
-        }
-        
+
         // Função para confirmar exclusão
         function confirmarExclusao(id) {
-            Swal.fire({
-                title: 'Tem certeza?',
-                text: "Você não poderá reverter isso!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sim, excluir!',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Implementar lógica de exclusão via AJAX
-                    // Exemplo:
-                    /*
-                    $.ajax({
-                        url: 'excluir_equipa.php',
-                        type: 'POST',
-                        data: { id: id },
-                        success: function(response) {
-                            if (response.success) {
-                                Swal.fire(
-                                    'Excluído!',
-                                    'A equipe foi excluída com sucesso.',
-                                    'success'
-                                ).then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire(
-                                    'Erro!',
-                                    'Ocorreu um erro ao excluir a equipe.',
-                                    'error'
-                                );
-                            }
-                        },
-                        error: function() {
-                            Swal.fire(
-                                'Erro!',
-                                'Ocorreu um erro ao processar a requisição.',
-                                'error'
-                            );
-                        }
-                    });
-                    */
-                    
-                    // Por enquanto, apenas mostra a mensagem de sucesso
-                    Swal.fire(
-                        'Excluído!',
-                        'A equipe foi excluída com sucesso.',
-                        'success'
-                    );
-                }
-            });
+            if (confirm('Tem certeza que deseja excluir esta equipa? Esta ação não pode ser desfeita.')) {
+                window.location.href = '?action=delete&id=' + id;
+            }
+            return false;
         }
+        
+        // Ajustar z-index do modal para ficar acima da barra de navegação
+        $(document).ready(function() {
+            // Ajuste para modais
+            $('.modal').on('show.bs.modal', function () {
+                // Força o modal a ficar acima de tudo
+                $('.modal-backdrop').css('z-index', '1070');
+                $(this).css('z-index', '1080');
+                
+                // Desabilita o scroll do body quando o modal estiver aberto
+                $('body').addClass('modal-open');
+            });
+            
+            // Ao fechar o modal
+            $('.modal').on('hidden.bs.modal', function () {
+                $('body').removeClass('modal-open');
+            });
+            
+            // Ajuste para o sidebar
+            $('.sidebar').css('z-index', '1050');
+            
+            // Ajuste para o conteúdo principal
+            $('.main-content').css('position', 'relative');
+            
+            // Ajuste para o container principal
+            $('.container-fluid').css('position', 'relative');
+        });
     </script>
-</body>
-</html>
 </body>
 </html>
