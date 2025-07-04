@@ -25,59 +25,54 @@ function handlePhotoUpload(input) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+// Função para inicializar o layout
+function initializeLayout() {
+    // Toggle sidebar em dispositivos móveis
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('show');
+        });
+    }
+
     // Inicializar tooltips
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function (tooltipTriggerEl) {
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 
-    // Esconder todas as seções inicialmente
-    document.querySelectorAll('.profile-section').forEach(function(section) {
-        section.style.display = 'none';
+    // Inicializar popovers
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl);
     });
 
-    // Adicionar evento de click para mostrar/ocultar seções
-    document.querySelectorAll('.nav-link').forEach(function(link) {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const sectionId = this.getAttribute('href');
-            const section = document.querySelector(sectionId);
-            if (section) {
-                // Esconder todas as outras seções
-                document.querySelectorAll('.profile-section').forEach(function(s) {
-                    s.style.display = 'none';
-                    s.classList.remove('active');
-                });
-                
-                // Mostrar a seção selecionada
-                section.style.display = 'block';
-                section.classList.add('active');
-                
-                // Atualizar classe active no menu
-                document.querySelectorAll('.nav-link').forEach(function(navLink) {
-                    navLink.classList.remove('active');
-                });
-                this.classList.add('active');
-
-                // Scroll suave para a seção
-                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
+    // Inicializar Select2
+    $('.select2').select2({
+        theme: 'bootstrap-5',
+        width: '100%'
     });
+
+    // Inicializar DataTables
+    $('.table').DataTable({
+        pageLength: 5,
+        lengthChange: false,
+        searching: false,
+        info: false,
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json'
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar layout
+    initializeLayout();
 
     // Carregar dados do usuário
     loadUserData();
-    // Carrega os dados do usuário
-    loadUserData();
     loadDocuments();
     loadBenefits();
-
-    // Inicializa tema
-    initializeTheme();
-
-    // Inicializa sidebar
-    initializeSidebar();
 });
 
 // Função para inicializar o tema
@@ -106,36 +101,21 @@ function initializeTheme() {
     }
 }
 
-// Função para inicializar a sidebar
-function initializeSidebar() {
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    if (sidebarToggle) {
-        // Verifica o estado do sidebar
-        if (localStorage.getItem('sidebarToggled') === 'true') {
-            document.body.classList.add('sidebar-toggled');
-        }
-
-        sidebarToggle.addEventListener('click', function() {
-            document.body.classList.toggle('sidebar-toggled');
-            localStorage.setItem('sidebarToggled', document.body.classList.contains('sidebar-toggled'));
-        });
-    }
-}
-
 // Função para criar um documento
 function createDocumentItem(document) {
     return `
-        <div class="document-item">
-            <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h3 class="mb-1">${document.nome}</h3>
-                    <p class="text-muted mb-1">${document.tipo}</p>
-                    <span class="status-badge ${document.status === 'aprovado' ? 'status-badge-approved' : 
-                        document.status === 'pendente' ? 'status-badge-pending' : 'status-badge-expired'}">
-                        ${document.status}
-                    </span>
-                </div>
-                <div class="d-flex gap-2">
+        <tr>
+            <td>${document.tipo}</td>
+            <td>${document.nome}</td>
+            <td>${document.data_upload}</td>
+            <td>
+                <span class="status-badge ${document.status === 'aprovado' ? 'status-badge-success' : 
+                    document.status === 'pendente' ? 'status-badge-warning' : 'status-badge-danger'}">
+                    ${document.status}
+                </span>
+            </td>
+            <td>
+                <div class="btn-group">
                     <button class="btn btn-sm btn-outline-primary" onclick="downloadDocument('${document.id}')">
                         <i class='bx bx-download'></i>
                     </button>
@@ -143,9 +123,8 @@ function createDocumentItem(document) {
                         <i class='bx bx-trash'></i>
                     </button>
                 </div>
-            </div>
-            <p class="text-muted small">Data de Validade: ${document.data_validade}</p>
-        </div>
+            </td>
+        </tr>
     `;
 }
 
@@ -182,75 +161,71 @@ if (addDocumentBtn) {
 }
 
 // Função para fazer upload de documento
+function uploadDocumento() {
+    const form = document.getElementById('uploadForm');
+    const formData = new FormData(form);
+    
+    // Adicionar ID do usuário
+    formData.append('usuario_id', document.getElementById('usuario_id').value);
+    
+    // Validar arquivo
+    const fileInput = document.getElementById('arquivo');
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        showAlert('error', 'Por favor, selecione um arquivo');
+        return;
+    }
+
+    // Validar tamanho do arquivo (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        showAlert('error', 'O arquivo deve ter no máximo 5MB');
+        return;
+    }
+
+    // Validar formato do arquivo
+    const validTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+    if (!validTypes.includes(file.type)) {
+        showAlert('error', 'Formato de arquivo não suportado. Por favor, use PDF, JPEG ou PNG.');
+        return;
+    }
+
+    // Enviar para o servidor
+    fetch('processa_upload.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert('success', 'Documento enviado com sucesso!');
+            // Atualizar tabela de documentos
+            loadDocuments();
+            // Fechar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+            modal.hide();
+            // Limpar formulário
+            form.reset();
+        } else {
+            showAlert('error', data.message || 'Erro ao enviar documento');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        showAlert('error', 'Erro ao enviar documento');
+    })
+    .finally(() => {
+        // Restaurar botão
+        const uploadDocumentBtn = document.getElementById('uploadDocument');
+        uploadDocumentBtn.disabled = false;
+        uploadDocumentBtn.innerHTML = 'Upload';
+    });
+}
+
+// Adicionar evento de click ao botão de upload
 const uploadDocumentBtn = document.getElementById('uploadDocument');
 if (uploadDocumentBtn) {
-    uploadDocumentBtn.addEventListener('click', function() {
-        const form = document.getElementById('documentForm');
-        const formData = new FormData(form);
-        
-        // Adicionar ID do usuário
-        formData.append('usuario_id', <?php echo $_SESSION['usuario_id']; ?>);
-        
-        // Validar arquivo
-        const fileInput = document.getElementById('documentFile');
-        const file = fileInput.files[0];
-        
-        if (!file) {
-            showAlert('error', 'Por favor, selecione um arquivo');
-            return;
-        }
-        
-        // Validar tamanho do arquivo (máximo 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            showAlert('error', 'O arquivo deve ter no máximo 5MB');
-            return;
-        }
-
-        // Validar tipo de arquivo
-        const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                           'image/jpeg', 'image/png'];
-        if (!validTypes.includes(file.type)) {
-            showAlert('error', 'Formato de arquivo não suportado. Por favor, use PDF, DOC, DOCX, JPG ou PNG.');
-            return;
-        }
-
-        // Mostrar loading
-        uploadDocumentBtn.disabled = true;
-        uploadDocumentBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Carregando...';
-
-        // Enviar para o servidor
-        fetch('../DAL/documentos.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Fechar modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('documentModal'));
-                modal.hide();
-                
-                // Limpar formulário
-                form.reset();
-                
-                // Atualizar lista de documentos
-                loadDocuments();
-                
-                showAlert('success', 'Documento adicionado com sucesso!');
-            } else {
-                showAlert('error', 'Erro ao adicionar documento: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            showAlert('error', 'Erro ao adicionar documento');
-        })
-        .finally(() => {
-            // Restaurar botão
-            uploadDocumentBtn.disabled = false;
-            uploadDocumentBtn.innerHTML = 'Upload';
-        });
-    });
+    uploadDocumentBtn.addEventListener('click', uploadDocumento);
 }
 
 // Função para adicionar benefício
