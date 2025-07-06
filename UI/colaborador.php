@@ -594,7 +594,6 @@ $page_title = "Perfil do Colaborador";
                         <a href="#" class="active" onclick="event.preventDefault(); scrollToSection('top')"><i class='bx bx-user'></i> Perfil</a>
                         <a href="#" class="" onclick="event.preventDefault(); scrollToSection('dadosPessoais')"><i class='bx bx-user'></i> Dados Pessoais</a>
                         <a href="#" class="" onclick="event.preventDefault(); scrollToSection('documentos')"><i class='bx bx-file'></i> Documentos</a>
-                        <a href="dashboard.php" class="active"><i class='bx bx-grid-alt'></i> Dashboard</a>
                     </nav>
                     <div class="sidebar-footer mt-auto">
                         <a href="/LSIS-Equipa-9/UI/logout.php" class="btn btn-danger w-100">
