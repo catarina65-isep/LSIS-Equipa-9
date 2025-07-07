@@ -735,7 +735,7 @@ $page_title = "Perfil do Colaborador";
             <div class="card-body">
                 <div class="collapse show" id="dadosPessoais">
                     <form id="profileForm">
-                        <input type="hidden" id="usuario_id" name="usuario_id" value="<?= htmlspecialchars($_SESSION['usuario_id']); ?>">
+                        <input type="hidden" id="utilizador_id" name="utilizador_id" value="<?= htmlspecialchars($_SESSION['utilizador_id']); ?>">
                         
                         <div class="row g-3">
                             <div class="col-md-6">
