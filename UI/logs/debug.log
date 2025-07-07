@@ -344,3 +344,108 @@
 )
 
 >>>>>>> 418161bf2abaf09c311b7b6cf9931d287b60b376
+[2025-07-07 14:49:56] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 14:49:56] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 14:49:56] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-07 14:49:56] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-07 14:49:56] ID do perfil do usuário: 3
+[2025-07-07 14:49:56] Nome do perfil: Coordenador
+[2025-07-07 14:49:56] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-07 14:49:56] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-07 14:57:10] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 14:57:10] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 14:57:10] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-07 14:57:10] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-07 14:57:10] ID do perfil do usuário: 1
+[2025-07-07 14:57:10] Nome do perfil: Administrador
+[2025-07-07 14:57:10] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/login.php
+[2025-07-07 14:57:10] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/login.php
+[2025-07-07 14:58:10] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 14:58:10] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 14:58:10] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-07 14:58:10] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-07 14:58:10] ID do perfil do usuário: 1
+[2025-07-07 14:58:10] Nome do perfil: Administrador
+[2025-07-07 14:58:10] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 14:58:10] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 14:58:49] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 14:58:49] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 14:58:49] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-07 14:58:49] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-07 14:58:49] ID do perfil do usuário: 1
+[2025-07-07 14:58:49] Nome do perfil: Administrador
+[2025-07-07 14:58:49] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 14:58:49] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 14:59:56] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 14:59:56] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 14:59:56] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-07 14:59:56] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-07 14:59:56] ID do perfil do usuário: 1
+[2025-07-07 14:59:56] Nome do perfil: Administrador
+[2025-07-07 14:59:56] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 14:59:56] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php

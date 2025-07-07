@@ -103,7 +103,9 @@ try {
     debug_log("Nome do perfil: " . $_SESSION['perfil_nome']);
     
     // Define a URL de redirecionamento com base no perfil
-    if ($_SESSION['id_perfilacesso'] == 2) { // Perfil RH
+    if ($_SESSION['id_perfilacesso'] == 1) { // Perfil Administrador
+        $redirect_url = '/LSIS-Equipa-9/UI/administrador.php';
+    } elseif ($_SESSION['id_perfilacesso'] == 2) { // Perfil RH
         $redirect_url = '/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php';
         
         // Verifica se a pasta existe, se não existir, cria
