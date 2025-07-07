@@ -314,3 +314,52 @@
     [senha] => 123456
 )
 
+[2025-07-04 14:28:39] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-04 14:28:39] Dados recebidos: Array
+(
+    [email] => administrador@tlantic.pt
+    [senha] => 1231043
+)
+
+[2025-07-04 14:35:45] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-04 14:35:45] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 1231043
+)
+
+[2025-07-04 14:36:26] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-04 14:36:26] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 1231043
+)
+
+[2025-07-04 14:36:30] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-04 14:36:30] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 1231043
+)
+
+[2025-07-04 14:36:41] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-04 14:36:41] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-04 14:37:37] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-04 14:37:37] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-04 16:29:30] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-04 16:29:30] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
