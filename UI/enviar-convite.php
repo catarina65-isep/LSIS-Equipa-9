@@ -16,8 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $expiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
         
         try {
-            $database = new Database();
-            $pdo = $database->getConnection();
+            $pdo = Database::getInstance();
             
             // Check if email already has a pending token
             $stmt = $pdo->prepare("SELECT * FROM convite_convites WHERE email = ? AND usado_em IS NULL AND expira_em > NOW()");
