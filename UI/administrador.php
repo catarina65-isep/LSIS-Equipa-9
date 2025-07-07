@@ -1,12 +1,10 @@
 <?php
-// Conexão à base de dados
-$host = 'localhost';
-$db = 'ficha_colaboradores';
-$user = 'root';
-$pass = 'root';
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die("Erro de conexão: " . $conn->connect_error);
+require_once __DIR__ . '/../DAL/config.php';
+
+try {
+    $conn = Database::getInstance();
+} catch (PDOException $e) {
+    die("Erro de conexão: " . $e->getMessage());
 }
 ?>
 
@@ -107,8 +105,9 @@ if ($conn->connect_error) {
         $sql_alertas = "SELECT titulo, descricao, tipo, categoria, prioridade, status, data_criacao 
                         FROM alerta ORDER BY data_criacao DESC";
         $result_alertas = $conn->query($sql_alertas);
-        if ($result_alertas->num_rows > 0) {
-            while ($row = $result_alertas->fetch_assoc()) {
+        $alertas = $result_alertas->fetchAll(PDO::FETCH_ASSOC);
+        if (count($alertas) > 0) {
+            foreach ($alertas as $row) {
                 echo "<tr>
                         <td>{$row['titulo']}</td>
                         <td>{$row['descricao']}</td>
@@ -140,8 +139,9 @@ if ($conn->connect_error) {
                        WHERE acao LIKE '%login%' 
                        ORDER BY data_acesso DESC LIMIT 50";
         $result_logins = $conn->query($sql_logins);
-        if ($result_logins->num_rows > 0) {
-            while ($row = $result_logins->fetch_assoc()) {
+        $logins = $result_logins->fetchAll(PDO::FETCH_ASSOC);
+        if (count($logins) > 0) {
+            foreach ($logins as $row) {
                 echo "<tr>
                         <td>{$row['id_utilizador']}</td>
                         <td>{$row['acao']}</td>
@@ -157,7 +157,7 @@ if ($conn->connect_error) {
     </table>
 </main>
 
-<?php $conn->close(); ?>
+<?php $conn = null; ?>
 
 </body>
 </html>
