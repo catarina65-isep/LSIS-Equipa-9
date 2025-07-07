@@ -52,28 +52,50 @@ function initializeLayout() {
         theme: 'bootstrap-5',
         width: '100%'
     });
-
-    // Inicializar DataTables
-    $('.table').DataTable({
-        pageLength: 5,
-        lengthChange: false,
-        searching: false,
-        info: false,
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json'
-        }
-    });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar layout
-    initializeLayout();
+// Função para inicializar DataTables
+let isDataTableInitialized = false;
 
-    // Carregar dados do usuário
-    loadUserData();
-    loadDocuments();
-    loadBenefits();
-});
+// Função para inicializar o DataTable
+function initializeDataTable() {
+    // Se já foi inicializado, não faz nada
+    if (isDataTableInitialized) {
+        return;
+    }
+
+    // Verificar se a tabela existe
+    const table = document.getElementById('documentosTable');
+    if (!table) {
+        console.error('Tabela não encontrada');
+        return;
+    }
+
+    // Verificar se já existe uma instância do DataTable
+    if ($.fn.DataTable.isDataTable('#documentosTable')) {
+        console.log('DataTable já inicializado');
+        return;
+    }
+
+    // Inicializar DataTable
+    const dataTable = $('#documentosTable').DataTable({
+        language: {
+            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json'
+        },
+        pageLength: 10,
+        responsive: true,
+        searching: true,
+        ordering: true,
+        info: true,
+        destroy: true,
+        initComplete: function() {
+            isDataTableInitialized = true;
+            console.log('DataTable inicializado com sucesso');
+        }
+    });
+
+    return dataTable;
+}
 
 // Função para inicializar o tema
 function initializeTheme() {
@@ -319,6 +341,11 @@ function loadDocuments() {
     .then(response => response.json())
     .then(data => {
         document.getElementById('documentos').innerHTML = createDocumentsList(data);
+        
+        // Inicializar DataTable apenas se não estiver inicializado
+        if (!isDataTableInitialized) {
+            initializeDataTable();
+        }
     })
     .catch(error => console.error('Erro ao carregar documentos:', error));
 }
@@ -360,29 +387,36 @@ function createBenefitsList(benefits) {
 // Função para atualizar o perfil
 const profileForm = document.getElementById('profileForm');
 if (profileForm) {
+    document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar layout
+    initializeLayout();
+
+    // Carregar dados do usuário
+    loadUserData();
+    loadDocuments();
+    loadBenefits();
+    initializeMudas();
+    initializeSidebar();
+
+    // Inicializar DataTable apenas uma vez
+    let isDataTableInitialized = false;
+    });
+
     profileForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        // Validar campos obrigatórios
-        const nome = document.getElementById('nome').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const telefone = document.getElementById('telefone').value.trim();
-        const dataNascimento = document.getElementById('dataNascimento').value;
-        const nif = document.getElementById('nif').value.trim();
-        const niss = document.getElementById('niss').value.trim();
-        const numeroCartaoCidadao = document.getElementById('numeroCartaoCidadao').value.trim();
-        const dataValidadeCartao = document.getElementById('dataValidadeCartao').value;
-        const estadoCivil = document.getElementById('estadoCivil').value;
-        const numeroDependentes = document.getElementById('numeroDependentes').value;
-        const habilitacoes = document.getElementById('habilitacoes').value;
 
-        if (!nome || !email || !telefone || !dataNascimento || !nif || !niss || 
-            !numeroCartaoCidadao || !dataValidadeCartao || !estadoCivil || 
-            !numeroDependentes || !habilitacoes) {
-            showAlert('error', 'Por favor, preencha todos os campos obrigatórios');
-            return;
-        }
+        // Obter dados do formulário
+        const nome = document.getElementById('nome').value;
+        const email = document.getElementById('email').value;
+        const telefone = document.getElementById('telefone').value;
+        const morada = document.getElementById('morada').value;
+        const nif = document.getElementById('nif').value;
+        const dataNascimento = document.getElementById('data_nascimento').value;
+        const codigoPostal = document.getElementById('codigo_postal').value;
+        const localidade = document.getElementById('localidade').value;
+        const observacoes = document.getElementById('observacoes').value;
 
+        // Validar dados
         // Validar formato de email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {

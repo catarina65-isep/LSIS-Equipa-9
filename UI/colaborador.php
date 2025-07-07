@@ -594,7 +594,6 @@ $page_title = "Perfil do Colaborador";
                         <a href="#" class="active" onclick="event.preventDefault(); scrollToSection('top')"><i class='bx bx-user'></i> Perfil</a>
                         <a href="#" class="" onclick="event.preventDefault(); scrollToSection('dadosPessoais')"><i class='bx bx-user'></i> Dados Pessoais</a>
                         <a href="#" class="" onclick="event.preventDefault(); scrollToSection('documentos')"><i class='bx bx-file'></i> Documentos</a>
-                        <a href="dashboard.php" class="active"><i class='bx bx-grid-alt'></i> Dashboard</a>
                     </nav>
                     <div class="sidebar-footer mt-auto">
                         <a href="/LSIS-Equipa-9/UI/logout.php" class="btn btn-danger w-100">
@@ -736,7 +735,7 @@ $page_title = "Perfil do Colaborador";
             <div class="card-body">
                 <div class="collapse show" id="dadosPessoais">
                     <form id="profileForm">
-                        <input type="hidden" id="usuario_id" name="usuario_id" value="<?php echo htmlspecialchars($_SESSION['usuario_id']); ?>">
+                        <input type="hidden" id="usuario_id" name="usuario_id" value="<?= htmlspecialchars($_SESSION['usuario_id']); ?>">
                         
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -929,7 +928,7 @@ $page_title = "Perfil do Colaborador";
             </div>
             <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table id="documentosTable" class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Tipo</th>
@@ -1065,16 +1064,7 @@ $page_title = "Perfil do Colaborador";
                     width: '100%'
                 });
 
-                // Inicializar DataTables
-                $('.table').DataTable({
-                    pageLength: 5,
-                    lengthChange: false,
-                    searching: false,
-                    info: false,
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json'
-                    }
-                });
+                // Inicializar DataTables (será feito no colaborador.js)
             });
         </script>
     </body>
