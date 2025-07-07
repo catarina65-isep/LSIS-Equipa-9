@@ -46,9 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $path = '/LSIS-Equipa-9/UI/convidado.php';
                 $link = "$protocol://$host$path?token=$token";
                 
-                // Debug: Mostrar o link gerado
-                error_log("Link gerado: " . $link);
-                echo "<div class='alert alert-info'>Link gerado: <a href='$link' target='_blank'>$link</a></div>";
+                // O link foi gerado e será enviado por e-mail
                 
                 $message = "
                 <html>
@@ -123,15 +121,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <body>
                     <div class='container'>
                         <h2>Olá!</h2>
-                        <p>Você recebeu um convite para acessar o formulário de convidado.</p>
+                        <p>Recebeu um convite para aceder ao formulário. Por favor preencha com todos os seus dados.</p>
                         <p>Clique no botão abaixo para acessar o formulário:</p>
-                        <p><a href='$link' class='button'>Acessar Formulário</a></p>
+                        <p><a href='$link' class='button'>Aceder ao Formulário</a></p>
                         <p>Ou copie e cole o link abaixo no seu navegador:</p>
                         <p><a href='$link'>$link</a></p>
-                        <p>Este link é válido por 24 horas.</p>
                         <div class='footer'>
                             <p>Se você não solicitou este link, por favor, ignore este e-mail.</p>
-                            <p>Atenciosamente,<br>Equipe Tlantic</p>
+                            <p>Atenciosamente,<br>Equipa Tlantic</p>
                         </div>
                     </div>
                 </body>
