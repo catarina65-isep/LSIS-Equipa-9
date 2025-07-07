@@ -7,7 +7,7 @@ class Database {
         $host = 'localhost';
         $dbname = 'ficha_colaboradores';
         $username = 'root';
-        $password = '';
+        $password = 'root'; // Default MAMP MySQL password
 
         try {
             $this->connection = new PDO(

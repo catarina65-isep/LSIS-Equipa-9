@@ -1,7 +1,16 @@
 <?php
+<<<<<<< HEAD
 // Inicia a sessão se ainda não estiver iniciada
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+=======
+require_once __DIR__ . '/../DAL/config.php';
+
+try {
+    $conn = Database::getInstance();
+} catch (PDOException $e) {
+    die("Erro de conexão: " . $e->getMessage());
+>>>>>>> 2d0ac49b4822949afe905caf759b884e6e45e90d
 }
 
 // Verifica se o usuário está logado e é administrador
@@ -116,6 +125,7 @@ $db = Database::getInstance();
             <th>Data Criação</th>
         </tr>
         <?php
+<<<<<<< HEAD
         try {
             $stmt = $db->prepare("SELECT titulo, descricao, tipo, categoria, prioridade, status, data_criacao 
                                  FROM alerta ORDER BY data_criacao DESC");
@@ -136,6 +146,23 @@ $db = Database::getInstance();
                 }
             } else {
                 echo "<tr><td colspan='7' class='no-data'>Nenhum alerta encontrado.</td></tr>";
+=======
+        $sql_alertas = "SELECT titulo, descricao, tipo, categoria, prioridade, status, data_criacao 
+                        FROM alerta ORDER BY data_criacao DESC";
+        $result_alertas = $conn->query($sql_alertas);
+        $alertas = $result_alertas->fetchAll(PDO::FETCH_ASSOC);
+        if (count($alertas) > 0) {
+            foreach ($alertas as $row) {
+                echo "<tr>
+                        <td>{$row['titulo']}</td>
+                        <td>{$row['descricao']}</td>
+                        <td>{$row['tipo']}</td>
+                        <td>{$row['categoria']}</td>
+                        <td>{$row['prioridade']}</td>
+                        <td>{$row['status']}</td>
+                        <td>{$row['data_criacao']}</td>
+                      </tr>";
+>>>>>>> 2d0ac49b4822949afe905caf759b884e6e45e90d
             }
         } catch (PDOException $e) {
             echo "<tr><td colspan='7' class='error'>Erro ao carregar alertas: " . $e->getMessage() . "</td></tr>";
@@ -153,6 +180,7 @@ $db = Database::getInstance();
             <th>Data de Acesso</th>
         </tr>
         <?php
+<<<<<<< HEAD
         try {
             $stmt = $db->prepare("SELECT id_utilizador, acao, modulo, ip, data_acesso 
                                  FROM historico_acesso 
@@ -173,6 +201,23 @@ $db = Database::getInstance();
                 }
             } else {
                 echo "<tr><td colspan='5' class='no-data'>Nenhum login recente encontrado.</td></tr>";
+=======
+        $sql_logins = "SELECT id_utilizador, acao, modulo, ip, data_acesso 
+                       FROM historico_acesso 
+                       WHERE acao LIKE '%login%' 
+                       ORDER BY data_acesso DESC LIMIT 50";
+        $result_logins = $conn->query($sql_logins);
+        $logins = $result_logins->fetchAll(PDO::FETCH_ASSOC);
+        if (count($logins) > 0) {
+            foreach ($logins as $row) {
+                echo "<tr>
+                        <td>{$row['id_utilizador']}</td>
+                        <td>{$row['acao']}</td>
+                        <td>{$row['modulo']}</td>
+                        <td>{$row['ip']}</td>
+                        <td>{$row['data_acesso']}</td>
+                      </tr>";
+>>>>>>> 2d0ac49b4822949afe905caf759b884e6e45e90d
             }
         } catch (PDOException $e) {
             echo "<tr><td colspan='5' class='error'>Erro ao carregar logins: " . $e->getMessage() . "</td></tr>";
@@ -181,7 +226,11 @@ $db = Database::getInstance();
     </table>
 </main>
 
+<<<<<<< HEAD
 <?php $db = null; ?>
+=======
+<?php $conn = null; ?>
+>>>>>>> 2d0ac49b4822949afe905caf759b884e6e45e90d
 
 </body>
 </html>

@@ -343,7 +343,9 @@
     [senha] => 123456
 )
 
+<<<<<<< Updated upstream
 >>>>>>> 418161bf2abaf09c311b7b6cf9931d287b60b376
+<<<<<<< HEAD
 [2025-07-07 14:49:56] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
 [2025-07-07 14:49:56] Dados recebidos: Array
 (
@@ -449,3 +451,28 @@
 [2025-07-07 14:59:56] Nome do perfil: Administrador
 [2025-07-07 14:59:56] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
 [2025-07-07 14:59:56] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+=======
+=======
+[2025-07-07 10:50:48] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 10:50:48] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 10:50:48] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-07 10:50:48] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-07 10:50:48] ID do perfil do usuário: 2
+[2025-07-07 10:50:48] Nome do perfil: Recursos Humanos
+[2025-07-07 10:50:48] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-07 10:50:48] Redirecionando para: http://localhost:8888/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+>>>>>>> Stashed changes
+>>>>>>> 2d0ac49b4822949afe905caf759b884e6e45e90d

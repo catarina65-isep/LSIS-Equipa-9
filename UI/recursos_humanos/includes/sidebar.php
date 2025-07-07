@@ -72,6 +72,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </li>
                 
                 <li class="nav-item">
+                    <a href="enviar-convite.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'enviar-convite.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'enviar-convite.php') ? 'bg-white bg-opacity-10' : 'bg-info bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-envelope <?php echo ($current_page == 'enviar-convite.php') ? 'text-white' : 'text-info'; ?>'></i>
+                        </div>
+                        <span>Enviar Convites</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
                     <a href="configuracoes.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 text-white-80 hover-bg-dark-10">
                         <div class="icon-wrapper bg-secondary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
                             <i class='bx bxs-cog text-secondary'></i>
