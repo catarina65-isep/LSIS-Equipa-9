@@ -476,3 +476,116 @@
 [2025-07-07 10:50:48] Redirecionando para: http://localhost:8888/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
 >>>>>>> Stashed changes
 >>>>>>> 2d0ac49b4822949afe905caf759b884e6e45e90d
+[2025-07-07 15:09:02] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 15:09:02] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 15:09:02] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-07 15:09:32] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 15:09:32] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 15:09:32] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-07 15:09:33] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-07 15:09:33] ID do perfil do usuário: 1
+[2025-07-07 15:09:33] Nome do perfil: Administrador
+[2025-07-07 15:09:33] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 15:09:33] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 15:11:10] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 15:11:10] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 15:11:10] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-07 15:11:10] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-07 15:11:10] ID do perfil do usuário: 1
+[2025-07-07 15:11:10] Nome do perfil: Administrador
+[2025-07-07 15:11:10] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 15:11:10] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 15:12:25] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 15:12:25] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 15:12:25] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-07 15:12:25] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-07 15:12:25] ID do perfil do usuário: 1
+[2025-07-07 15:12:25] Nome do perfil: Administrador
+[2025-07-07 15:12:25] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 15:12:25] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 15:13:11] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 15:13:11] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 15:13:11] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-07 15:13:11] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-07 15:13:11] ID do perfil do usuário: 1
+[2025-07-07 15:13:11] Nome do perfil: Administrador
+[2025-07-07 15:13:11] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 15:13:11] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 15:14:07] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 15:14:07] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 15:14:07] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-07 15:14:07] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-07 15:14:07] ID do perfil do usuário: 1
+[2025-07-07 15:14:07] Nome do perfil: Administrador
+[2025-07-07 15:14:07] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-07 15:14:07] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
