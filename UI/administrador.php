@@ -1,9 +1,9 @@
 <?php
-// admin_alertas_logins.php
+// Conexão à base de dados
 $host = 'localhost';
 $db = 'ficha_colaboradores';
 $user = 'root';
-$pass = 'root';
+$pass = '';
 $conn = new mysqli($host, $user, $pass, $db);
 if ($conn->connect_error) {
     die("Erro de conexão: " . $conn->connect_error);
@@ -16,14 +16,82 @@ if ($conn->connect_error) {
     <meta charset="UTF-8">
     <title>Painel do Administrador - Alertas e Logins</title>
     <style>
-        body { font-family: Arial; background-color: #f4f4f4; margin: 0; padding: 20px; }
-        h2 { color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; background-color: #fff; }
-        th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
-        th { background-color: #3498db; color: white; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #eef4fb;
+        }
+
+        header {
+            background-color: #005baf;
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        main {
+            padding: 40px;
+        }
+
+        h2 {
+            color: #004080;
+            margin-top: 40px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f4f9ff;
+        }
+
+        tr:hover {
+            background-color: #e2efff;
+        }
+
+        .no-data {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
+
+<header>
+    <h1>Painel do Administrador</h1>
+</header>
+
+<main>
     <h2>📢 Alertas Automáticos</h2>
     <table>
         <tr>
@@ -40,7 +108,7 @@ if ($conn->connect_error) {
                         FROM alerta ORDER BY data_criacao DESC";
         $result_alertas = $conn->query($sql_alertas);
         if ($result_alertas->num_rows > 0) {
-            while($row = $result_alertas->fetch_assoc()) {
+            while ($row = $result_alertas->fetch_assoc()) {
                 echo "<tr>
                         <td>{$row['titulo']}</td>
                         <td>{$row['descricao']}</td>
@@ -52,7 +120,7 @@ if ($conn->connect_error) {
                       </tr>";
             }
         } else {
-            echo "<tr><td colspan='7'>Nenhum alerta encontrado.</td></tr>";
+            echo "<tr><td colspan='7' class='no-data'>Nenhum alerta encontrado.</td></tr>";
         }
         ?>
     </table>
@@ -73,7 +141,7 @@ if ($conn->connect_error) {
                        ORDER BY data_acesso DESC LIMIT 50";
         $result_logins = $conn->query($sql_logins);
         if ($result_logins->num_rows > 0) {
-            while($row = $result_logins->fetch_assoc()) {
+            while ($row = $result_logins->fetch_assoc()) {
                 echo "<tr>
                         <td>{$row['id_utilizador']}</td>
                         <td>{$row['acao']}</td>
@@ -83,11 +151,13 @@ if ($conn->connect_error) {
                       </tr>";
             }
         } else {
-            echo "<tr><td colspan='5'>Nenhum login registado.</td></tr>";
+            echo "<tr><td colspan='5' class='no-data'>Nenhum login registado.</td></tr>";
         }
         ?>
     </table>
-</body>
-</html>
+</main>
 
 <?php $conn->close(); ?>
+
+</body>
+</html>

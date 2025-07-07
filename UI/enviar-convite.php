@@ -16,8 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $expiry = date('Y-m-d H:i:s', strtotime('+24 hours'));
         
         try {
-            $database = new Database();
-            $pdo = $database->getConnection();
+            $pdo = Database::getInstance();
             
             // Check if email already has a pending token
             $stmt = $pdo->prepare("SELECT * FROM convite_convites WHERE email = ? AND usado_em IS NULL AND expira_em > NOW()");
@@ -33,7 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Send email with the link
                 $to = $email;
                 $subject = 'Seu link de acesso ao formulário de convidado';
-                $link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]" . "/convidado.php?token=" . $token;
+                
+                // Construir a URL base corretamente
+                $protocol = 'http';
+                $host = 'localhost:8888'; // Usando localhost:8888 para garantir que funcione no MAMP
+                $path = '/LSIS-Equipa-9/UI/convidado.php';
+                $link = "$protocol://$host$path?token=$token";
+                
+                // Debug: Mostrar o link gerado
+                error_log("Link gerado: " . $link);
+                echo "<div class='alert alert-info'>Link gerado: <a href='$link' target='_blank'>$link</a></div>";
                 
                 $message = "
                 <html>
@@ -76,14 +84,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </body>
                 </html>";
                 
-                $headers = "MIME-Version: 1.0" . "\r\n";
-                $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-                $headers .= 'From: Tlantic <noreply@tlantic.com>' . "\r\n";
+                // Inclui o arquivo de configuração do PHPMailer
+                require_once __DIR__ . '/../DAL/PHPMailerConfig.php';
                 
-                if (mail($to, $subject, $message, $headers)) {
-                    $message = 'Um e-mail com o link de acesso foi enviado para ' . htmlspecialchars($email) . '. O link é válido por 24 horas.';
+                // Corpo do e-mail em HTML
+                $email_body = "
+                <html>
+                <head>
+                    <title>Seu link de acesso</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+                        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+                        .button { 
+                            display: inline-block; 
+                            padding: 10px 20px; 
+                            background-color: #2c3e50; 
+                            color: white; 
+                            text-decoration: none; 
+                            border-radius: 5px; 
+                            margin: 20px 0;
+                        }
+                        .footer { 
+                            margin-top: 30px; 
+                            font-size: 12px; 
+                            color: #777; 
+                            border-top: 1px solid #eee; 
+                            padding-top: 10px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <h2>Olá!</h2>
+                        <p>Você recebeu um convite para acessar o formulário de convidado.</p>
+                        <p>Clique no botão abaixo para acessar o formulário:</p>
+                        <p><a href='$link' class='button'>Acessar Formulário</a></p>
+                        <p>Ou copie e cole o link abaixo no seu navegador:</p>
+                        <p><a href='$link'>$link</a></p>
+                        <p>Este link é válido por 24 horas.</p>
+                        <div class='footer'>
+                            <p>Se você não solicitou este link, por favor, ignore este e-mail.</p>
+                            <p>Atenciosamente,<br>Equipe Tlantic</p>
+                        </div>
+                    </div>
+                </body>
+                </html>";
+                
+                // Debug: Verificar se a função sendEmail existe
+                if (!function_exists('sendEmail')) {
+                    error_log('ERRO: A função sendEmail não foi encontrada');
+                    $error = 'Erro de configuração do sistema. Por favor, tente novamente mais tarde.';
                 } else {
-                    $error = 'Ocorreu um erro ao enviar o e-mail. Por favor, tente novamente mais tarde.';
+                    // Corrigindo a variável $to que estava indefinida
+                    $to = $email;
+                    error_log('Tentando enviar e-mail para: ' . $to);
+                    error_log('Assunto: ' . $subject);
+                    error_log('Corpo do e-mail: ' . substr($email_body, 0, 200) . '...');
+                    
+                    // Envia o e-mail usando PHPMailer
+                    try {
+                        $enviado = sendEmail($to, $subject, $email_body);
+                        error_log('Resultado do envio: ' . ($enviado ? 'Sucesso' : 'Falha'));
+                        
+                        if ($enviado) {
+                            $message = 'Um e-mail com o link de acesso foi enviado para ' . htmlspecialchars($email) . '. O link é válido por 24 horas.';
+                        } else {
+                            $error = 'Ocorreu um erro ao enviar o e-mail. Por favor, tente novamente mais tarde. Verifique também a pasta de spam.';
+                            error_log('Falha ao enviar e-mail. Verifique os logs do PHPMailer.');
+                        }
+                    } catch (Exception $e) {
+                        $error = 'Erro ao tentar enviar o e-mail: ' . $e->getMessage();
+                        error_log('Exceção ao enviar e-mail: ' . $e->getMessage());
+                    }
                 }
             }
         } catch (PDOException $e) {
