@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard RH – Tlantic</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f9ff;
+      color: #003366;
+    }
+
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+    }
+
+    header h2 {
+      margin-top: 10px;
+      font-weight: normal;
+      font-size: 1.1em;
+      color: #cce6ff;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 30px;
+      overflow-x: auto;
+    }
+
+    .chart-box {
+      background-color: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 51, 102, 0.1);
+      width: 100%;
+      max-width: 400px;
+      min-width: 320px;
+      flex-shrink: 0;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 300px !important;
+    }
+
+    h2 {
+      font-size: 1.1em;
+      color: #003366;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Dashboard RH – Tlantic</h1>
+    <h2>Gráficos Pares de dados</h2>
+  </header>
+
+  <div class="container">
+    <!-- Gráfico 1 -->
+    <div class="chart-box">
+      <h2>Tempo Médio na Empresa por Género</h2>
+      <canvas id="chartTempoGenero"></canvas>
+    </div>
+
+    <!-- Gráfico 2 (pizza) -->
+    <div class="chart-box">
+      <h2>Remuneração Média por Nível Hierárquico</h2>
+      <canvas id="chartHierarquiaSalario"></canvas>
+    </div>
+
+    <!-- Gráfico 3 -->
+    <div class="chart-box">
+      <h2>Férias Gozadas por Faixa Etária</h2>
+      <canvas id="chartIdadeFerias"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // Gráfico 1: Tempo Médio por Género
+    new Chart(document.getElementById('chartTempoGenero'), {
+      type: 'bar',
+      data: {
+        labels: ['Masculino', 'Feminino'],
+        datasets: [{
+          data: [4.2, 3.6],
+          backgroundColor: ['#004c99', '#66b2ff']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+
+    // Gráfico 2: Remuneração por Hierarquia (pizza)
+    new Chart(document.getElementById('chartHierarquiaSalario'), {
+      type: 'pie',
+      data: {
+        labels: ['Colaborador', 'Coordenador', 'RH'],
+        datasets: [{
+          data: [950, 1400, 1300],
+          backgroundColor: ['#0077cc', '#3399cc', '#99ccff']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'bottom',
+            labels: { color: '#003366' }
+          },
+          title: { display: false }
+        }
+      }
+    });
+
+    // Gráfico 3: Férias por Faixa Etária
+    new Chart(document.getElementById('chartIdadeFerias'), {
+      type: 'bar',
+      data: {
+        labels: ['<25', '25–35', '36–45', '>45'],
+        datasets: [{
+          data: [8, 12, 15, 10],
+          backgroundColor: ['#336699', '#4d88cc', '#80b3ff', '#b3d1ff']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
