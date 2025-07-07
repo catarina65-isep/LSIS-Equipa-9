@@ -18,6 +18,7 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
     <style>
@@ -493,17 +494,19 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                                 <h5 class="mb-0 me-3">Lista de Colaboradores</h5>
                                 <span class="badge bg-primary rounded-pill total-colaboradores">0</span>
                             </div>
-                            <div class="d-flex">
-                                <button class="btn btn-sm btn-outline-secondary me-2" id="btnExport">
-                                    <i class='bx bx-export me-1'></i> Exportar
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btnExportarTudo">
+                                    <i class='bx bx-export me-1'></i> Exportar Tudo
                                 </button>
-                                <div class="dropdown">
-                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="btnExportarSelecionados">
+                                    <i class='bx bx-check-square me-1'></i> Exportar Selecionados
+                                </button>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                         <i class='bx bx-dots-horizontal-rounded'></i>
                                     </button>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                    <ul class="dropdown-menu dropdown-menu-end">
                                         <li><a class="dropdown-item" href="#" id="btnShowColumns"><i class='bx bx-show me-2'></i>Visualizar Colunas</a></li>
-                                        <li><a class="dropdown-item" href="#" id="btnExportData"><i class='bx bx-download me-2'></i>Exportar Dados</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item text-danger" href="#" id="btnResetFilters"><i class='bx bx-reset me-2'></i>Redefinir Filtros</a></li>
                                     </ul>
@@ -515,6 +518,9 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                                 <table id="colaboradoresTable" class="table table-hover align-middle mb-0">
                                     <thead class="table-light">
                                         <tr>
+                                            <th style="width: 30px;">
+                                                <input type="checkbox" id="selectAll" class="form-check-input">
+                                            </th>
                                             <th style="width: 50px;">#</th>
                                             <th>Colaborador</th>
                                             <th>Departamento</th>
@@ -639,7 +645,13 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script>
         // Função para obter colaboradores do localStorage ou retornar dados padrão
@@ -762,10 +774,18 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                 
                 const row = `
                     <tr data-id="${colaborador.id}">
-                        <td><img src="https://ui-avatars.com/api/?name=${encodeURIComponent(colaborador.nome)}&background=random" alt="" class="rounded-circle" width="40" height="40"></td>
                         <td>
-                            <div class="fw-bold">${colaborador.nome}</div>
-                            <small class="text-muted">${colaborador.email}</small>
+                            <input type="checkbox" class="form-check-input select-colaborador" value="${colaborador.id}">
+                        </td>
+                        <td>${colaborador.id}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(colaborador.nome)}&background=random" alt="" class="rounded-circle me-2" width="32" height="32">
+                                <div>
+                                    <div class="fw-bold">${colaborador.nome}</div>
+                                    <small class="text-muted">${colaborador.email}</small>
+                                </div>
+                            </div>
                         </td>
                         <td>${colaborador.departamento || '-'}</td>
                         <td>${colaborador.cargo || '-'}</td>
@@ -789,7 +809,30 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
                 $('#colaboradoresTable tbody').append(row);
             });
             
-            // Reinicializa a DataTable
+            // Configura o evento de seleção/desseleção de todos os itens
+            $('#selectAll').on('change', function() {
+                $('.select-colaborador').prop('checked', $(this).prop('checked'));
+            });
+
+            // Configura o evento de redefinir filtros
+            $('#btnResetFilters').on('click', function(e) {
+                e.preventDefault();
+                table.search('').columns().search('').draw();
+                $('.select2').val(null).trigger('change');
+            });
+
+            // Configura o evento para exportar todos os itens
+            $('#btnExportarTudo').on('click', function() {
+                // Exporta todos os itens visíveis (com filtros aplicados)
+                exportarParaExcel(false);
+            });
+
+            // Configura o evento para exportar apenas os itens selecionados
+            $('#btnExportarSelecionados').on('click', function() {
+                exportarParaExcel(true);
+            });
+
+            // Configuração simplificada da DataTable
             table = $('#colaboradoresTable').DataTable({
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json',
@@ -820,6 +863,79 @@ $page_title = "Gerenciar Colaboradores - Tlantic";
         
         // Variável global para a DataTable
         let table;
+        
+        // Função para exportar colaboradores para Excel
+        function exportarParaExcel(selecionadosApenas = false) {
+            // Obter os dados dos colaboradores
+            let dadosExportar = [];
+            
+            if (selecionadosApenas) {
+                // Obter apenas os colaboradores selecionados
+                $('.select-colaborador:checked').each(function() {
+                    const id = parseInt($(this).val());
+                    const colaborador = colaboradores.find(c => c.id === id);
+                    if (colaborador) dadosExportar.push(colaborador);
+                });
+                
+                if (dadosExportar.length === 0) {
+                    alert('Selecione pelo menos um colaborador para exportar.');
+                    return;
+                }
+            } else {
+                // Obter todos os colaboradores do array global
+                dadosExportar = [...colaboradores];
+            }
+            
+            if (dadosExportar.length === 0) {
+                alert('Nenhum dado para exportar.');
+                return;
+            }
+            
+            // Mapear os dados para o formato da planilha
+            const dadosPlanilha = dadosExportar.map(colab => ({
+                'ID': colab.id,
+                'Nome': colab.nome,
+                'Email': colab.email,
+                'Departamento': colab.departamento || '',
+                'Cargo': colab.cargo || '',
+                'Status': colab.status,
+                'Data de Admissão': formatarData(colab.dataAdmissao),
+                'Em Férias': colab.emFerias ? 'Sim' : 'Não',
+                'Em Treinamento': colab.emTreinamento ? 'Sim' : 'Não'
+            }));
+            
+            // Criar a planilha
+            const ws = XLSX.utils.json_to_sheet(dadosPlanilha);
+            
+            // Ajustar largura das colunas
+            const wscols = [
+                {wch: 8},  // ID
+                {wch: 30}, // Nome
+                {wch: 30}, // Email
+                {wch: 20}, // Departamento
+                {wch: 25}, // Cargo
+                {wch: 15}, // Status
+                {wch: 15}, // Data Admissão
+                {wch: 12}, // Em Férias
+                {wch: 15}  // Em Treinamento
+            ];
+            ws['!cols'] = wscols;
+            
+            // Criar o workbook
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Colaboradores');
+            
+            // Função auxiliar para formatar a data
+            function formatarData(dataString) {
+                if (!dataString) return '';
+                const data = new Date(dataString);
+                return data.toLocaleDateString('pt-PT');
+            }
+            
+            // Gerar o arquivo Excel
+            const nomeArquivo = selecionadosApenas ? 'colaboradores_selecionados.xlsx' : 'todos_colaboradores.xlsx';
+            XLSX.writeFile(wb, nomeArquivo);
+        }
 
         $(document).ready(function() {
             // Renderiza a tabela com os dados iniciais

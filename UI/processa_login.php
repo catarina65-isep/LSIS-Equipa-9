@@ -111,10 +111,20 @@ try {
         if (!file_exists($rh_dir)) {
             mkdir($rh_dir, 0777, true);
         }
+    } elseif ($_SESSION['id_perfilacesso'] == 3) { // Perfil Coordenador
+        $redirect_url = '/LSIS-Equipa-9/UI/coordenador/index.php';
+        
+        // Verifica se a pasta existe, se não existir, cria
+        $coordenador_dir = __DIR__ . '/coordenador';
+        if (!file_exists($coordenador_dir)) {
+            mkdir($coordenador_dir, 0777, true);
+        }
     } elseif ($_SESSION['id_perfilacesso'] == 4) { // Perfil Colaborador
         $redirect_url = '/LSIS-Equipa-9/UI/colaborador.php';
     } else {
-        $redirect_url = '/LSIS-Equipa-9/UI/dashboard.php';
+        // Perfil desconhecido, redireciona para o login
+        $_SESSION['erro_login'] = 'Perfil de usuário não reconhecido.';
+        $redirect_url = '/LSIS-Equipa-9/UI/login.php';
     }
     
     // Log para depuração

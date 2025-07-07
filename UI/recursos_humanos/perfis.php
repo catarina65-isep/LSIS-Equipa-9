@@ -732,22 +732,7 @@ $page_title = "Gerenciar Perfis de Acesso";
                     $icon.removeClass('text-primary').addClass('text-secondary');
                     $icon.closest('.icon-wrapper').removeClass('bg-primary-light').addClass('bg-secondary-light');
                 }
-                
-                // Exemplo de como seria a chamada AJAX real:
-                /*
-                $.ajax({
-                    url: 'atualiza_status_perfil.php',
-                    type: 'POST',
-                    data: {
-                        id: perfilId,
-                        ativo: isAtivo ? 1 : 0
-                    },
-                    success: function(response) {
-                        if (!response.success) {
-                            // Reverte a mudança em caso de erro
-                            $(this).prop('checked', !isAtivo);
-                            Swal.fire({
-                                icon: 'error',
+            });
                                 title: 'Erro!',
                                 text: response.message || 'Ocorreu um erro ao atualizar o status do perfil.'
                             });

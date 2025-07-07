@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 27-Jun-2025 às 09:54
+-- Tempo de geração: 06-Jul-2025 às 19:53
 -- Versão do servidor: 10.4.32-MariaDB
 -- versão do PHP: 8.0.30
 
@@ -148,6 +148,14 @@ CREATE TABLE `campos_personalizados` (
   `data_atualizacao` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Extraindo dados da tabela `campos_personalizados`
+--
+
+INSERT INTO `campos_personalizados` (`id`, `nome`, `tipo`, `rotulo`, `descricao`, `valor_padrao`, `opcoes`, `categoria`, `obrigatorio`, `ativo`, `ordem`, `requer_comprovativo`, `visivel_para`, `editavel_por`, `data_criacao`, `data_atualizacao`) VALUES
+(3, 'contacto_pessoa', 'texto', 'contactopesso', '', '', NULL, 'dados_pessoais', 1, 1, 0, 0, '[\"2\"]', NULL, '2025-07-04 19:48:31', '2025-07-04 19:48:31'),
+(4, 'telefone_emergencia', 'numero', 'emergencia', '', '', NULL, 'contato', 0, 1, 0, 0, '[]', NULL, '2025-07-04 23:01:09', '2025-07-04 23:01:09');
+
 -- --------------------------------------------------------
 
 --
@@ -194,6 +202,18 @@ CREATE TABLE `campo_personalizado` (
   `id_utilizador_criacao` int(11) DEFAULT NULL,
   `id_utilizador_atualizacao` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `campo_personalizado`
+--
+
+INSERT INTO `campo_personalizado` (`id_campo`, `nome`, `rotulo`, `tipo`, `descricao`, `categoria`, `opcoes`, `valor_padrao`, `tamanho_maximo`, `obrigatorio`, `visivel`, `editavel`, `validacao`, `ordem`, `secao`, `grupo`, `dica`, `ativo`, `data_criacao`, `data_atualizacao`, `id_utilizador_criacao`, `id_utilizador_atualizacao`) VALUES
+(1, 'ol', 'bb', 'texto', '', 'Contactos', NULL, '', NULL, 0, 1, 1, NULL, 0, NULL, NULL, '', 1, '2025-07-04 15:48:51', '2025-07-04 15:48:51', 1, NULL),
+(3, 'disponivel_rh', 'Disponível para RH', 'texto', 'Disponível para o RH, podem personalizar um campo (descrição, tipo, permissão, obrigatoriedade, necessidade de comprovativo)', 'outros', NULL, '', NULL, 0, 1, 1, NULL, 0, NULL, NULL, 'Este campo pode ser personalizado pelo RH conforme necessário.', 1, '2025-07-04 16:12:55', '2025-07-04 16:12:55', 1, 1),
+(4, 'telefone_emergencia', 'bb', 'numero', '', 'Dados Pessoais', NULL, '', NULL, 0, 1, 1, NULL, 0, NULL, '', '', 1, '2025-07-04 16:21:55', '2025-07-04 16:21:55', 1, 1),
+(5, 'telefone_geral', 'geral', 'numero', '', 'Contactos', NULL, '', NULL, 0, 1, 1, NULL, 0, NULL, '', '', 1, '2025-07-04 16:22:32', '2025-07-04 16:22:32', 1, 1),
+(6, 'telefone_pessoa', 'geral', 'numero', '', 'Dados Pessoais', NULL, '', NULL, 0, 1, 1, NULL, 0, NULL, '', '', 1, '2025-07-04 16:25:15', '2025-07-04 16:25:15', 1, 1),
+(7, 'contacto_pessoa', 'contactopessoa', 'telefone', '', 'contato', NULL, '', NULL, 0, 1, 1, NULL, 0, NULL, '', '', 1, '2025-07-04 19:12:52', '2025-07-04 19:12:52', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -278,6 +298,7 @@ CREATE TABLE `colaborador` (
   `foto` varchar(255) DEFAULT NULL,
   `id_funcao` int(11) DEFAULT NULL,
   `id_equipa` int(11) DEFAULT NULL,
+  `id_departamento` int(11) DEFAULT NULL,
   `id_gestor_direto` int(11) DEFAULT NULL,
   `tipo_contrato` enum('Sem Termo','Termo Certo','Prestação Serviço','Estágio Profissional','Outro') DEFAULT NULL,
   `data_entrada` date DEFAULT NULL,
@@ -302,11 +323,22 @@ CREATE TABLE `colaborador` (
 -- Extraindo dados da tabela `colaborador`
 --
 
-INSERT INTO `colaborador` (`id_colaborador`, `numero_mecanografico`, `nome`, `nome_meio`, `apelido`, `genero`, `data_nascimento`, `estado_civil`, `nacionalidade`, `naturalidade`, `nif`, `niss`, `nib`, `telefone`, `telemovel`, `email`, `email_pessoal`, `morada`, `codigo_postal`, `localidade`, `pais`, `foto`, `id_funcao`, `id_equipa`, `id_gestor_direto`, `tipo_contrato`, `data_entrada`, `data_saida`, `motivo_saida`, `periodo_experiencia_ate`, `remuneracao_bruta`, `subsidio_alimentacao`, `subsidio_transporte`, `outros_beneficios`, `horario_trabalho`, `dias_ferias_ano`, `dias_ferias_gozados`, `ultimo_voucher_telemovel`, `observacoes`, `estado`, `data_criacao`, `data_atualizacao`) VALUES
-(1, NULL, 'Administrador do Sistema', NULL, NULL, NULL, NULL, NULL, 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'admin@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, '2025-06-25', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-06-25 14:43:08', '2025-06-25 14:43:08'),
-(2, NULL, 'Recursos Humanos', NULL, NULL, NULL, NULL, NULL, 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'rh@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, '2025-06-25', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-06-25 14:43:08', '2025-06-25 14:43:08'),
-(3, NULL, 'Coordenador de Equipa', NULL, NULL, NULL, NULL, NULL, 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'coordenador@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, '2025-06-25', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-06-25 14:43:08', '2025-06-25 14:43:08'),
-(4, NULL, 'Colaborador Comum', NULL, NULL, NULL, NULL, NULL, 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'colaborador@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, '2025-06-25', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-06-25 14:43:08', '2025-06-25 14:43:08');
+INSERT INTO `colaborador` (`id_colaborador`, `numero_mecanografico`, `nome`, `nome_meio`, `apelido`, `genero`, `data_nascimento`, `estado_civil`, `nacionalidade`, `naturalidade`, `nif`, `niss`, `nib`, `telefone`, `telemovel`, `email`, `email_pessoal`, `morada`, `codigo_postal`, `localidade`, `pais`, `foto`, `id_funcao`, `id_equipa`, `id_departamento`, `id_gestor_direto`, `tipo_contrato`, `data_entrada`, `data_saida`, `motivo_saida`, `periodo_experiencia_ate`, `remuneracao_bruta`, `subsidio_alimentacao`, `subsidio_transporte`, `outros_beneficios`, `horario_trabalho`, `dias_ferias_ano`, `dias_ferias_gozados`, `ultimo_voucher_telemovel`, `observacoes`, `estado`, `data_criacao`, `data_atualizacao`) VALUES
+(1, NULL, 'Administrador do Sistema', NULL, NULL, NULL, NULL, NULL, 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'nome.sobrenome@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-25', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-06-25 14:43:08', '2025-07-03 15:15:01'),
+(2, NULL, 'Recursos Humanos', NULL, NULL, NULL, NULL, NULL, 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'rh@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-25', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-06-25 14:43:08', '2025-06-25 14:43:08'),
+(3, NULL, 'Coordenador de Equipa', NULL, NULL, NULL, NULL, NULL, 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'coordenador@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-25', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-06-25 14:43:08', '2025-06-25 14:43:08'),
+(4, NULL, 'Colaborador Comum', NULL, NULL, NULL, NULL, NULL, 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'colaborador@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, NULL, '2025-06-25', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-06-25 14:43:08', '2025-06-25 14:43:08'),
+(5, NULL, 'João Silva', NULL, NULL, 'Masculino', '1990-05-15', NULL, 'Portuguesa', NULL, '123456789', '12345678901', 'PT50000000000000000000001', '912345678', NULL, 'joao.silva@email.com', NULL, 'Rua das Flores, 123', NULL, NULL, 'Portugal', NULL, NULL, 6, NULL, NULL, NULL, '2023-01-15', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-03 15:09:17', '2025-07-05 11:15:49'),
+(17, NULL, 'Maria Santos', NULL, NULL, 'Feminino', '1988-08-20', NULL, 'Portuguesa', NULL, '234567891', '23456789013', 'PT50000000000000000000002', '923456789', NULL, 'maria.santos@tlantic.pt', NULL, 'Avenida Central, 45', NULL, NULL, 'Portugal', NULL, NULL, 7, NULL, NULL, NULL, '2023-02-10', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-03 15:12:57', '2025-07-05 12:38:04'),
+(18, NULL, 'Carlos Oliveira', NULL, NULL, 'Masculino', '1992-11-30', NULL, 'Portuguesa', NULL, '345678902', '34567890124', 'PT50000000000000000000003', '934567890', NULL, 'carlos.oliveira@tlantic.pt', NULL, 'Travessa do Sol, 67', NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, NULL, '2023-03-05', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-03 15:12:57', '2025-07-03 15:15:43'),
+(19, NULL, 'Ana Pereira', NULL, NULL, 'Feminino', '1991-04-12', NULL, 'Portuguesa', NULL, '456789013', '45678901235', 'PT50000000000000000000004', '945678901', NULL, 'ana.pereira@tlantic.pt', NULL, 'Rua da Escola, 89', NULL, NULL, 'Portugal', NULL, NULL, 7, NULL, NULL, NULL, '2023-04-20', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-03 15:12:57', '2025-07-05 12:38:25'),
+(36, NULL, 'Ana', NULL, 'Martins', 'Feminino', NULL, NULL, 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'ana.martins@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, 'Sem Termo', '2025-07-03', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-03 15:41:47', '2025-07-03 15:41:47'),
+(37, NULL, 'Rui', NULL, 'Fernandes', 'Masculino', NULL, NULL, 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'rui.fernandes@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, 'Sem Termo', '2025-07-03', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-03 15:43:47', '2025-07-03 15:43:47'),
+(38, NULL, 'Sofia', 'Martins', 'Ribeiro', 'Feminino', '1998-08-10', 'Solteiro', 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'sofia.ribeiro@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, 'Sem Termo', '2025-07-03', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-03 15:43:58', '2025-07-05 14:24:50'),
+(39, NULL, 'Tiago', 'Teixeira', 'Gonçalves', 'Masculino', '2000-07-15', 'Divorciado', 'Portuguesa', NULL, NULL, NULL, NULL, NULL, NULL, 'tiago.goncalves@tlantic.pt', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, NULL, NULL, NULL, 'Sem Termo', '2025-07-03', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-03 15:44:12', '2025-07-05 14:24:57'),
+(46, NULL, 'Maria Silva', 'Peixoto', 'Peixoto', 'Feminino', '1992-07-10', 'Solteiro', 'Portuguesa', NULL, NULL, NULL, NULL, NULL, '912345671', 'maria.silva@exemplo.com', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, 6, NULL, NULL, NULL, '2023-01-15', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-05 11:16:20', '2025-07-05 14:25:58'),
+(47, NULL, 'Pedro Almeida', 'Silva', 'Silva', 'Masculino', '1988-07-22', 'Casado', 'Portuguesa', NULL, NULL, NULL, NULL, NULL, '923456782', 'pedro.almeida@exemplo.com', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, 7, NULL, NULL, NULL, '2022-11-01', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-05 11:16:20', '2025-07-05 14:26:02'),
+(48, NULL, 'Ana Costa', 'Almeida', 'Almeida', 'Feminino', '1995-05-05', 'Solteiro', 'Portuguesa', NULL, NULL, NULL, NULL, NULL, '934567893', 'ana.costa@exemplo.com', NULL, NULL, NULL, NULL, 'Portugal', NULL, NULL, 6, NULL, NULL, NULL, '2023-03-10', NULL, NULL, NULL, NULL, 0.00, 0.00, NULL, '09:00-18:00', 22, 0, NULL, NULL, 'Ativo', '2025-07-05 11:16:20', '2025-07-05 14:26:08');
 
 -- --------------------------------------------------------
 
@@ -419,6 +451,16 @@ CREATE TABLE `coordenador` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
+-- Extraindo dados da tabela `coordenador`
+--
+
+INSERT INTO `coordenador` (`id_coordenador`, `id_utilizador`, `id_equipa`, `id_departamento`, `cargo`, `tipo_coordenacao`, `permissoes_especificas`, `data_inicio`, `data_fim`, `ativo`, `observacoes`, `data_criacao`, `data_atualizacao`, `id_utilizador_criacao`, `id_utilizador_atualizacao`) VALUES
+(1, 25, NULL, NULL, 'Coordenadora de Desenvolvimento', 'Equipa', NULL, '2025-07-03', NULL, 1, NULL, '2025-07-03 15:41:48', '2025-07-03 15:41:48', 25, 25),
+(2, 26, NULL, NULL, 'Coordenador de Projetos', 'Equipa', NULL, '2025-07-03', NULL, 1, NULL, '2025-07-03 15:43:47', '2025-07-03 15:43:47', 26, 26),
+(3, 27, NULL, NULL, 'Coordenadora de Qualidade', 'Departamento', NULL, '2025-07-03', NULL, 1, NULL, '2025-07-03 15:43:58', '2025-07-03 15:43:58', 27, 27),
+(4, 28, NULL, NULL, 'Coordenador de Inovação', 'Departamento', NULL, '2025-07-03', NULL, 1, NULL, '2025-07-03 15:44:12', '2025-07-03 15:44:12', 28, 28);
+
+--
 -- Acionadores `coordenador`
 --
 DELIMITER $$
@@ -482,6 +524,17 @@ CREATE TABLE `departamento` (
   `data_criacao` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Extraindo dados da tabela `departamento`
+--
+
+INSERT INTO `departamento` (`id_departamento`, `nome`, `descricao`, `id_gestor`, `ativo`, `data_criacao`) VALUES
+(1, 'Recursos Humanos', 'Departamento de Recursos Humanos', NULL, 1, '2025-07-03 14:27:31'),
+(2, 'Tecnologia da Informação', 'Departamento de TI', NULL, 1, '2025-07-03 14:27:31'),
+(3, 'Financeiro', 'Departamento Financeiro', NULL, 1, '2025-07-03 14:27:31'),
+(4, 'Vendas', 'Departamento Comercial', NULL, 1, '2025-07-03 14:27:31'),
+(5, 'Marketing', 'Departamento de Marketing', NULL, 1, '2025-07-03 14:27:31');
+
 -- --------------------------------------------------------
 
 --
@@ -525,6 +578,41 @@ CREATE TABLE `equipa` (
   `data_criacao` timestamp NOT NULL DEFAULT current_timestamp(),
   `id_coordenador` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `equipa`
+--
+
+INSERT INTO `equipa` (`id_equipa`, `nome`, `descricao`, `id_departamento`, `id_equipa_pai`, `nivel`, `ativo`, `data_criacao`, `id_coordenador`) VALUES
+(6, 'equipa1', '', NULL, NULL, 1, 1, '2025-07-04 22:39:59', 36),
+(7, 'equipa2', '', NULL, NULL, 1, 1, '2025-07-05 11:00:17', 38);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `equipa_membros`
+--
+
+CREATE TABLE `equipa_membros` (
+  `id` int(11) NOT NULL,
+  `equipa_id` int(11) NOT NULL,
+  `utilizador_id` int(11) NOT NULL,
+  `coordenador` tinyint(1) NOT NULL DEFAULT 0,
+  `data_entrada` timestamp NOT NULL DEFAULT current_timestamp(),
+  `ativo` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `equipa_membros`
+--
+
+INSERT INTO `equipa_membros` (`id`, `equipa_id`, `utilizador_id`, `coordenador`, `data_entrada`, `ativo`) VALUES
+(1, 5, 36, 1, '2025-07-04 22:34:46', 1),
+(2, 5, 25, 1, '2025-07-04 22:34:46', 1),
+(3, 6, 36, 1, '2025-07-04 22:39:59', 1),
+(4, 6, 25, 1, '2025-07-04 22:39:59', 1),
+(5, 7, 38, 1, '2025-07-05 11:00:17', 1),
+(6, 7, 27, 1, '2025-07-05 11:00:17', 1);
 
 -- --------------------------------------------------------
 
@@ -871,7 +959,10 @@ INSERT INTO `perfilacesso` (`id_perfil_acesso`, `descricao`, `nivel_acesso`, `pe
 (2, 'RH', 80, '{\"colaboradores\": {\"ler\": true, \"editar\": true, \"criar\": true, \"excluir\": false}, \"relatorios\": true, \"documentos\": true, \"campos_personalizados\": {\"visualizar\": true, \"criar\": true, \"editar\": true, \"excluir\": false, \"categorias\": {\"visualizar\": true, \"criar\": false, \"editar\": false, \"excluir\": false}}}', 1, '2025-06-25 08:09:00'),
 (3, 'Coordenador', 60, '{\"equipa\": true, \"colaboradores\": {\"ler\": true, \"editar_equipa\": true}, \"relatorios\": true, \"campos_personalizados\": {\"visualizar\": true, \"criar\": false, \"editar\": false, \"excluir\": false, \"categorias\": {\"visualizar\": true, \"criar\": false, \"editar\": false, \"excluir\": false}}}', 1, '2025-06-25 08:09:00'),
 (4, 'Colaborador', 40, '{\"perfil\": true, \"documentos\": true}', 1, '2025-06-25 08:09:00'),
-(5, 'Convidado', 20, '{\"perfil\": true}', 1, '2025-06-25 08:09:00');
+(5, 'Convidado', 20, '{\"perfil\": true}', 1, '2025-06-25 08:09:00'),
+(9, 'francisca', 1, '{}', 1, '2025-07-03 16:22:34'),
+(10, 'Rita', 1, '{}', 1, '2025-07-05 14:57:48'),
+(11, 'Mario', 1, '{}', 0, '2025-07-05 15:15:47');
 
 -- --------------------------------------------------------
 
@@ -973,6 +1064,16 @@ CREATE TABLE `relatorio_personalizado` (
   `data_atualizacao` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Extraindo dados da tabela `relatorio_personalizado`
+--
+
+INSERT INTO `relatorio_personalizado` (`id_relatorio`, `nome`, `descricao`, `consulta_sql`, `parametros`, `formato_saida`, `agendamento`, `ativo`, `id_utilizador_criacao`, `id_utilizador_atualizacao`, `data_criacao`, `data_atualizacao`) VALUES
+(1, 'Aniversariantes do Mês', 'Lista de colaboradores que fazem aniversário no mês atual', 'SELECT \r\n        c.nome AS \"Nome Completo\",\r\n        DATE_FORMAT(c.data_nascimento, \"%d/%m\") AS \"Data de Nascimento\",\r\n        DAY(c.data_nascimento) AS \"Dia\",\r\n        COALESCE(e.nome, \"Sem equipe\") AS \"Equipe\",\r\n        COALESCE(d.nome, \"Sem departamento\") AS \"Departamento\",\r\n        COALESCE(f.nome, \"Sem cargo\") AS \"Cargo\",\r\n        CONCAT(FLOOR(DATEDIFF(CURDATE(), c.data_nascimento) / 365), \" anos\") AS \"Idade\",\r\n        c.email AS \"Email\",\r\n        c.telemovel AS \"Telemóvel\"\r\n    FROM \r\n        colaborador c\r\n    LEFT JOIN \r\n        equipa e ON c.id_equipa = e.id_equipa\r\n    LEFT JOIN\r\n        departamento d ON e.id_departamento = d.id_departamento\r\n    LEFT JOIN\r\n        funcao f ON c.id_funcao = f.id_funcao\r\n    WHERE \r\n        c.estado = \"Ativo\"\r\n        AND c.data_nascimento IS NOT NULL\r\n        AND (\r\n            (:data_inicio IS NULL OR :data_fim IS NULL)  -- Se não houver filtro de data\r\n            OR (\r\n                MONTH(c.data_nascimento) >= MONTH(:data_inicio)\r\n                AND MONTH(c.data_nascimento) <= MONTH(:data_fim)\r\n                AND DAY(c.data_nascimento) >= DAY(:data_inicio)\r\n                AND DAY(c.data_nascimento) <= DAY(:data_fim)\r\n            )\r\n        )\r\n        AND (:departamento = \"Todos os Departamentos\" OR d.nome = :departamento)\r\n        AND (:cargo = \"\" OR f.nome = :cargo)\r\n    ORDER BY \r\n        MONTH(c.data_nascimento), DAY(c.data_nascimento), c.nome', '[\r\n        {\"nome\": \"data_inicio\", \"rotulo\": \"Período Inicial\", \"tipo\": \"data\", \"obrigatorio\": false},\r\n        {\"nome\": \"data_fim\", \"rotulo\": \"Período Final\", \"tipo\": \"data\", \"obrigatorio\": false},\r\n        {\"nome\": \"departamento\", \"rotulo\": \"Departamento\", \"tipo\": \"select\", \"obrigatorio\": false, \"opcoes\": \"SELECT DISTINCT nome FROM departamento UNION SELECT \"Todos os Departamentos\"\", \"valor_padrao\": \"Todos os Departamentos\"},\r\n        {\"nome\": \"cargo\", \"rotulo\": \"Cargo\", \"tipo\": \"texto\", \"obrigatorio\": false}\r\n    ]', 'pdf', '0 8 1 * *', 1, 1, 1, '2025-07-05 11:05:31', '2025-07-05 11:19:53'),
+(2, 'Colaboradores Ativos', 'Lista de todos os colaboradores ativos na organização', 'SELECT \r\n        c.numero_mecanografico AS \"Nº Mecanográfico\",\r\n        c.nome AS \"Nome Completo\",\r\n        e.nome AS \"Equipa\",\r\n        f.nome AS \"Função\",\r\n        d.nome AS \"Departamento\",\r\n        DATE_FORMAT(c.data_entrada, \"%d/%m/%Y\") AS \"Data de Admissão\",\r\n        TIMESTAMPDIFF(YEAR, c.data_entrada, CURDATE()) AS \"Anos de Empresa\",\r\n        c.email AS \"Email\",\r\n        c.telemovel AS \"Telemóvel\",\r\n        c.estado AS \"Estado\"\r\n    FROM \r\n        colaborador c\r\n    LEFT JOIN \r\n        equipa e ON c.id_equipa = e.id_equipa\r\n    LEFT JOIN\r\n        funcao f ON c.id_funcao = f.id_funcao\r\n    LEFT JOIN\r\n        departamento d ON e.id_departamento = d.id_departamento\r\n    WHERE \r\n        c.estado = \"Ativo\"\r\n    ORDER BY \r\n        e.nome, c.nome', '[]', 'pdf', NULL, 1, 1, 1, '2025-07-05 11:05:31', '2025-07-05 11:05:31'),
+(3, 'Aniversários por Equipe', 'Lista de aniversariantes agrupados por equipe', 'SELECT \r\n        e.nome AS equipe,\r\n        c.nome AS colaborador,\r\n        DATE_FORMAT(c.data_nascimento, \"%d/%m\") AS data_aniversario,\r\n        c.email,\r\n        c.telemovel,\r\n        DATEDIFF(\r\n            DATE_ADD(\r\n                c.data_nascimento, \r\n                INTERVAL IF(\r\n                    DAYOFYEAR(c.data_nascimento) >= DAYOFYEAR(CURDATE()),\r\n                    YEAR(CURDATE()) - YEAR(c.data_nascimento),\r\n                    YEAR(CURDATE()) - YEAR(c.data_nascimento) + 1\r\n                ) YEAR\r\n            ),\r\n            CURDATE()\r\n        ) AS dias_para_aniversario\r\n    FROM \r\n        colaborador c\r\n    LEFT JOIN \r\n        equipa e ON c.id_equipa = e.id_equipa\r\n    WHERE \r\n        c.estado = \"Ativo\"\r\n    ORDER BY \r\n        e.nome, \r\n        DAYOFYEAR(c.data_nascimento)', '[]', 'pdf', '0 8 * * 1', 1, 1, 1, '2025-07-05 11:05:31', '2025-07-05 11:05:31'),
+(4, 'Vouchers de Telemóvel', 'Relatório de vouchers de telemóvel atribuídos e disponíveis', 'SELECT \r\n        c.nome AS colaborador,\r\n        e.nome AS equipe,\r\n        c.ultimo_voucher_telemovel AS data_ultimo_voucher,\r\n        CASE \r\n            WHEN c.ultimo_voucher_telemovel IS NULL THEN \"Nunca recebeu\"\r\n            WHEN c.ultimo_voucher_telemovel < DATE_SUB(CURDATE(), INTERVAL 1 YEAR) THEN \"Elegível para novo voucher\"\r\n            ELSE CONCAT(\"Recebeu em \", DATE_FORMAT(c.ultimo_voucher_telemovel, \"%d/%m/%Y\"), \" (\", \r\n                     DATEDIFF(DATE_ADD(c.ultimo_voucher_telemovel, INTERVAL 1 YEAR), CURDATE()), \r\n                     \" dias restantes)\")\r\n        END AS status_voucher,\r\n        c.email,\r\n        c.telemovel,\r\n        c.data_entrada,\r\n        TIMESTAMPDIFF(MONTH, c.data_entrada, CURDATE()) AS meses_empresa\r\n    FROM \r\n        colaborador c\r\n    LEFT JOIN \r\n        equipa e ON c.id_equipa = e.id_equipa\r\n    WHERE \r\n        c.estado = \"Ativo\"\r\n    ORDER BY \r\n        CASE \r\n            WHEN c.ultimo_voucher_telemovel IS NULL THEN 0\r\n            ELSE DATEDIFF(DATE_ADD(c.ultimo_voucher_telemovel, INTERVAL 1 YEAR), CURDATE())\r\n        END', '[]', 'xlsx', '0 8 1 * *', 1, 1, 1, '2025-07-05 11:05:31', '2025-07-05 11:05:31');
+
 -- --------------------------------------------------------
 
 --
@@ -1020,6 +1121,36 @@ INSERT INTO `tarefa_agendada` (`id_tarefa`, `nome`, `tipo`, `frequencia`, `proxi
 ('enviar_emails_pendentes', 'Enviar Emails Pendentes', 'email', '*/5 * * * *', NULL, NULL, NULL, NULL, 1, '{}', '2025-06-25 08:09:01', '2025-06-25 08:09:01'),
 ('limpeza_logs', 'Limpeza de Logs Antigos', 'sistema', '0 0 * * 0', NULL, NULL, NULL, NULL, 1, '{\"dias_manter\": 90}', '2025-06-25 08:09:01', '2025-06-25 08:09:01'),
 ('verificar_vencimentos', 'Verificar Vencimentos', 'notificacao', '0 9 * * 1', NULL, NULL, NULL, NULL, 1, '{}', '2025-06-25 08:09:01', '2025-06-25 08:09:01');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `tipo_documento`
+--
+
+CREATE TABLE `tipo_documento` (
+  `id_tipo_documento` int(11) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `descricao` text DEFAULT NULL,
+  `validade_meses` int(11) DEFAULT NULL,
+  `obrigatorio` tinyint(1) DEFAULT 0,
+  `data_criacao` timestamp NOT NULL DEFAULT current_timestamp(),
+  `data_atualizacao` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Extraindo dados da tabela `tipo_documento`
+--
+
+INSERT INTO `tipo_documento` (`id_tipo_documento`, `nome`, `descricao`, `validade_meses`, `obrigatorio`, `data_criacao`, `data_atualizacao`) VALUES
+(1, 'Cédula de Identidade', 'Documento de identificação pessoal', 60, 1, '2025-07-03 14:31:19', '2025-07-03 14:31:19'),
+(2, 'Cartão de Cidadão', 'Documento de identificação pessoal', 60, 1, '2025-07-03 14:31:19', '2025-07-03 14:31:19'),
+(3, 'Cartão de Contribuinte', 'Número de Identificação Fiscal', NULL, 1, '2025-07-03 14:31:19', '2025-07-03 14:31:19'),
+(4, 'Carta de Condução', 'Carta de condução', 120, 0, '2025-07-03 14:31:19', '2025-07-03 14:31:19'),
+(5, 'Certificado de Habilitações', 'Certificado de habilitações literárias', NULL, 1, '2025-07-03 14:31:19', '2025-07-03 14:31:19'),
+(6, 'Contrato de Trabalho', 'Contrato de trabalho', NULL, 1, '2025-07-03 14:31:19', '2025-07-03 14:31:19'),
+(7, 'Recibos de Vencimento', 'Recibos de vencimento', 60, 0, '2025-07-03 14:31:19', '2025-07-03 14:31:19'),
+(8, 'Avaliação de Desempenho', 'Avaliação de desempenho anual', 12, 0, '2025-07-03 14:31:19', '2025-07-03 14:31:19');
 
 -- --------------------------------------------------------
 
@@ -1076,7 +1207,16 @@ INSERT INTO `utilizador` (`id_utilizador`, `username`, `email`, `password_hash`,
 (1, 'admin', 'admin@tlantic.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, 1, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-06-25 14:37:09', '2025-06-25 15:00:53'),
 (2, 'rh', 'rh@tlantic.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 2, 2, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-06-25 14:37:09', '2025-06-25 15:00:53'),
 (3, 'coordenador', 'coordenador@tlantic.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 3, 3, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-06-25 14:37:09', '2025-06-25 15:00:53'),
-(4, 'colaborador', 'colaborador@tlantic.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 4, 4, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-06-25 14:37:09', '2025-06-25 15:00:53');
+(4, 'colaborador', 'colaborador@tlantic.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 4, 4, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-06-25 14:37:09', '2025-06-25 15:00:53'),
+(15, 'joao.silva', 'joao.silva@tlantic.pt', 'e8d3af75ae4bc94a8632b75fa79d56e600e9efce2b4f1dcdecd4713d29400a47', NULL, 4, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-07-03 15:19:12', '2025-07-03 15:25:10'),
+(16, 'maria.santos', 'maria.santos@tlantic.pt', 'e8d3af75ae4bc94a8632b75fa79d56e600e9efce2b4f1dcdecd4713d29400a47', 17, 4, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-07-03 15:19:12', '2025-07-03 15:25:10'),
+(17, 'carlos.oliveira', 'carlos.oliveira@tlantic.pt', 'e8d3af75ae4bc94a8632b75fa79d56e600e9efce2b4f1dcdecd4713d29400a47', 18, 4, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-07-03 15:19:12', '2025-07-03 15:25:10'),
+(18, 'ana.pereira', 'ana.pereira@tlantic.pt', 'e8d3af75ae4bc94a8632b75fa79d56e600e9efce2b4f1dcdecd4713d29400a47', 19, 4, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-07-03 15:19:12', '2025-07-03 15:25:10'),
+(19, 'pedro.alves', 'pedro.alves@tlantic.pt', 'e8d3af75ae4bc94a8632b75fa79d56e600e9efce2b4f1dcdecd4713d29400a47', NULL, 4, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-07-03 15:19:12', '2025-07-03 15:25:10'),
+(25, 'ana.martins', 'ana.martins@tlantic.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 36, 2, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-07-03 15:41:47', '2025-07-03 15:46:46'),
+(26, 'rui.fernandes', 'rui.fernandes@tlantic.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 37, 2, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-07-03 15:43:47', '2025-07-03 15:46:46'),
+(27, 'sofia.ribeiro', 'sofia.ribeiro@tlantic.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 38, 2, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-07-03 15:43:58', '2025-07-03 15:46:46'),
+(28, 'tiago.goncalves', 'tiago.goncalves@tlantic.pt', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 39, 3, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, 0, '2025-07-03 15:44:12', '2025-07-03 15:44:12');
 
 -- --------------------------------------------------------
 
@@ -1206,7 +1346,8 @@ ALTER TABLE `colaborador`
   ADD UNIQUE KEY `email` (`email`),
   ADD KEY `id_funcao` (`id_funcao`),
   ADD KEY `id_equipa` (`id_equipa`),
-  ADD KEY `id_gestor_direto` (`id_gestor_direto`);
+  ADD KEY `id_gestor_direto` (`id_gestor_direto`),
+  ADD KEY `id_departamento` (`id_departamento`);
 
 --
 -- Índices para tabela `configuracao`
@@ -1281,6 +1422,14 @@ ALTER TABLE `equipa`
   ADD KEY `id_departamento` (`id_departamento`),
   ADD KEY `id_equipa_pai` (`id_equipa_pai`),
   ADD KEY `id_coordenador` (`id_coordenador`);
+
+--
+-- Índices para tabela `equipa_membros`
+--
+ALTER TABLE `equipa_membros`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `equipa_utilizador` (`equipa_id`,`utilizador_id`),
+  ADD KEY `utilizador_id` (`utilizador_id`);
 
 --
 -- Índices para tabela `favorito`
@@ -1467,6 +1616,13 @@ ALTER TABLE `tarefa_agendada`
   ADD PRIMARY KEY (`id_tarefa`);
 
 --
+-- Índices para tabela `tipo_documento`
+--
+ALTER TABLE `tipo_documento`
+  ADD PRIMARY KEY (`id_tipo_documento`),
+  ADD UNIQUE KEY `nome` (`nome`);
+
+--
 -- Índices para tabela `traducao`
 --
 ALTER TABLE `traducao`
@@ -1527,7 +1683,7 @@ ALTER TABLE `api_acesso`
 -- AUTO_INCREMENT de tabela `campos_personalizados`
 --
 ALTER TABLE `campos_personalizados`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `campos_personalizados_historico`
@@ -1539,7 +1695,7 @@ ALTER TABLE `campos_personalizados_historico`
 -- AUTO_INCREMENT de tabela `campo_personalizado`
 --
 ALTER TABLE `campo_personalizado`
-  MODIFY `id_campo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_campo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de tabela `campo_personalizado_categoria`
@@ -1557,7 +1713,7 @@ ALTER TABLE `campo_personalizado_valor`
 -- AUTO_INCREMENT de tabela `colaborador`
 --
 ALTER TABLE `colaborador`
-  MODIFY `id_colaborador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_colaborador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT de tabela `configuracao`
@@ -1581,7 +1737,7 @@ ALTER TABLE `convidado`
 -- AUTO_INCREMENT de tabela `coordenador`
 --
 ALTER TABLE `coordenador`
-  MODIFY `id_coordenador` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_coordenador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `dashboard`
@@ -1599,7 +1755,7 @@ ALTER TABLE `dashboard_widget`
 -- AUTO_INCREMENT de tabela `departamento`
 --
 ALTER TABLE `departamento`
-  MODIFY `id_departamento` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_departamento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `documento`
@@ -1611,7 +1767,13 @@ ALTER TABLE `documento`
 -- AUTO_INCREMENT de tabela `equipa`
 --
 ALTER TABLE `equipa`
-  MODIFY `id_equipa` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_equipa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT de tabela `equipa_membros`
+--
+ALTER TABLE `equipa_membros`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `favorito`
@@ -1713,7 +1875,7 @@ ALTER TABLE `notificacao`
 -- AUTO_INCREMENT de tabela `perfilacesso`
 --
 ALTER TABLE `perfilacesso`
-  MODIFY `id_perfil_acesso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_perfil_acesso` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de tabela `permissoes`
@@ -1743,7 +1905,13 @@ ALTER TABLE `relacionamento`
 -- AUTO_INCREMENT de tabela `relatorio_personalizado`
 --
 ALTER TABLE `relatorio_personalizado`
-  MODIFY `id_relatorio` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_relatorio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de tabela `tipo_documento`
+--
+ALTER TABLE `tipo_documento`
+  MODIFY `id_tipo_documento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de tabela `traducao`
@@ -1755,7 +1923,7 @@ ALTER TABLE `traducao`
 -- AUTO_INCREMENT de tabela `utilizador`
 --
 ALTER TABLE `utilizador`
-  MODIFY `id_utilizador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_utilizador` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT de tabela `viatura`
@@ -1823,7 +1991,8 @@ ALTER TABLE `campo_personalizado_valor`
 ALTER TABLE `colaborador`
   ADD CONSTRAINT `colaborador_ibfk_1` FOREIGN KEY (`id_funcao`) REFERENCES `funcao` (`id_funcao`),
   ADD CONSTRAINT `colaborador_ibfk_2` FOREIGN KEY (`id_equipa`) REFERENCES `equipa` (`id_equipa`),
-  ADD CONSTRAINT `colaborador_ibfk_3` FOREIGN KEY (`id_gestor_direto`) REFERENCES `colaborador` (`id_colaborador`);
+  ADD CONSTRAINT `colaborador_ibfk_3` FOREIGN KEY (`id_gestor_direto`) REFERENCES `colaborador` (`id_colaborador`),
+  ADD CONSTRAINT `colaborador_ibfk_departamento` FOREIGN KEY (`id_departamento`) REFERENCES `departamento` (`id_departamento`) ON DELETE SET NULL;
 
 --
 -- Limitadores para a tabela `configuracao`

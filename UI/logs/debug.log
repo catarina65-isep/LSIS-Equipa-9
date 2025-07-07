@@ -124,3 +124,171 @@
 [2025-07-07 12:17:24] Nome do perfil: Coordenador
 [2025-07-07 12:17:24] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
 [2025-07-07 12:17:24] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-07 13:10:34] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 13:10:34] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 13:10:34] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-07 13:10:34] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-07 13:10:34] ID do perfil do usuário: 2
+[2025-07-07 13:10:34] Nome do perfil: Recursos Humanos
+[2025-07-07 13:10:34] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-07 13:10:34] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-07 13:11:10] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 13:11:10] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 13:11:10] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-07 13:11:10] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-07 13:11:10] ID do perfil do usuário: 3
+[2025-07-07 13:11:10] Nome do perfil: Coordenador
+[2025-07-07 13:11:10] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-07 13:11:10] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-07 13:11:43] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 13:11:43] Dados recebidos: Array
+(
+    [email] => rhr@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 13:11:43] Tentando autenticar usuário: rhr@tlantic.pt
+[2025-07-07 13:11:43] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rhr@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-07 13:11:43] ID do perfil do usuário: 4
+[2025-07-07 13:11:43] Nome do perfil: Colaborador
+[2025-07-07 13:11:43] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-07 13:11:43] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-07 13:11:52] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 13:11:52] Dados recebidos: Array
+(
+    [email] => rhr@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 13:11:52] Tentando autenticar usuário: rhr@tlantic.pt
+[2025-07-07 13:11:52] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rhr@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-07 13:11:52] ID do perfil do usuário: 4
+[2025-07-07 13:11:52] Nome do perfil: Colaborador
+[2025-07-07 13:11:52] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-07 13:11:52] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-07 13:12:06] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 13:12:06] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 13:12:06] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-07 13:12:06] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-07 13:12:06] ID do perfil do usuário: 2
+[2025-07-07 13:12:06] Nome do perfil: Recursos Humanos
+[2025-07-07 13:12:06] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-07 13:12:06] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-07 14:44:03] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 14:44:03] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 14:44:03] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-07 14:44:04] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-07 14:44:04] ID do perfil do usuário: 2
+[2025-07-07 14:44:04] Nome do perfil: Recursos Humanos
+[2025-07-07 14:44:04] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-07 14:44:04] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-07 14:44:20] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 14:44:20] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 14:44:20] Tentando autenticar usuário: colaborador@tlantic.pt
+[2025-07-07 14:44:20] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => colaborador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-07 14:44:20] ID do perfil do usuário: 4
+[2025-07-07 14:44:20] Nome do perfil: Colaborador
+[2025-07-07 14:44:20] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-07 14:44:20] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-07 14:44:37] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-07 14:44:37] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-07 14:44:37] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-07 14:44:37] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-07 14:44:37] ID do perfil do usuário: 3
+[2025-07-07 14:44:37] Nome do perfil: Coordenador
+[2025-07-07 14:44:37] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-07 14:44:37] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php

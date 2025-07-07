@@ -44,6 +44,11 @@ class PerfilAcessoBLL {
      * @param int $id ID do perfil de acesso a ser excluído
      * @return array Resultado da operação com status e mensagem
      */
+    /**
+     * Exclui um perfil de acesso pelo ID
+     * @param int $id ID do perfil de acesso a ser excluído
+     * @return array Resultado da operação com status e mensagem
+     */
     public function excluir($id) {
         try {
             if (!is_numeric($id) || $id <= 0) {
