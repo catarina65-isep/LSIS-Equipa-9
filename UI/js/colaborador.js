@@ -53,14 +53,18 @@ function initializeLayout() {
         width: '100%'
     });
 
-    // Inicializar DataTables
-    $('.table').DataTable({
-        pageLength: 5,
-        lengthChange: false,
-        searching: false,
-        info: false,
-        language: {
-            url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json'
+    // Inicializar DataTables apenas se não estiver inicializado
+    $('.table').each(function() {
+        if (!$.fn.DataTable.isDataTable(this)) {
+            $(this).DataTable({
+                pageLength: 5,
+                lengthChange: false,
+                searching: false,
+                info: false,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json'
+                }
+            });
         }
     });
 }

@@ -735,7 +735,7 @@ $page_title = "Perfil do Colaborador";
             <div class="card-body">
                 <div class="collapse show" id="dadosPessoais">
                     <form id="profileForm">
-                        <input type="hidden" id="usuario_id" name="usuario_id" value="<?php echo htmlspecialchars($_SESSION['usuario_id']); ?>">
+                        <input type="hidden" id="usuario_id" name="usuario_id" value="<?php echo htmlspecialchars($_SESSION['utilizador_id']); ?>">
                         
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -1064,16 +1064,7 @@ $page_title = "Perfil do Colaborador";
                     width: '100%'
                 });
 
-                // Inicializar DataTables
-                $('.table').DataTable({
-                    pageLength: 5,
-                    lengthChange: false,
-                    searching: false,
-                    info: false,
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-PT.json'
-                    }
-                });
+
             });
         </script>
     </body>
