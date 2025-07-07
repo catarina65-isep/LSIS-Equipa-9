@@ -726,7 +726,7 @@ $page_title = "Perfil do Colaborador";
         <div class="card" id="perfil">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h4>Dados Pessoais</h4>
+                    <h4>Os Meus Dados</h4>
                     <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#dadosPessoais">
                         <i class='bx bx-edit'></i> Editar
                     </button>
@@ -881,23 +881,6 @@ $page_title = "Perfil do Colaborador";
                                     <div class="input-group">
                                         <span class="input-group-text"><i class='bx bx-phone'></i></span>
                                         <input type="tel" id="telemovelEmergencia" name="telemovelEmergencia" class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Seção Observações -->
-                        <div class="section-header mt-4 mb-4">
-                            <h3 class="section-title">Observações</h3>
-                            <div class="section-divider"></div>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <div class="form-group">
-                                    <label for="observacoes"><i class='bx bx-comment-detail'></i> Observações</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-comment-detail'></i></span>
-                                        <textarea id="observacoes" name="observacoes" class="form-control form-control-lg" rows="3"></textarea>
                                     </div>
                                 </div>
                             </div>
