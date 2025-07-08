@@ -1021,7 +1021,7 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                 
 
 
-                // Adicionar estilo CSS para o spinner e mensagens de erro
+                // Adicionar estilo CSS combinado
                 const style = document.createElement('style');
                 style.textContent = `
                     .loading-spinner {
@@ -1043,12 +1043,6 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                     .btn-apagar-documento:hover {
                         opacity: 0.8;
                     }
-                `;
-                document.head.appendChild(style);
-
-                // Adicionar estilo CSS para o overlay de carregamento e campos de upload
-                const style = document.createElement('style');
-                style.textContent = `
                     .loading-overlay {
                         display: none;
                         position: fixed;
@@ -1103,37 +1097,22 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                         method: 'POST',
                         body: new FormData(form)
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.success) {
-                            // Mostrar erros
-                            const messageContainer = document.getElementById('messageContainer');
-                            messageContainer.innerHTML = data.erros ? data.erros.map(erro => `<div class="erro-upload">${erro}</div>`).join('') : 
-                                `<div class="erro-upload">${data.message}</div>`;
-                        } else {
-                            // Sucesso
-                            const messageContainer = document.getElementById('messageContainer');
-                            messageContainer.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
-                        }
-                    })
-                    .catch(error => {
-                        const messageContainer = document.getElementById('messageContainer');
-                        messageContainer.innerHTML = `<div class="erro-upload">Erro ao processar o formulário: ${error.message}</div>`;
-                    });
-                    .then(response => response.text())
-                    .then(text => {
+                    .then(response => {
+                        if (!response.ok) {
                             throw new Error('Erro na requisição: ' + response.status);
                         }
-
-                        // Aguardar a resposta completa antes de processar
-                        const text = await response.text();
+                        return response.text();
+                    })
+                    .then(text => {
                         let result;
                         try {
                             result = JSON.parse(text);
                         } catch (e) {
                             throw new Error('Erro ao processar resposta: ' + e.message);
                         }
-
+                        return result;
+                    })
+                    .then(result => {
                         if (result.success) {
                             // Remover qualquer mensagem anterior
                             const existingAlert = document.getElementById('messageContainer').querySelector('.alert');
@@ -1157,6 +1136,9 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                             setTimeout(() => {
                                 successMessage.remove();
                             }, 5000);
+
+                            // Atualizar tabela de documentos
+                            atualizarTabelaDocumentos();
                         } else {
                             // Remover qualquer mensagem anterior
                             const existingAlert = document.getElementById('messageContainer').querySelector('.alert');
@@ -1190,7 +1172,8 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                                 errorMessage.remove();
                             }, 5000);
                         }
-                    } catch (error) {
+                    })
+                    .catch(error => {
                         console.error('Erro na requisição:', error);
                         
                         // Remover qualquer mensagem anterior
@@ -1215,13 +1198,16 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                         setTimeout(() => {
                             errorMessage.remove();
                         }, 5000);
-                    } finally {
+                        
+                        throw error; // Re-lança o erro para o finally
+                    })
+                    .finally(() => {
                         // Remover o overlay de carregamento
                         updateLoadingState(false);
                         
                         // Garantir que o botão esteja disponível novamente
                         submitButton.disabled = false;
-                    }
+                    });
                 });
             });
         </script>
@@ -1231,9 +1217,6 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4>Documentos</h4>
-                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                        <i class='bx bx-upload'></i> Upload de Documento
-                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -1249,53 +1232,56 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                             </tr>
                         </thead>
                         <tbody id="documentosTableBody">
+                            <?php
+                            // Diretório de uploads
+                            $uploadDir = __DIR__ . '/../uploads/documentos/';
+                              
+                            // Tipos de documentos e seus prefixos
+                            $documentos = [
+                                'morada' => 'Comprovativo de Morada',
+                                'cartaocidadao' => 'Cartão de Cidadão',
+                                'nif' => 'NIF',
+                                'niss' => 'NISS',
+                                'iban' => 'IBAN'
+                            ];
+                              
+                            foreach ($documentos as $prefix => $descricao) {
+                                $files = glob($uploadDir . $prefix . '_' . $_SESSION['utilizador_id'] . '_*');
+                                if (!empty($files)) {
+                                    $latestFile = array_reduce($files, function($a, $b) {
+                                        return filemtime($a) > filemtime($b) ? $a : $b;
+                                    });
+                                    $fileName = basename($latestFile);
+                                    $uploadDate = date('Y-m-d H:i:s', filemtime($latestFile));
+                                    $status = 'Pendente'; // Pode adicionar lógica para verificar status
+                                    
+                                    echo "<tr>";
+                                    echo "<td>" . htmlspecialchars($descricao) . "</td>";
+                                    echo "<td>" . htmlspecialchars($fileName) . "</td>";
+                                    echo "<td>" . htmlspecialchars($uploadDate) . "</td>";
+                                    echo "<td class='text-warning'>" . htmlspecialchars($status) . "</td>";
+                                    echo "<td>";
+                                    echo "<a href='" . htmlspecialchars("../uploads/documentos/" . $fileName) . "' target='_blank' class='btn btn-primary btn-sm'>";
+                                    echo "<i class='bx bx-download'></i> Download";
+                                    echo "</a>";
+                                    echo "<button type='button' class='btn btn-danger btn-sm ms-2 btn-apagar-documento' ";
+                                    echo "data-file='" . htmlspecialchars($fileName) . "' ";
+                                    echo "data-field='" . htmlspecialchars($prefix) . "' ";
+                                    echo "onclick='apagarDocumento(event)'>";
+                                    echo "<i class='bx bx-trash'></i>";
+                                    echo "</button>";
+                                    echo "</td>";
+                                    echo "</tr>";
+                                }
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Modal para Upload de Documentos -->
-        <div class="modal fade" id="uploadModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Upload de Documento</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="uploadForm">
-                            <div class="mb-3">
-                                <label for="tipoDocumento" class="form-label">Tipo de Documento</label>
-                                <select class="form-select" id="tipoDocumento" name="tipoDocumento" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="cartao_cidadao">Cartão de Cidadão</option>
-                                    <option value="nif">NIF</option>
-                                    <option value="niss">NISS</option>
-                                    <option value="outro">Outro</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="arquivo" class="form-label">Arquivo</label>
-                                <input type="file" class="form-control" id="arquivo" name="arquivo" accept=".pdf,.jpg,.jpeg,.png" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="dataValidade" class="form-label">Data de Validade</label>
-                                <input type="date" class="form-control" id="dataValidade" name="dataValidade">
-                            </div>
-                            <div class="mb-3">
-                                <label for="descricao" class="form-label">Descrição</label>
-                                <textarea class="form-control" id="descricao" name="descricao" rows="3"></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-primary" onclick="uploadDocumento()">Upload</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <?php include 'footer.php'; ?>
 
@@ -1374,6 +1360,63 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                     width: '100%'
                 });
             });
+        </script>
+        <script>
+            // Função para atualizar a tabela de documentos (apenas quando necessário)
+            function atualizarTabelaDocumentos() {
+                // Tipos de documentos e seus prefixos
+                const documentos = {
+                    'morada': 'Comprovativo de Morada',
+                    'cartaocidadao': 'Cartão de Cidadão',
+                    'nif': 'NIF',
+                    'niss': 'NISS',
+                    'iban': 'IBAN'
+                };
+
+                // Para cada tipo de documento
+                Object.entries(documentos).forEach(([prefix, descricao]) => {
+                    // Buscar arquivos mais recentes
+                    fetch(`/LSIS-Equipa-9/UI/busca_documentos.php?prefix=${prefix}&utilizador_id=${$_SESSION['utilizador_id']}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.file) {
+                                // Verificar se já existe um elemento com este arquivo
+                                const existingRow = document.querySelector(`tr[data-file='${data.file}']`);
+                                if (!existingRow) {
+                                    // Criar nova linha apenas se não existir
+                                    const tbody = document.getElementById('documentosTableBody');
+                                    const tr = document.createElement('tr');
+                                    tr.dataset.file = data.file; // Adicionar atributo data-file
+                                    tr.innerHTML = `
+                                        <td>${descricao}</td>
+                                        <td>${data.file}</td>
+                                        <td>${data.uploadDate}</td>
+                                        <td class='text-warning'>Pendente</td>
+                                        <td>
+                                            <a href='../uploads/documentos/${data.file}' target='_blank' class='btn btn-primary btn-sm'>
+                                                <i class='bx bx-download'></i> Download
+                                            </a>
+                                            <button type='button' class='btn btn-danger btn-sm ms-2 btn-apagar-documento' 
+                                                    data-file='${data.file}' 
+                                                    data-field='${prefix}' 
+                                                    onclick='apagarDocumento(event)'>
+                                                <i class='bx bx-trash'></i>
+                                            </button>
+                                        </td>
+                                    `;
+                                    tbody.appendChild(tr);
+                                }
+                            }
+                        })
+                        .catch(error => console.error('Erro ao buscar documentos:', error));
+                });
+            }
+
+            // Inicializar tabela de documentos quando a página carrega
+            document.addEventListener('DOMContentLoaded', function() {
+                // Não faz nada na inicialização, a tabela já vem do PHP
+            });
+
         </script>
         <script>
             // Função para inicializar máscaras
