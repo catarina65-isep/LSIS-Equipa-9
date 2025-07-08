@@ -935,6 +935,7 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                 
                 submitButton.addEventListener('click', async function(e) {
                     e.preventDefault();
+                    console.log('Botão clicado');
                     
                     // Adicionar spinner ao botão
                     const originalText = submitButton.innerHTML;
@@ -942,15 +943,24 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                     submitButton.disabled = true;
                     
                     try {
+                        console.log('Criando FormData');
                         const formData = new FormData(form);
+                        console.log('Dados do formulário:', Object.fromEntries(formData.entries()));
+                        
+                        console.log('Fazendo requisição para:', form.action);
                         const response = await fetch(form.action, {
                             method: 'POST',
                             body: formData
                         });
                         
+                        console.log('Status da resposta:', response.status);
+                        console.log('Headers da resposta:', Object.fromEntries(response.headers.entries()));
+                        
                         const result = await response.json();
+                        console.log('Resultado:', result);
 
                         if (result.success) {
+                            console.log('Sucesso! Atualizando campos');
                             // Atualizar os campos com os novos valores
                             for (const [key, value] of formData.entries()) {
                                 const element = form.querySelector(`[name="${key}"]`);
@@ -978,16 +988,52 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             `;
-                            form.parentElement.insertBefore(successMessage, submitButton.parentElement.nextSibling);
+                            // Adicionar a mensagem antes do botão
+                            const buttonContainer = submitButton.parentElement;
+                            buttonContainer.insertBefore(successMessage, submitButton);
 
                             // Remover mensagem após 5 segundos
                             setTimeout(() => {
                                 successMessage.remove();
                             }, 5000);
                         } else {
-                            throw new Error(result.message || 'Erro ao salvar os dados');
+                            console.log('Erro:', result);
+                            // Mostrar mensagem de erro
+                            const errorMessage = document.createElement('div');
+                            errorMessage.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                            
+                            // Se houver erros específicos, mostrar cada um
+                            if (result.erros && result.erros.length > 0) {
+                                errorMessage.innerHTML = `
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>${result.message}</span>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                    <ul class="mt-2 mb-0">
+                                        ${result.erros.map(erro => `<li>${erro}</li>`).join('')}
+                                    </ul>
+                                `;
+                            } else {
+                                errorMessage.innerHTML = `
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span>${result.message || 'Erro ao salvar os dados. Por favor, tente novamente.'}</span>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                `;
+                            }
+                            
+                            console.log('Inserindo mensagem de erro');
+                            // Adicionar a mensagem antes do botão
+                            const buttonContainer = submitButton.parentElement;
+                            buttonContainer.insertBefore(errorMessage, submitButton);
+
+                            // Remover mensagem após 5 segundos
+                            setTimeout(() => {
+                                errorMessage.remove();
+                            }, 5000);
                         }
                     } catch (error) {
+                        console.error('Erro na requisição:', error);
                         // Mostrar mensagem de erro
                         const errorMessage = document.createElement('div');
                         errorMessage.className = 'alert alert-danger alert-dismissible fade show mt-3';
@@ -1004,6 +1050,7 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                             errorMessage.remove();
                         }, 5000);
                     } finally {
+                        console.log('Restaurando botão');
                         // Restaurar botão
                         submitButton.innerHTML = originalText;
                         submitButton.disabled = false;
@@ -1164,5 +1211,34 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
             });
         </script>
         </div>
+        <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+        <script src="js/colaborador.js"></script>
+        <script>
+            // Inicializar máscaras
+            $(document).ready(function() {
+                $('#telefone, #telemovel_emergencia').mask('000000000');
+                $('#nif').mask('000000000');
+                $('#niss').mask('00000000000');
+            });
+
+            // Inicializar Select2
+            $('.select2').select2();
+
+            // Inicializar DataTables
+            $(document).ready(function() {
+                $('#documentosTable').DataTable({
+                    language: {
+                        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+                    }
+                });
+            });
+        </script>
+
     </body>
 </html>

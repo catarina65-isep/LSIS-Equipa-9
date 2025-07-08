@@ -1,21 +1,10 @@
 <?php
 session_start();
 
-// Configurar log
-$logFile = __DIR__ . '/../../php_error_log.txt';
-
-function logDebug($message) {
-    global $logFile;
-    $timestamp = date('Y-m-d H:i:s');
-    $logEntry = "[$timestamp] $message\n";
-    file_put_contents($logFile, $logEntry, FILE_APPEND);
-}
-
 require_once __DIR__ . '/../BLL/ColaboradorBLL.php';
 
 // Verifica se o usuário está logado
 if (!isset($_SESSION['utilizador_id'])) {
-    logDebug("Erro: Usuário não logado");
     header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'Usuário não logado']);
     exit;
@@ -23,7 +12,6 @@ if (!isset($_SESSION['utilizador_id'])) {
 
 // Verifica se o perfil é de colaborador
 if ($_SESSION['id_perfilacesso'] != 4) {
-    logDebug("Erro: Acesso não autorizado");
     header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'Acesso não autorizado']);
     exit;
@@ -52,12 +40,27 @@ try {
     ];
 
     // Log dos dados recebidos
-    logDebug("Dados recebidos: " . print_r($dados, true));
+    error_log("Dados recebidos: " . print_r($dados, true));
+    error_log("NIF recebido: " . ($dados['nif'] ?? 'null'));
 
     // Verificar se todos os campos obrigatórios foram preenchidos
-    if (!$dados['nome'] || !$dados['email']) {
-        logDebug("Erro: Campos obrigatórios não preenchidos");
-        throw new Exception("Por favor, preencha todos os campos obrigatórios");
+    $erros = [];
+    if (!$dados['nome']) $erros[] = 'Nome é obrigatório';
+    if (!$dados['email']) $erros[] = 'Email é obrigatório';
+    if ($dados['nif'] && strlen($dados['nif']) != 9) $erros[] = 'NIF deve ter 9 dígitos';
+    if ($dados['telefone'] && !preg_match('/^[0-9]{9}$/', $dados['telefone'])) $erros[] = 'Telefone deve ter 9 dígitos';
+    if ($dados['niss'] && !preg_match('/^[0-9]{11}$/', $dados['niss'])) $erros[] = 'NISS deve ter 11 dígitos';
+    if ($dados['telemovel_emergencia'] && !preg_match('/^[0-9]{9}$/', $dados['telemovel_emergencia'])) $erros[] = 'Telemóvel deve ter 9 dígitos';
+    if ($dados['numero_dependentes'] < 0) $erros[] = 'Número de dependentes deve ser positivo';
+    
+    if (!empty($erros)) {
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Por favor, corrija os seguintes erros:',
+            'erros' => $erros
+        ]);
+        exit;
     }
 
     // Atualizar os dados do colaborador
@@ -66,26 +69,23 @@ try {
     if ($resultado) {
         // Buscar os dados atualizados para confirmar
         $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
-        logDebug("Dados após atualização: " . print_r($colaborador, true));
+        
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => true,
+            'message' => 'Dados atualizados com sucesso',
+            'dados_atualizados' => $colaborador
+        ]);
+        exit;
     } else {
-        logDebug("Erro: Atualização falhou");
+        header('Content-Type: application/json');
+        echo json_encode([
+            'success' => false,
+            'message' => 'Erro ao atualizar dados. Por favor, tente novamente.'
+        ]);
+        exit;
     }
-    
-    header('Content-Type: application/json');
-    echo json_encode([
-        'success' => $resultado,
-        'message' => $resultado ? 'Dados atualizados com sucesso' : 'Erro ao atualizar dados',
-        'debug' => [
-            'dados_recebidos' => $dados,
-            'resultado' => $resultado
-        ]
-    ]);
-    exit;
 } catch (Exception $e) {
-    // Log do erro
-    logDebug("Erro: " . $e->getMessage());
-    logDebug("Stack trace: " . $e->getTraceAsString());
-    
     header('Content-Type: application/json');
     echo json_encode([
         'success' => false,
