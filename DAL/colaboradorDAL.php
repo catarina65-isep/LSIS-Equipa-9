@@ -39,6 +39,8 @@ class ColaboradorDAL {
             ':estado_civil' => $dados['estado_civil'] ?? null,
             ':nif' => $dados['nif'] ?? null,
             ':niss' => $dados['niss'] ?? null,
+            ':numero_mecanografico' => $dados['numero_mecanografico'] ?? null,
+            ':nib' => $dados['nib'] ?? null,
             ':numero_dependentes' => $dados['numero_dependentes'],
             ':habilitacoes' => $dados['habilitacoes'] ?? null,
             ':contacto_emergencia' => $dados['contacto_emergencia'] ?? null,

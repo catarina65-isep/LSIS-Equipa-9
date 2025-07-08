@@ -775,7 +775,37 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                             <div class="col-12">
                                 <div class="form-group">
                                     <label for="morada"><i class='bx bx-home'></i> Morada</label>
-                                    <textarea class="form-control" id="morada" name="morada" rows="3"><?= htmlspecialchars($colaborador['morada'] ?? ''); ?></textarea>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-home'></i></span>
+                                        <textarea class="form-control form-control-lg" id="morada" name="morada" rows="3"><?= htmlspecialchars($colaborador['morada'] ?? ''); ?></textarea>
+                                    </div>
+                                    <div class="upload-container">
+                                        <label for="moradaDoc" class="form-label mt-2">Comprovativo de Morada (PDF, JPG, PNG)</label>
+                                        <?php
+                                        $uploadDir = __DIR__ . '/../uploads/documentos/';
+                                        $moradaFiles = glob($uploadDir . 'morada_' . $_SESSION['utilizador_id'] . '_*');
+                                        if (!empty($moradaFiles)) {
+                                            $latestFile = array_reduce($moradaFiles, function($a, $b) {
+                                                return filemtime($a) > filemtime($b) ? $a : $b;
+                                            });
+                                            $fileName = basename($latestFile);
+                                            echo '<div class="d-flex align-items-center">
+                                                <a href="../uploads/documentos/' . htmlspecialchars($fileName) . '" target="_blank" class="flex-grow-1 text-primary">
+                                                    <i class="bx bx-file"></i> Ver documento atual
+                                                    <small class="text-muted">(Clique para visualizar)</small>
+                                                </a>
+                                                <button type="button" class="btn btn-danger btn-sm ms-2 btn-apagar-documento" 
+                                                        data-file="' . htmlspecialchars($fileName) . '" 
+                                                        data-field="moradaDoc" 
+                                                        onclick="apagarDocumento(event)">
+                                                    <i class="bx bx-trash"></i>
+                                                </button>
+                                            </div>';
+                                        } else {
+                                            echo '<input type="file" class="form-control" id="moradaDoc" name="moradaDoc" accept=".pdf,.jpg,.jpeg,.png">';
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -819,11 +849,6 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                                             <option value="União de Facto" <?= $colaborador['estado_civil'] == 'União de Facto' ? 'selected' : ''; ?>>União de Facto</option>
                                             <option value="Divorciado" <?= $colaborador['estado_civil'] == 'Divorciado' ? 'selected' : ''; ?>>Divorciado</option>
                                             <option value="Viúvo" <?= $colaborador['estado_civil'] == 'Viúvo' ? 'selected' : ''; ?>>Viúvo</option>
-                                            <option value="Separado" <?= $colaborador['estado_civil'] == 'Separado' ? 'selected' : ''; ?>>Separado</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -836,10 +861,84 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cartaoCidadao"><i class='bx bx-id-card'></i> Número do Cartão de Cidadão</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-id-card'></i></span>
+                                        <input type="text" id="cartaoCidadao" name="cartaoCidadao" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['numero_mecanografico'] ?? ''); ?>">
+                                    </div>
+                                    <div class="upload-container">
+                                        <label for="cartaoCidadaoDoc" class="form-label mt-2">Comprovativo (PDF, JPG, PNG)</label>
+                                        <?php
+                                        $uploadDir = __DIR__ . '/../uploads/documentos/';
+                                        $cartaoCidadaoFiles = glob($uploadDir . 'cartaocidadao_' . $_SESSION['utilizador_id'] . '_*');
+                                        if (!empty($cartaoCidadaoFiles)) {
+                                            $latestFile = array_reduce($cartaoCidadaoFiles, function($a, $b) {
+                                                return filemtime($a) > filemtime($b) ? $a : $b;
+                                            });
+                                            $fileName = basename($latestFile);
+                                            echo '<div class="d-flex align-items-center">
+                                                <a href="../uploads/documentos/' . htmlspecialchars($fileName) . '" target="_blank" class="flex-grow-1 text-primary">
+                                                    <i class="bx bx-file"></i> Ver documento atual
+                                                    <small class="text-muted">(Clique para visualizar)</small>
+                                                </a>
+                                                <button type="button" class="btn btn-danger btn-sm ms-2 btn-apagar-documento" 
+                                                        data-file="' . htmlspecialchars($fileName) . '" 
+                                                        data-field="moradaDoc" 
+                                                        onclick="apagarDocumento(event)">
+                                                    <i class="bx bx-trash"></i>
+                                                </button>
+                                            </div>';
+                                        } else {
+                                            echo '<input type="file" class="form-control" id="cartaoCidadaoDoc" name="cartaoCidadaoDoc" accept=".pdf,.jpg,.jpeg,.png">';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
                         <div class="row g-3">
-
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="iban"><i class='bx bx-bank'></i> IBAN</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-bank'></i></span>
+                                        <input type="text" id="iban" name="iban" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['nib'] ?? ''); ?>">
+                                    </div>
+                                    <div class="upload-container">
+                                        <label for="ibanDoc" class="form-label mt-2">Comprovativo Bancário (PDF, JPG, PNG)</label>
+                                        <?php
+                                        $uploadDir = __DIR__ . '/../uploads/documentos/';
+                                        $ibanFiles = glob($uploadDir . 'iban_' . $_SESSION['utilizador_id'] . '_*');
+                                        if (!empty($ibanFiles)) {
+                                            $latestFile = array_reduce($ibanFiles, function($a, $b) {
+                                                return filemtime($a) > filemtime($b) ? $a : $b;
+                                            });
+                                            $fileName = basename($latestFile);
+                                            echo '<div class="d-flex align-items-center">
+                                                <a href="../uploads/documentos/' . htmlspecialchars($fileName) . '" target="_blank" class="flex-grow-1 text-primary">
+                                                    <i class="bx bx-file"></i> Ver documento atual
+                                                    <small class="text-muted">(Clique para visualizar)</small>
+                                                </a>
+                                                <button type="button" class="btn btn-danger btn-sm ms-2 btn-apagar-documento" 
+                                                        data-file="' . htmlspecialchars($fileName) . '" 
+                                                        data-field="moradaDoc" 
+                                                        onclick="apagarDocumento(event)">
+                                                    <i class="bx bx-trash"></i>
+                                                </button>
+                                            </div>';
+                                        } else {
+                                            echo '<input type="file" class="form-control" id="ibanDoc" name="ibanDoc" accept=".pdf,.jpg,.jpeg,.png">';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="numeroDependentes"><i class='bx bx-group'></i> Número de Dependentes</label>
@@ -920,26 +1019,34 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                 const form = document.getElementById('profileForm');
                 const submitButton = form.querySelector('button[type="submit"]');
                 
-                // Adicionar estilo CSS para o spinner
+
+
+                // Adicionar estilo CSS para o spinner e mensagens de erro
                 const style = document.createElement('style');
                 style.textContent = `
                     .loading-spinner {
                         display: inline-block;
-                        width: 20px;
-                        height: 20px;
-                        border: 3px solid #f3f3f3;
+                        width: 16px;
+                        height: 16px;
+                        border: 2px solid #ccc;
+                        border-top: 2px solid #000;
                         border-radius: 50%;
-                        border-top: 3px solid #3498db;
                         animation: spin 1s linear infinite;
                     }
                     @keyframes spin {
                         0% { transform: rotate(0deg); }
                         100% { transform: rotate(360deg); }
                     }
+                    .btn-apagar-documento {
+                        transition: opacity 0.2s;
+                    }
+                    .btn-apagar-documento:hover {
+                        opacity: 0.8;
+                    }
                 `;
                 document.head.appendChild(style);
 
-                // Adicionar estilo CSS para o overlay de carregamento
+                // Adicionar estilo CSS para o overlay de carregamento e campos de upload
                 const style = document.createElement('style');
                 style.textContent = `
                     .loading-overlay {
@@ -955,6 +1062,26 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                     .loading-overlay.active {
                         display: block;
                     }
+                    .upload-container {
+                        margin-top: 10px;
+                        padding: 15px;
+                        border: 2px dashed #dee2e6;
+                        border-radius: 8px;
+                        background-color: #f8f9fa;
+                    }
+                    .upload-container:hover {
+                        border-color: #0d6efd;
+                    }
+                    .upload-container .custom-file-label {
+                        background-color: #fff;
+                        border: none;
+                        padding: 8px 12px;
+                    }
+                    .upload-container .custom-file-label::after {
+                        background-color: #0d6efd;
+                        color: white;
+                        border-color: #0d6efd;
+                    }
                 `;
                 document.head.appendChild(style);
 
@@ -968,23 +1095,33 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                     }
                 }
 
-                submitButton.addEventListener('click', async function(e) {
+                form.addEventListener('submit', function(e) {
                     e.preventDefault();
                     
-                    updateLoadingState(true);
-                    
-                    try {
-                        const formData = new FormData(form);
-                        const response = await fetch('/LSIS-Equipa-9/UI/processa_perfil.php', {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        });
-
-                        // Verificar se a resposta é válida
-                        if (!response.ok) {
+                    // Enviar formulário via AJAX
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.success) {
+                            // Mostrar erros
+                            const messageContainer = document.getElementById('messageContainer');
+                            messageContainer.innerHTML = data.erros ? data.erros.map(erro => `<div class="erro-upload">${erro}</div>`).join('') : 
+                                `<div class="erro-upload">${data.message}</div>`;
+                        } else {
+                            // Sucesso
+                            const messageContainer = document.getElementById('messageContainer');
+                            messageContainer.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                        }
+                    })
+                    .catch(error => {
+                        const messageContainer = document.getElementById('messageContainer');
+                        messageContainer.innerHTML = `<div class="erro-upload">Erro ao processar o formulário: ${error.message}</div>`;
+                    });
+                    .then(response => response.text())
+                    .then(text => {
                             throw new Error('Erro na requisição: ' + response.status);
                         }
 
@@ -1351,7 +1488,63 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
             function updateProfile() {
                 const form = document.getElementById('profileForm');
                 const submitButton = document.getElementById('submitButton');
-                
+                // Função global para apagar documento
+                window.apagarDocumento = function(event) {
+                    const button = event.currentTarget;
+                    const fileName = button.dataset.file;
+                    const field = button.dataset.field;
+
+                    if (!confirm('Tem a certeza que deseja apagar este documento?')) {
+                        return;
+                    }
+
+                    const container = button.closest('.upload-container');
+                    
+                    // Desabilitar botão e mostrar loading
+                    button.disabled = true;
+                    button.innerHTML = '<span class="loading-spinner"></span>';
+
+                    // Enviar requisição para apagar o documento
+                    fetch('apaga_documento.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            fileName: fileName,
+                            field: field
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remover o link e mostrar o input de upload
+                            const link = container.querySelector('a');
+                            link.remove();
+                            const input = document.createElement('input');
+                            input.type = 'file';
+                            input.className = 'form-control';
+                            input.id = field;
+                            input.name = field;
+                            input.accept = '.pdf,.jpg,.jpeg,.png';
+                            container.appendChild(input);
+                            
+                            // Remover o botão de apagar
+                            button.remove();
+                        } else {
+                            alert('Erro ao apagar documento: ' + data.message);
+                            button.innerHTML = '<i class="bx bx-trash"></i>';
+                            button.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Erro ao apagar documento');
+                        button.innerHTML = '<i class="bx bx-trash"></i>';
+                        button.disabled = false;
+                    });
+                }
+
                 if (!submitButton) {
                     console.error('Botão de submit não encontrado');
                     return;
