@@ -13,7 +13,15 @@ if ($_SESSION['id_perfilacesso'] != 4) {
     exit;
 }
 
+require_once __DIR__ . '/../BLL/ColaboradorBLL.php';
+
 $page_title = "Perfil do Colaborador";
+
+// Cria uma instância do BLL para carregar os dados do colaborador
+$colaboradorBLL = new ColaboradorBLL();
+
+// Carrega os dados do colaborador logado
+$colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
 ?>
 
 <!DOCTYPE html>
@@ -585,6 +593,7 @@ $page_title = "Perfil do Colaborador";
 <body>
     <div class="container-fluid">
         <div class="row">
+            <!-- Sidebar -->
             <div class="col-md-3 col-lg-2 px-0">
                 <div class="sidebar">
                     <div class="logo">
@@ -722,7 +731,9 @@ $page_title = "Perfil do Colaborador";
             </div>
         </div>
 
-        <!-- Seção de Dados Pessoais -->
+        <!-- Conteúdo Principal -->
+        <div class="col-md-9 col-lg-10">
+            <!-- Seção de Dados Pessoais -->
         <div class="card" id="perfil">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
@@ -734,77 +745,11 @@ $page_title = "Perfil do Colaborador";
             </div>
             <div class="card-body">
                 <div class="collapse show" id="dadosPessoais">
-                    <form id="profileForm">
+                    <form id="profileForm" action="/LSIS-Equipa-9/UI/processa_perfil.php" method="POST">
                         <input type="hidden" id="utilizador_id" name="utilizador_id" value="<?= htmlspecialchars($_SESSION['utilizador_id']); ?>">
                         
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="nome"><i class='bx bx-user'></i> Nome Completo</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-user'></i></span>
-                                        <input type="text" id="nome" name="nome" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="dataNascimento"><i class='bx bx-calendar'></i> Data de Nascimento</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-calendar'></i></span>
-                                        <input type="date" id="dataNascimento" name="dataNascimento" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="nif"><i class='bx bx-id-card'></i> NIF (Número de Identificação Fiscal)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-id-card'></i></span>
-                                        <input type="text" id="nif" name="nif" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="niss"><i class='bx bx-id-card'></i> NISS</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-id-card'></i></span>
-                                        <input type="text" id="niss" name="niss" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Seção Contactos -->
-                        <div class="section-header mt-4 mb-4">
-                            <h3 class="section-title">Contactos</h3>
-                            <div class="section-divider"></div>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="telefone"><i class='bx bx-phone'></i> Contacto Telefónico</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-phone'></i></span>
-                                        <input type="tel" id="telefone" name="telefone" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="email"><i class='bx bx-envelope'></i> Email</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-envelope'></i></span>
-                                        <input type="email" id="email" name="email" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Seção Dados Pessoais -->
+                        <!-- Campos do formulário preenchidos com dados do colaborador -->
+                        <!-- Seção de Dados Pessoais -->
                         <div class="section-header mt-4 mb-4">
                             <h3 class="section-title">Dados Pessoais</h3>
                             <div class="section-divider"></div>
@@ -812,41 +757,122 @@ $page_title = "Perfil do Colaborador";
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="estadoCivil"><i class='bx bx-heart'></i> Estado Civil</label>
+                                    <label for="nome"><i class='bx bx-user'></i> Nome</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" 
+                                           value="<?= htmlspecialchars($colaborador['nome'] ?? ''); ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email"><i class='bx bx-envelope'></i> Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" 
+                                           value="<?= htmlspecialchars($colaborador['email'] ?? ''); ?>" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="telefone"><i class='bx bx-phone'></i> Telefone</label>
+                                    <input type="tel" class="form-control" id="telefone" name="telefone" 
+                                           value="<?= htmlspecialchars($colaborador['telefone'] ?? ''); ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nif"><i class='bx bx-id-card'></i> NIF</label>
+                                    <input type="text" class="form-control" id="nif" name="nif" 
+                                           value="<?= htmlspecialchars($colaborador['nif'] ?? ''); ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="morada"><i class='bx bx-home'></i> Morada</label>
+                                    <textarea class="form-control" id="morada" name="morada" rows="3"><?= htmlspecialchars($colaborador['morada'] ?? ''); ?></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="dataNascimento"><i class='bx bx-calendar'></i> Data de Nascimento</label>
                                     <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-heart'></i></span>
-                                        <select id="estadoCivil" name="estadoCivil" required class="form-control form-control-lg">
-                                            <option value="">Selecione...</option>
-                                            <option value="solteiro">Solteiro(a)</option>
-                                            <option value="casado">Casado(a)</option>
-                                            <option value="divorciado">Divorciado(a)</option>
-                                            <option value="viuvo">Viúvo(a)</option>
-                                        </select>
+                                        <span class="input-group-text"><i class='bx bx-calendar'></i></span>
+                                        <input type="date" id="dataNascimento" name="dataNascimento" required class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['data_nascimento'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label for="genero"><i class='bx bx-gender'></i> Género</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-gender'></i></span>
+                                        <select class="form-control form-control-lg" id="genero" name="genero" required>
+                                            <option value="" <?= !$colaborador['genero'] ? 'selected' : ''; ?>>Selecione...</option>
+                                            <option value="Masculino" <?= $colaborador['genero'] == 'Masculino' ? 'selected' : ''; ?>>Masculino</option>
+                                            <option value="Feminino" <?= $colaborador['genero'] == 'Feminino' ? 'selected' : ''; ?>>Feminino</option>
+                                            <option value="Outro" <?= $colaborador['genero'] == 'Outro' ? 'selected' : ''; ?>>Outro</option>
+                                            <option value="Prefiro não dizer" <?= $colaborador['genero'] == 'Prefiro não dizer' ? 'selected' : ''; ?>>Prefiro não dizer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="estadoCivil"><i class='bx bx-heart'></i> Estado Civil</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-heart'></i></span>
+                                        <select class="form-control form-control-lg" id="estadoCivil" name="estadoCivil" required>
+                                            <option value="" <?= !$colaborador['estado_civil'] ? 'selected' : ''; ?>>Selecione...</option>
+                                            <option value="Solteiro" <?= $colaborador['estado_civil'] == 'Solteiro' ? 'selected' : ''; ?>>Solteiro</option>
+                                            <option value="Casado" <?= $colaborador['estado_civil'] == 'Casado' ? 'selected' : ''; ?>>Casado</option>
+                                            <option value="União de Facto" <?= $colaborador['estado_civil'] == 'União de Facto' ? 'selected' : ''; ?>>União de Facto</option>
+                                            <option value="Divorciado" <?= $colaborador['estado_civil'] == 'Divorciado' ? 'selected' : ''; ?>>Divorciado</option>
+                                            <option value="Viúvo" <?= $colaborador['estado_civil'] == 'Viúvo' ? 'selected' : ''; ?>>Viúvo</option>
+                                            <option value="Separado" <?= $colaborador['estado_civil'] == 'Separado' ? 'selected' : ''; ?>>Separado</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="niss"><i class='bx bx-id-card'></i> NISS</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-id-card'></i></span>
+                                        <input type="text" id="niss" name="niss" required class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['niss'] ?? ''); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label for="numeroDependentes"><i class='bx bx-group'></i> Número de Dependentes</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class='bx bx-group'></i></span>
-                                        <input type="number" id="numeroDependentes" name="numeroDependentes" min="0" class="form-control form-control-lg">
+                                        <input type="number" id="numeroDependentes" name="numeroDependentes" min="0" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['numero_dependentes'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="habilitacoes"><i class='bx bx-graduation'></i> Habilitações Literárias</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-graduation'></i></span>
-                                        <select id="habilitacoes" name="habilitacoes" class="form-control form-control-lg">
-                                            <option value="">Selecione...</option>
-                                            <option value="ensino_basico">Ensino Básico</option>
-                                            <option value="ensino_secundario">Ensino Secundário</option>
-                                            <option value="ensino_superior">Ensino Superior</option>
-                                            <option value="outro">Outro</option>
-                                        </select>
-                                    </div>
+                                     <div class="input-group">
+                                         <span class="input-group-text"><i class='bx bx-graduation'></i></span>
+                                         <input type="text" id="habilitacoes" name="habilitacoes" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['habilitacoes'] ?? ''); ?>">
+                                     </div>
                                 </div>
                             </div>
                         </div>
@@ -862,7 +888,8 @@ $page_title = "Perfil do Colaborador";
                                     <label for="contactoEmergencia"><i class='bx bx-user'></i> Contacto de Emergência</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class='bx bx-user'></i></span>
-                                        <input type="text" id="contactoEmergencia" name="contactoEmergencia" class="form-control form-control-lg">
+                                        <input type="text" id="contactoEmergencia" name="contactoEmergencia" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['contacto_emergencia'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -871,7 +898,8 @@ $page_title = "Perfil do Colaborador";
                                     <label for="relacaoEmergencia"><i class='bx bx-link'></i> Relação com o Contacto de Emergência</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class='bx bx-link'></i></span>
-                                        <input type="text" id="relacaoEmergencia" name="relacaoEmergencia" class="form-control form-control-lg">
+                                        <input type="text" id="relacaoEmergencia" name="relacaoEmergencia" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['relacao_emergencia'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -880,7 +908,8 @@ $page_title = "Perfil do Colaborador";
                                     <label for="telemovelEmergencia"><i class='bx bx-phone'></i> Telemóvel do Contacto de Emergência</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class='bx bx-phone'></i></span>
-                                        <input type="tel" id="telemovelEmergencia" name="telemovelEmergencia" class="form-control form-control-lg">
+                                        <input type="tel" id="telemovelEmergencia" name="telemovelEmergencia" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['telemovel_emergencia'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -899,7 +928,91 @@ $page_title = "Perfil do Colaborador";
             </div>
         </div>
 
-        <!-- Seção de Documentos -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('profileForm');
+                const submitButton = form.querySelector('button[type="submit"]');
+                
+                submitButton.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    
+                    // Adicionar spinner ao botão
+                    const originalText = submitButton.innerHTML;
+                    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+                    submitButton.disabled = true;
+                    
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+
+                        if (result.success) {
+                            // Atualizar os campos com os novos valores
+                            for (const [key, value] of formData.entries()) {
+                                const element = form.querySelector(`[name="${key}"]`);
+                                if (element) {
+                                    if (element.type === 'text' || element.type === 'email' || element.type === 'tel') {
+                                        element.value = value;
+                                    } else if (element.type === 'textarea') {
+                                        element.value = value;
+                                    } else if (element.type === 'select-one') {
+                                        element.value = value;
+                                    } else if (element.type === 'date') {
+                                        element.value = value;
+                                    } else if (element.type === 'number') {
+                                        element.value = value;
+                                    }
+                                }
+                            }
+
+                            // Mostrar mensagem de sucesso
+                            const successMessage = document.createElement('div');
+                            successMessage.className = 'alert alert-success alert-dismissible fade show mt-3';
+                            successMessage.innerHTML = `
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span>Dados atualizados com sucesso!</span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            `;
+                            form.parentElement.insertBefore(successMessage, submitButton.parentElement.nextSibling);
+
+                            // Remover mensagem após 5 segundos
+                            setTimeout(() => {
+                                successMessage.remove();
+                            }, 5000);
+                        } else {
+                            throw new Error(result.message || 'Erro ao salvar os dados');
+                        }
+                    } catch (error) {
+                        // Mostrar mensagem de erro
+                        const errorMessage = document.createElement('div');
+                        errorMessage.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                        errorMessage.innerHTML = `
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span>${error.message || 'Erro ao salvar os dados. Por favor, tente novamente.'}</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        `;
+                        form.parentElement.insertBefore(errorMessage, submitButton.parentElement.nextSibling);
+
+                        // Remover mensagem após 5 segundos
+                        setTimeout(() => {
+                            errorMessage.remove();
+                        }, 5000);
+                    } finally {
+                        // Restaurar botão
+                        submitButton.innerHTML = originalText;
+                        submitButton.disabled = false;
+                    }
+                });
+            });
+        </script>
+
+            <!-- Seção de Documentos -->
         <div class="card" id="documentos">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
@@ -1050,5 +1163,6 @@ $page_title = "Perfil do Colaborador";
                 // Inicializar DataTables (será feito no colaborador.js)
             });
         </script>
+        </div>
     </body>
 </html>
