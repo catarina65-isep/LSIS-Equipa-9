@@ -619,23 +619,11 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                                 <button class="btn btn-link d-md-none me-3" id="sidebarToggle">
                                     <i class='bx bx-menu'></i>
                                 </button>
-                                <h1 class="h4 mb-0">Perfil do Colaborador</h1>
+                                <h1 class="h4 mb-0">O Meu Perfil</h1>
                             </div>
-                    <div class="d-flex align-items-center">
-                        <div class="dropdown me-3">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="periodoDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class='bx bx-calendar me-1'></i> Últimos 30 dias
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="periodoDropdown">
-                                <li><a class="dropdown-item" href="#">Hoje</a></li>
-                                <li><a class="dropdown-item active" href="#">Últimos 7 dias</a></li>
-                                <li><a class="dropdown-item" href="#">Últimos 30 dias</a></li>
-                                <li><a class="dropdown-item" href="#">Este mês</a></li>
-                                <li><a class="dropdown-item" href="#">Personalizado</a></li>
-                            </ul>
-                        </div>
-                        <button class="btn btn-primary">
-                            <i class='bx bx-download me-1'></i> Exportar Dados
+                     <div class="d-flex align-items-center">
+                        <button type="button" class="btn btn-primary" id="exportButton" onclick="exportarDados()">
+                            <i class='bx bx-download'></i> Exportar Dados
                         </button>
                     </div>
                 </div>
@@ -645,21 +633,23 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                     <div class="profile-card mb-4">
                         <div class="d-flex align-items-center mb-3">
                             <div class="profile-image me-4">
-                                <div class="profile-photo-container">
-                                    <img src="../assets/placeholder.jpg" alt="Foto de Perfil" id="foto-preview" class="rounded-circle">
+                                <div class="profile-photo">
+                                <div class="rounded-circle bg-light text-center" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
+                                    <i class='bx bx-user-circle' style="font-size: 48px; color: var(--primary-color);"></i>
                                 </div>
                             </div>
+                            </div>
                             <div class="profile-details">
-                                <h1 class="mb-1" id="displayName">Nome Completo</h1>
+                                <h1 class="mb-1" id="displayName"><?= htmlspecialchars($colaborador['nome']) ?></h1>
                                 <div class="mt-3">
-                                    <div class="stat-item mb-2">
-                                        <i class='bx bx-envelope'></i>
-                                        <span id="displayEmail" class="ms-2"></span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <i class='bx bx-phone'></i>
-                                        <span id="displayPhone" class="ms-2"></span>
-                                    </div>
+                                     <div class="stat-item mb-2">
+                                         <i class='bx bx-envelope'></i>
+                                         <span id="displayEmail" class="ms-2"><?= htmlspecialchars($colaborador['email']) ?></span>
+                                     </div>
+                                     <div class="stat-item">
+                                         <i class='bx bx-phone'></i>
+                                         <span id="displayPhone" class="ms-2"><?= htmlspecialchars($colaborador['telefone']) ?></span>
+                                     </div>
                                 </div>
                             </div>
                         </div>
@@ -735,14 +725,9 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
         <div class="col-md-9 col-lg-10">
             <!-- Seção de Dados Pessoais -->
         <div class="card" id="perfil">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4>Os Meus Dados</h4>
-                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#dadosPessoais">
-                        <i class='bx bx-edit'></i> Editar
-                    </button>
-                </div>
-            </div>
+                    <div class="card-header">
+                        <h4>Os Meus Dados</h4>
+                    </div>
             <div class="card-body">
                 <div class="collapse show" id="dadosPessoais">
                     <form id="profileForm" action="/LSIS-Equipa-9/UI/processa_perfil.php" method="POST">
@@ -913,17 +898,19 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Botão de Envio -->
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <div class="form-actions text-center">
-                                    <button type="submit" class="btn btn-primary btn-lg w-100">Salvar Alterações</button>
+                            <!-- Botão de Envio -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div id="messageContainer" class="mb-3"></div>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="submit" class="btn btn-primary" id="submitButton">Salvar Alterações</button>
+                                        <div id="loadingOverlay" class="loading-overlay"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -933,100 +920,134 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                 const form = document.getElementById('profileForm');
                 const submitButton = form.querySelector('button[type="submit"]');
                 
+                // Adicionar estilo CSS para o spinner
+                const style = document.createElement('style');
+                style.textContent = `
+                    .loading-spinner {
+                        display: inline-block;
+                        width: 20px;
+                        height: 20px;
+                        border: 3px solid #f3f3f3;
+                        border-radius: 50%;
+                        border-top: 3px solid #3498db;
+                        animation: spin 1s linear infinite;
+                    }
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // Adicionar estilo CSS para o overlay de carregamento
+                const style = document.createElement('style');
+                style.textContent = `
+                    .loading-overlay {
+                        display: none;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-color: rgba(255, 255, 255, 0.8);
+                        z-index: 9999;
+                    }
+                    .loading-overlay.active {
+                        display: block;
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // Função para atualizar o estado do carregamento
+                function updateLoadingState(isLoading) {
+                    const overlay = document.getElementById('loadingOverlay');
+                    if (isLoading) {
+                        overlay.classList.add('active');
+                    } else {
+                        overlay.classList.remove('active');
+                    }
+                }
+
                 submitButton.addEventListener('click', async function(e) {
                     e.preventDefault();
-                    console.log('Botão clicado');
                     
-                    // Adicionar spinner ao botão
-                    const originalText = submitButton.innerHTML;
-                    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
-                    submitButton.disabled = true;
+                    updateLoadingState(true);
                     
                     try {
-                        console.log('Criando FormData');
                         const formData = new FormData(form);
-                        console.log('Dados do formulário:', Object.fromEntries(formData.entries()));
-                        
-                        console.log('Fazendo requisição para:', form.action);
-                        const response = await fetch(form.action, {
+                        const response = await fetch('/LSIS-Equipa-9/UI/processa_perfil.php', {
                             method: 'POST',
-                            body: formData
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
                         });
-                        
-                        console.log('Status da resposta:', response.status);
-                        console.log('Headers da resposta:', Object.fromEntries(response.headers.entries()));
-                        
-                        const result = await response.json();
-                        console.log('Resultado:', result);
+
+                        // Verificar se a resposta é válida
+                        if (!response.ok) {
+                            throw new Error('Erro na requisição: ' + response.status);
+                        }
+
+                        // Aguardar a resposta completa antes de processar
+                        const text = await response.text();
+                        let result;
+                        try {
+                            result = JSON.parse(text);
+                        } catch (e) {
+                            throw new Error('Erro ao processar resposta: ' + e.message);
+                        }
 
                         if (result.success) {
-                            console.log('Sucesso! Atualizando campos');
-                            // Atualizar os campos com os novos valores
-                            for (const [key, value] of formData.entries()) {
-                                const element = form.querySelector(`[name="${key}"]`);
-                                if (element) {
-                                    if (element.type === 'text' || element.type === 'email' || element.type === 'tel') {
-                                        element.value = value;
-                                    } else if (element.type === 'textarea') {
-                                        element.value = value;
-                                    } else if (element.type === 'select-one') {
-                                        element.value = value;
-                                    } else if (element.type === 'date') {
-                                        element.value = value;
-                                    } else if (element.type === 'number') {
-                                        element.value = value;
-                                    }
-                                }
+                            // Remover qualquer mensagem anterior
+                            const existingAlert = document.getElementById('messageContainer').querySelector('.alert');
+                            if (existingAlert) {
+                                existingAlert.remove();
                             }
-
-                            // Mostrar mensagem de sucesso
+                            
+                            // Criar mensagem de sucesso
                             const successMessage = document.createElement('div');
-                            successMessage.className = 'alert alert-success alert-dismissible fade show mt-3';
+                            successMessage.className = 'alert alert-success alert-dismissible fade show';
                             successMessage.innerHTML = `
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span>Dados atualizados com sucesso!</span>
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                Dados atualizados com sucesso!
                             `;
-                            // Adicionar a mensagem antes do botão
-                            const buttonContainer = submitButton.parentElement;
-                            buttonContainer.insertBefore(successMessage, submitButton);
-
+                            
+                            // Adicionar mensagem ao container
+                            const messageContainer = document.getElementById('messageContainer');
+                            messageContainer.appendChild(successMessage);
+                            
                             // Remover mensagem após 5 segundos
                             setTimeout(() => {
                                 successMessage.remove();
                             }, 5000);
                         } else {
-                            console.log('Erro:', result);
-                            // Mostrar mensagem de erro
+                            // Remover qualquer mensagem anterior
+                            const existingAlert = document.getElementById('messageContainer').querySelector('.alert');
+                            if (existingAlert) {
+                                existingAlert.remove();
+                            }
+                            
+                            // Criar mensagem de erro
                             const errorMessage = document.createElement('div');
-                            errorMessage.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                            errorMessage.className = 'alert alert-danger alert-dismissible fade show';
+                            errorMessage.innerHTML = `
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                ${result.message}
+                            `;
                             
                             // Se houver erros específicos, mostrar cada um
                             if (result.erros && result.erros.length > 0) {
-                                errorMessage.innerHTML = `
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span>${result.message}</span>
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
-                                    <ul class="mt-2 mb-0">
+                                errorMessage.innerHTML += `
+                                    <ul class="mt-2">
                                         ${result.erros.map(erro => `<li>${erro}</li>`).join('')}
                                     </ul>
                                 `;
-                            } else {
-                                errorMessage.innerHTML = `
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span>${result.message || 'Erro ao salvar os dados. Por favor, tente novamente.'}</span>
-                                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                    </div>
-                                `;
                             }
                             
-                            console.log('Inserindo mensagem de erro');
-                            // Adicionar a mensagem antes do botão
-                            const buttonContainer = submitButton.parentElement;
-                            buttonContainer.insertBefore(errorMessage, submitButton);
-
+                            // Adicionar mensagem ao container
+                            const messageContainer = document.getElementById('messageContainer');
+                            messageContainer.appendChild(errorMessage);
+                            
                             // Remover mensagem após 5 segundos
                             setTimeout(() => {
                                 errorMessage.remove();
@@ -1034,32 +1055,41 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                         }
                     } catch (error) {
                         console.error('Erro na requisição:', error);
-                        // Mostrar mensagem de erro
+                        
+                        // Remover qualquer mensagem anterior
+                        const existingAlert = document.getElementById('messageContainer').querySelector('.alert');
+                        if (existingAlert) {
+                            existingAlert.remove();
+                        }
+                        
+                        // Criar mensagem de erro
                         const errorMessage = document.createElement('div');
-                        errorMessage.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                        errorMessage.className = 'alert alert-danger alert-dismissible fade show';
                         errorMessage.innerHTML = `
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span>${error.message || 'Erro ao salvar os dados. Por favor, tente novamente.'}</span>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            Erro ao salvar dados: ${error.message}
                         `;
-                        form.parentElement.insertBefore(errorMessage, submitButton.parentElement.nextSibling);
-
+                        
+                        // Adicionar mensagem ao container
+                        const messageContainer = document.getElementById('messageContainer');
+                        messageContainer.appendChild(errorMessage);
+                        
                         // Remover mensagem após 5 segundos
                         setTimeout(() => {
                             errorMessage.remove();
                         }, 5000);
                     } finally {
-                        console.log('Restaurando botão');
-                        // Restaurar botão
-                        submitButton.innerHTML = originalText;
+                        // Remover o overlay de carregamento
+                        updateLoadingState(false);
+                        
+                        // Garantir que o botão esteja disponível novamente
                         submitButton.disabled = false;
                     }
                 });
             });
         </script>
 
-            <!-- Seção de Documentos -->
+        <!-- Seção de Documentos -->
         <div class="card" id="documentos">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
@@ -1139,8 +1169,8 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-        <script src="js/colaborador.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script>
             // Função para navegação suave entre seções
             function scrollToSection(sectionId) {
@@ -1206,37 +1236,193 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                     theme: 'bootstrap-5',
                     width: '100%'
                 });
-
-                // Inicializar DataTables (será feito no colaborador.js)
             });
         </script>
-        </div>
-        <!-- Scripts -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-        <script src="js/colaborador.js"></script>
         <script>
-            // Inicializar máscaras
-            $(document).ready(function() {
+            // Função para inicializar máscaras
+            function initializeMasks() {
                 $('#telefone, #telemovel_emergencia').mask('000000000');
                 $('#nif').mask('000000000');
                 $('#niss').mask('00000000000');
-            });
+            }
 
-            // Inicializar Select2
-            $('.select2').select2();
+            // Função para inicializar Select2
+            function initializeSelect2() {
+                $('.select2').select2();
+            }
 
-            // Inicializar DataTables
-            $(document).ready(function() {
-                $('#documentosTable').DataTable({
-                    language: {
-                        url: 'https://cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json'
+
+
+            // Função para inicializar daterangepicker
+            function initializeDateRangePicker() {
+                $('.daterangepicker').daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    locale: {
+                        format: 'YYYY-MM-DD'
                     }
                 });
+            }
+
+            // Função para inicializar o layout
+            function initializeLayout() {
+                // Toggle sidebar em dispositivos móveis
+                const sidebarToggle = document.getElementById('sidebarToggle');
+                if (sidebarToggle) {
+                    sidebarToggle.addEventListener('click', function() {
+                        document.querySelector('.sidebar').classList.toggle('show');
+                    });
+                }
+
+                // Inicializar tooltips
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+
+                // Inicializar popovers
+                var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+                var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                    return new bootstrap.Popover(popoverTriggerEl);
+                });
+            }
+
+            // Função para mostrar alertas
+            function showAlert(type, message) {
+                // Verifica se já existe uma mensagem de sucesso
+                const existingAlert = document.querySelector('.alert');
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+                
+                const messageContainer = document.getElementById('messageContainer');
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type} alert-dismissible fade show`;
+                alert.innerHTML = `
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    ${message}
+                `;
+                messageContainer.appendChild(alert);
+                
+                // Remove a mensagem após 5 segundos
+                setTimeout(() => {
+                    alert.remove();
+                }, 5000);
+            }
+
+            // Função para exportar dados
+            async function exportarDados() {
+                try {
+                    // Redirecionar para o arquivo de exportação
+                    window.location.href = '/LSIS-Equipa-9/UI/processa_exportar.php';
+                } catch (error) {
+                    console.error('Erro ao exportar:', error);
+                    showAlert('danger', 'Erro ao exportar dados');
+                }
+            }
+
+            // Função para inicializar o tema
+            function initializeTheme() {
+                const themeToggle = document.getElementById('themeToggle');
+                if (themeToggle) {
+                    const savedTheme = localStorage.getItem('theme') || 'light';
+                    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+                    
+                    // Atualiza o ícone inicial
+                    const icon = themeToggle.querySelector('i');
+                    icon.className = savedTheme === 'dark' ? 'bx bx-sun' : 'bx bx-moon';
+
+                    themeToggle.addEventListener('click', function() {
+                        const html = document.documentElement;
+                        const currentTheme = html.getAttribute('data-bs-theme');
+                        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                        
+                        html.setAttribute('data-bs-theme', newTheme);
+                        localStorage.setItem('theme', newTheme);
+                        
+                        // Atualiza o ícone
+                        const icon = this.querySelector('i');
+                        icon.className = newTheme === 'dark' ? 'bx bx-sun' : 'bx bx-moon';
+                    });
+                }
+            }
+
+            // Função para atualizar o perfil
+            function updateProfile() {
+                const form = document.getElementById('profileForm');
+                const submitButton = document.getElementById('submitButton');
+                
+                if (!submitButton) {
+                    console.error('Botão de submit não encontrado');
+                    return;
+                }
+                
+                submitButton.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    
+                    // Adicionar spinner ao botão
+                    const originalText = submitButton.innerHTML;
+                    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+                    submitButton.disabled = true;
+                    submitButton.style.opacity = '0.6'; // Adicionar opacidade durante o processamento
+                    
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch('/LSIS-Equipa-9/UI/processa_perfil.php', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            // Remove qualquer mensagem anterior
+                            const existingAlert = document.querySelector('.alert');
+                            if (existingAlert) {
+                                existingAlert.remove();
+                            }
+                            showAlert('success', 'Dados atualizados com sucesso');
+                        } else {
+                            // Se existem erros específicos, mostra-os
+                            if (result.erros && result.erros.length > 0) {
+                                const errorMessages = result.erros.map(error => `<li>${error}</li>`).join('');
+                                showAlert('danger', `
+                                    ${result.message}
+                                    <ul class="mt-2">
+                                        ${errorMessages}
+                                    </ul>
+                                `);
+                            } else {
+                                showAlert('danger', result.message);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Erro na requisição:', error);
+                        showAlert('danger', 'Erro ao salvar dados');
+                    } finally {
+                        // Restaurar o botão
+                        submitButton.innerHTML = originalText;
+                        submitButton.disabled = false;
+                        submitButton.style.opacity = '1'; // Resetar opacidade
+                        submitButton.offsetHeight; // Forçar reflow
+                        
+                        // Adicionar um setTimeout para garantir que o botão seja atualizado
+                        setTimeout(() => {
+                            submitButton.innerHTML = originalText;
+                            submitButton.style.opacity = '1';
+                        }, 100);
+                    }
+                });
+            }
+
+            // Inicializar tudo quando o documento estiver pronto
+            $(document).ready(function() {
+                initializeMasks();
+                initializeSelect2();
+                initializeDateRangePicker();
+                initializeLayout();
+                initializeTheme();
+                updateProfile();
             });
         </script>
 
