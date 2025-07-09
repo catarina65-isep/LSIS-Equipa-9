@@ -25,6 +25,15 @@ $current_page = basename($_SERVER['PHP_SELF']);
                     </a>
                 </li>
                 
+                <li class="nav-item">
+                    <a href="dash.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'dash.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'dash.php') ? 'bg-white bg-opacity-10' : 'bg-success bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-dashboard <?php echo ($current_page == 'dash.php') ? 'text-white' : 'text-success'; ?>'></i>
+                        </div>
+                        <span>Dashboard RH</span>
+                    </a>
+                </li>
+                
 
                 <li class="nav-item">
                     <a href="perfis.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'perfis.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
