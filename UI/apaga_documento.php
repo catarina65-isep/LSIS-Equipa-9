@@ -41,7 +41,10 @@ try {
         throw new Exception('Erro ao apagar arquivo');
     }
 
-    echo json_encode(['success' => true]);
+    echo json_encode([
+        'success' => true,
+        'message' => 'Documento apagado com sucesso'
+    ]);
 
 } catch (Exception $e) {
     http_response_code(500);

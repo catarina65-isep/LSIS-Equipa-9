@@ -388,6 +388,27 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
             box-shadow: 0 0 0 3px rgba(0, 77, 153, 0.1);
             outline: none;
         }
+
+        /* Estilo para o estado de loading dos containers de upload */
+        .upload-container.loading {
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         
         .btn-primary {
             background-color: var(--primary-color);
@@ -1356,51 +1377,39 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                     return;
                 }
 
-                // Tipos de documentos e seus prefixos
+                // Tipos de documentos e seus IDs
                 const documentos = {
                     'morada': 'moradaDoc',
-                    'cartaocidadao': 'cartaoCidadaoDoc',
-                    'nif': 'nifDoc',
-                    'niss': 'nissDoc',
+                    'cartaocidadao': 'cartaocidadaoDoc',
                     'iban': 'ibanDoc'
                 };
 
                 // Para cada tipo de documento
                 Object.entries(documentos).forEach(([prefix, field]) => {
-                    // Primeiro encontrar o elemento do campo
-                    const fieldElement = form.querySelector(`#${field}`);
-                    if (!fieldElement) {
-                        console.error(`Campo ${field} não encontrado`);
+                    // Encontrar o container de upload específico para este campo
+                    const container = form.querySelector(`.form-group:has(#${field}) .upload-container`);
+                    if (!container) {
+                        console.error(`Container de upload para ${field} não encontrado`);
                         return;
                     }
 
-                    // Encontrar o container de upload
-                    let uploadContainer = fieldElement.closest('.upload-container');
-                    if (!uploadContainer) {
-                        // Se não encontrar pelo closest, tentar encontrar pelo seletor
-                        uploadContainer = form.querySelector(`#${field}`).closest('.upload-container');
-                        if (!uploadContainer) {
-                            console.error(`Container de upload para ${field} não encontrado`);
-                            return;
-                        }
+                    // Remover qualquer link de visualização existente
+                    const linkContainer = container.querySelector('.d-flex.align-items-center');
+                    if (linkContainer) {
+                        linkContainer.remove();
                     }
 
-                    // Verificar se já existe um arquivo
-                    const existingFile = uploadContainer.querySelector('a');
-                    if (existingFile) {
-                        // Se existe arquivo, manter o link
-                        return;
-                    }
+                    // Limpar o container
+                    container.innerHTML = '';
 
-                    // Se não existe arquivo, mostrar o input de upload
+                    // Adicionar o input de upload
                     const input = document.createElement('input');
                     input.type = 'file';
                     input.className = 'form-control';
                     input.id = field;
                     input.name = field;
                     input.accept = '.pdf,.jpg,.jpeg,.png';
-                    uploadContainer.innerHTML = ''; // Limpar conteúdo existente
-                    uploadContainer.appendChild(input);
+                    container.appendChild(input);
                 });
             }
 
@@ -1624,6 +1633,12 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                     button.disabled = true;
                     button.innerHTML = '<span class="loading-spinner"></span>';
 
+                    // Adicionar loading ao container de upload
+                    const uploadContainer = button.closest('.upload-container');
+                    if (uploadContainer) {
+                        uploadContainer.classList.add('loading');
+                    }
+
                     // Enviar requisição para apagar o documento
                     fetch('apaga_documento.php', {
                         method: 'POST',
@@ -1635,23 +1650,61 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                             field: field
                         })
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro no servidor: ' + response.status);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
-                            // Atualizar a seção de documentos e o formulário
+                            // Remover loading
+                            if (uploadContainer) {
+                                uploadContainer.classList.remove('loading');
+                            }
+                            
+                            // Atualizar apenas o container específico deste documento
+                            if (uploadContainer) {
+                                // Remover qualquer link de visualização existente
+                                const linkContainer = uploadContainer.querySelector('.d-flex.align-items-center');
+                                if (linkContainer) {
+                                    linkContainer.remove();
+                                }
+                                
+                                // Limpar o container
+                                uploadContainer.innerHTML = '';
+                                
+                                // Adicionar o input de upload
+                                const input = document.createElement('input');
+                                input.type = 'file';
+                                input.className = 'form-control';
+                                input.id = field;
+                                input.name = field;
+                                input.accept = '.pdf,.jpg,.jpeg,.png';
+                                uploadContainer.appendChild(input);
+                            }
+                            
+                            // Atualizar a seção de documentos
                             atualizarSecaoDocumentos();
-                            atualizarFormulario();
-                        } else {
-                            alert('Erro ao apagar documento: ' + data.message);
+                            
+                            // Mostrar mensagem de sucesso
+                            showAlert('success', data.message || 'Documento apagado com sucesso');
+                            
+                            // Restaurar o botão
                             button.innerHTML = '<i class="bx bx-trash"></i>';
                             button.disabled = false;
+                        } else {
+                            throw new Error(data.message || 'Erro ao apagar documento');
                         }
                     })
                     .catch(error => {
                         console.error('Erro:', error);
-                        alert('Erro ao apagar documento');
+                        alert('Erro ao apagar documento: ' + error.message);
                         button.innerHTML = '<i class="bx bx-trash"></i>';
                         button.disabled = false;
+                        if (uploadContainer) {
+                            uploadContainer.classList.remove('loading');
+                        }
                     });
                 }
 
