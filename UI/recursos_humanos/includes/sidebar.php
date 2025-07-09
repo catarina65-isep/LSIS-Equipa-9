@@ -17,9 +17,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <nav class="flex-grow-1 px-3 pb-4">
             <ul class="nav flex-column" style="gap: 0.5rem;">
                 <li class="nav-item">
-                    <a href="../colaborador.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'meu_perfil.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
-                        <div class="icon-wrapper <?php echo ($current_page == 'meu_perfil.php') ? 'bg-white bg-opacity-10' : 'bg-success bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
-                            <i class='bx bxs-user <?php echo ($current_page == 'meu_perfil.php') ? 'text-white' : 'text-success'; ?>'></i>
+                    <a href="../perfil.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'perfil.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'perfil.php') ? 'bg-white bg-opacity-10' : 'bg-success bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-user <?php echo ($current_page == 'perfil.php') ? 'text-white' : 'text-success'; ?>'></i>
                         </div>
                         <span>Meu Perfil</span>
                     </a>
@@ -232,18 +232,6 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <li><a class="dropdown-item" href="../logout.php">Sair</a></li>
             </ul>
         </div>
-        <div class="mt-auto pt-3" style="margin-top: auto !important; border-top: 1px solid rgba(255,255,255,0.1);">
-            <div class="d-flex align-items-center justify-content-center">
-                <div class="text-center">
-                    <div class="text-white-50 small mb-1">Desenvolvido por</div>
-                    <div class="d-flex align-items-center justify-content-center">
-                        <div style="background: #fff; border-radius: 4px; padding: 4px 8px; margin-right: 8px;">
-                            <span style="color: #2c3e50; font-weight: 700; font-size: 0.9rem;">TLANTIC</span>
-                        </div>
-                        <small class="text-white-50">© 2025</small>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
 </div>

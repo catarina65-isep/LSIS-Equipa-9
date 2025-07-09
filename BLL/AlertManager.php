@@ -121,7 +121,7 @@ class AlertManager {
                     <p>Olá {$user['nome']},</p>
                     <p>De acordo com nossa política de atualização de dados, é necessário que você atualize suas informações cadastrais.</p>
                     <p>Por favor, acesse o sistema e verifique se todos os seus dados estão corretos.</p>
-                    <p><a href=\"http://localhost:8888/LSIS-Equipa-9/UI/perfil.php\" class=\"button\">Atualizar Meus Dados</a></p>
+                    <p><a href=\"http://localhost:8888/LSIS-Equipa-9/UI/recursos_humanos/perfil.php\" class=\"button\">Atualizar Meus Dados</a></p>
                     <div class='footer'>
                         <p>Este é um e-mail automático. Por favor, não responda a esta mensagem.</p>
                         <p>Atenciosamente,<br>Equipe de Recursos Humanos<br>Tlantic</p>

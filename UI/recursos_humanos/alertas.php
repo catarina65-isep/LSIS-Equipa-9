@@ -4,11 +4,6 @@ session_start();
 require_once __DIR__ . '/../../DAL/database.php';
 require_once __DIR__ . '/../../BLL/AlertManager.php';
 
-if (!isset($_SESSION['utilizador_id']) || !in_array($_SESSION['id_perfilacesso'], [1, 2])) {
-    header('Location: /LSIS-Equipa-9/UI/login.php');
-    exit;
-}
-
 $alertManager = new AlertManager();
 $periodicidade = $alertManager->getUpdatePeriod();
 
