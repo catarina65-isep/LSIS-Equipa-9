@@ -64,9 +64,9 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 <h6 class="text-uppercase text-white-50 fw-bold small px-3 mb-3">Configurações</h6>
                 
                 <div class="nav-item">
-                    <a href="perfil.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?= ($current_page == 'perfil.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10' ?>">
-                        <div class="icon-wrapper <?= ($current_page == 'perfil.php') ? 'bg-white bg-opacity-10' : 'bg-secondary bg-opacity-10' ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
-                            <i class='bx bxs-user <?= ($current_page == 'perfil.php') ? 'text-white' : 'text-secondary' ?>'></i>
+                    <a href="recursos_humanos/perfil.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?= (str_contains($current_page, 'perfil.php')) ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10' ?>">
+                        <div class="icon-wrapper <?= (str_contains($current_page, 'perfil.php')) ? 'bg-white bg-opacity-10' : 'bg-secondary bg-opacity-10' ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-user <?= (str_contains($current_page, 'perfil.php')) ? 'text-white' : 'text-secondary' ?>'></i>
                         </div>
                         <span>Meu Perfil</span>
                     </a>
