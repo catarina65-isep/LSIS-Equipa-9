@@ -691,19 +691,7 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="stat-card bg-warning">
-                            <div class="stat-icon">
-                                <i class='bx bx-time'></i>
-                            </div>
-                            <h3 class="stat-value">0</h3>
-                            <p class="stat-label">Documentos Expirados</p>
-                            <div class="stat-change">
-                                <i class='bx bx-down-arrow-alt text-danger'></i>
-                                <span>0%</span>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="col-md-3">
                         <div class="stat-card bg-danger">
                             <div class="stat-icon">
