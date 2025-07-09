@@ -13,7 +13,15 @@ if ($_SESSION['id_perfilacesso'] != 4) {
     exit;
 }
 
+require_once __DIR__ . '/../BLL/ColaboradorBLL.php';
+
 $page_title = "Perfil do Colaborador";
+
+// Cria uma instância do BLL para carregar os dados do colaborador
+$colaboradorBLL = new ColaboradorBLL();
+
+// Carrega os dados do colaborador logado
+$colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
 ?>
 
 <!DOCTYPE html>
@@ -585,6 +593,7 @@ $page_title = "Perfil do Colaborador";
 <body>
     <div class="container-fluid">
         <div class="row">
+            <!-- Sidebar -->
             <div class="col-md-3 col-lg-2 px-0">
                 <div class="sidebar">
                     <div class="logo">
@@ -610,23 +619,11 @@ $page_title = "Perfil do Colaborador";
                                 <button class="btn btn-link d-md-none me-3" id="sidebarToggle">
                                     <i class='bx bx-menu'></i>
                                 </button>
-                                <h1 class="h4 mb-0">Perfil do Colaborador</h1>
+                                <h1 class="h4 mb-0">O Meu Perfil</h1>
                             </div>
-                    <div class="d-flex align-items-center">
-                        <div class="dropdown me-3">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="periodoDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class='bx bx-calendar me-1'></i> Últimos 30 dias
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="periodoDropdown">
-                                <li><a class="dropdown-item" href="#">Hoje</a></li>
-                                <li><a class="dropdown-item active" href="#">Últimos 7 dias</a></li>
-                                <li><a class="dropdown-item" href="#">Últimos 30 dias</a></li>
-                                <li><a class="dropdown-item" href="#">Este mês</a></li>
-                                <li><a class="dropdown-item" href="#">Personalizado</a></li>
-                            </ul>
-                        </div>
-                        <button class="btn btn-primary">
-                            <i class='bx bx-download me-1'></i> Exportar Dados
+                     <div class="d-flex align-items-center">
+                        <button type="button" class="btn btn-primary" id="exportButton" onclick="exportarDados()">
+                            <i class='bx bx-download'></i> Exportar Dados
                         </button>
                     </div>
                 </div>
@@ -636,21 +633,23 @@ $page_title = "Perfil do Colaborador";
                     <div class="profile-card mb-4">
                         <div class="d-flex align-items-center mb-3">
                             <div class="profile-image me-4">
-                                <div class="profile-photo-container">
-                                    <img src="../assets/placeholder.jpg" alt="Foto de Perfil" id="foto-preview" class="rounded-circle">
+                                <div class="profile-photo">
+                                <div class="rounded-circle bg-light text-center" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
+                                    <i class='bx bx-user-circle' style="font-size: 48px; color: var(--primary-color);"></i>
                                 </div>
                             </div>
+                            </div>
                             <div class="profile-details">
-                                <h1 class="mb-1" id="displayName">Nome Completo</h1>
+                                <h1 class="mb-1" id="displayName"><?= htmlspecialchars($colaborador['nome']) ?></h1>
                                 <div class="mt-3">
-                                    <div class="stat-item mb-2">
-                                        <i class='bx bx-envelope'></i>
-                                        <span id="displayEmail" class="ms-2"></span>
-                                    </div>
-                                    <div class="stat-item">
-                                        <i class='bx bx-phone'></i>
-                                        <span id="displayPhone" class="ms-2"></span>
-                                    </div>
+                                     <div class="stat-item mb-2">
+                                         <i class='bx bx-envelope'></i>
+                                         <span id="displayEmail" class="ms-2"><?= htmlspecialchars($colaborador['email']) ?></span>
+                                     </div>
+                                     <div class="stat-item">
+                                         <i class='bx bx-phone'></i>
+                                         <span id="displayPhone" class="ms-2"><?= htmlspecialchars($colaborador['telefone']) ?></span>
+                                     </div>
                                 </div>
                             </div>
                         </div>
@@ -722,89 +721,20 @@ $page_title = "Perfil do Colaborador";
             </div>
         </div>
 
-        <!-- Seção de Dados Pessoais -->
+        <!-- Conteúdo Principal -->
+        <div class="col-md-9 col-lg-10">
+            <!-- Seção de Dados Pessoais -->
         <div class="card" id="perfil">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4>Os Meus Dados</h4>
-                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#dadosPessoais">
-                        <i class='bx bx-edit'></i> Editar
-                    </button>
-                </div>
-            </div>
+                    <div class="card-header">
+                        <h4>Os Meus Dados</h4>
+                    </div>
             <div class="card-body">
                 <div class="collapse show" id="dadosPessoais">
-                    <form id="profileForm">
+                    <form id="profileForm" action="/LSIS-Equipa-9/UI/processa_perfil.php" method="POST">
                         <input type="hidden" id="utilizador_id" name="utilizador_id" value="<?= htmlspecialchars($_SESSION['utilizador_id']); ?>">
                         
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="nome"><i class='bx bx-user'></i> Nome Completo</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-user'></i></span>
-                                        <input type="text" id="nome" name="nome" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="dataNascimento"><i class='bx bx-calendar'></i> Data de Nascimento</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-calendar'></i></span>
-                                        <input type="date" id="dataNascimento" name="dataNascimento" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="nif"><i class='bx bx-id-card'></i> NIF (Número de Identificação Fiscal)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-id-card'></i></span>
-                                        <input type="text" id="nif" name="nif" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="niss"><i class='bx bx-id-card'></i> NISS</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-id-card'></i></span>
-                                        <input type="text" id="niss" name="niss" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Seção Contactos -->
-                        <div class="section-header mt-4 mb-4">
-                            <h3 class="section-title">Contactos</h3>
-                            <div class="section-divider"></div>
-                        </div>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="telefone"><i class='bx bx-phone'></i> Contacto Telefónico</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-phone'></i></span>
-                                        <input type="tel" id="telefone" name="telefone" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="email"><i class='bx bx-envelope'></i> Email</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-envelope'></i></span>
-                                        <input type="email" id="email" name="email" required class="form-control form-control-lg">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Seção Dados Pessoais -->
+                        <!-- Campos do formulário preenchidos com dados do colaborador -->
+                        <!-- Seção de Dados Pessoais -->
                         <div class="section-header mt-4 mb-4">
                             <h3 class="section-title">Dados Pessoais</h3>
                             <div class="section-divider"></div>
@@ -812,41 +742,221 @@ $page_title = "Perfil do Colaborador";
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="estadoCivil"><i class='bx bx-heart'></i> Estado Civil</label>
+                                    <label for="nome"><i class='bx bx-user'></i> Nome</label>
+                                    <input type="text" class="form-control" id="nome" name="nome" 
+                                           value="<?= htmlspecialchars($colaborador['nome'] ?? ''); ?>" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email"><i class='bx bx-envelope'></i> Email</label>
+                                    <input type="email" class="form-control" id="email" name="email" 
+                                           value="<?= htmlspecialchars($colaborador['email'] ?? ''); ?>" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="telefone"><i class='bx bx-phone'></i> Telefone</label>
+                                    <input type="tel" class="form-control" id="telefone" name="telefone" 
+                                           value="<?= htmlspecialchars($colaborador['telefone'] ?? ''); ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nif"><i class='bx bx-id-card'></i> NIF</label>
+                                    <input type="text" class="form-control" id="nif" name="nif" 
+                                           value="<?= htmlspecialchars($colaborador['nif'] ?? ''); ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="form-group">
+                                    <label for="morada"><i class='bx bx-home'></i> Morada</label>
                                     <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-heart'></i></span>
-                                        <select id="estadoCivil" name="estadoCivil" required class="form-control form-control-lg">
-                                            <option value="">Selecione...</option>
-                                            <option value="solteiro">Solteiro(a)</option>
-                                            <option value="casado">Casado(a)</option>
-                                            <option value="divorciado">Divorciado(a)</option>
-                                            <option value="viuvo">Viúvo(a)</option>
-                                        </select>
+                                        <span class="input-group-text"><i class='bx bx-home'></i></span>
+                                        <textarea class="form-control form-control-lg" id="morada" name="morada" rows="3"><?= htmlspecialchars($colaborador['morada'] ?? ''); ?></textarea>
+                                    </div>
+                                    <div class="upload-container">
+                                        <label for="moradaDoc" class="form-label mt-2">Comprovativo de Morada (PDF, JPG, PNG)</label>
+                                        <?php
+                                        $uploadDir = __DIR__ . '/../uploads/documentos/';
+                                        $moradaFiles = glob($uploadDir . 'morada_' . $_SESSION['utilizador_id'] . '_*');
+                                        if (!empty($moradaFiles)) {
+                                            $latestFile = array_reduce($moradaFiles, function($a, $b) {
+                                                return filemtime($a) > filemtime($b) ? $a : $b;
+                                            });
+                                            $fileName = basename($latestFile);
+                                            echo '<div class="d-flex align-items-center">
+                                                <a href="../uploads/documentos/' . htmlspecialchars($fileName) . '" target="_blank" class="flex-grow-1 text-primary">
+                                                    <i class="bx bx-file"></i> Ver documento atual
+                                                    <small class="text-muted">(Clique para visualizar)</small>
+                                                </a>
+                                                <button type="button" class="btn btn-danger btn-sm ms-2 btn-apagar-documento" 
+                                                        data-file="' . htmlspecialchars($fileName) . '" 
+                                                        data-field="moradaDoc" 
+                                                        onclick="apagarDocumento(event)">
+                                                    <i class="bx bx-trash"></i>
+                                                </button>
+                                            </div>';
+                                        } else {
+                                            echo '<input type="file" class="form-control" id="moradaDoc" name="moradaDoc" accept=".pdf,.jpg,.jpeg,.png">';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="dataNascimento"><i class='bx bx-calendar'></i> Data de Nascimento</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-calendar'></i></span>
+                                        <input type="date" id="dataNascimento" name="dataNascimento" required class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['data_nascimento'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label for="genero"><i class='bx bx-gender'></i> Género</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-gender'></i></span>
+                                        <select class="form-control form-control-lg" id="genero" name="genero" required>
+                                            <option value="" <?= !$colaborador['genero'] ? 'selected' : ''; ?>>Selecione...</option>
+                                            <option value="Masculino" <?= $colaborador['genero'] == 'Masculino' ? 'selected' : ''; ?>>Masculino</option>
+                                            <option value="Feminino" <?= $colaborador['genero'] == 'Feminino' ? 'selected' : ''; ?>>Feminino</option>
+                                            <option value="Outro" <?= $colaborador['genero'] == 'Outro' ? 'selected' : ''; ?>>Outro</option>
+                                            <option value="Prefiro não dizer" <?= $colaborador['genero'] == 'Prefiro não dizer' ? 'selected' : ''; ?>>Prefiro não dizer</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="estadoCivil"><i class='bx bx-heart'></i> Estado Civil</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-heart'></i></span>
+                                        <select class="form-control form-control-lg" id="estadoCivil" name="estadoCivil" required>
+                                            <option value="" <?= !$colaborador['estado_civil'] ? 'selected' : ''; ?>>Selecione...</option>
+                                            <option value="Solteiro" <?= $colaborador['estado_civil'] == 'Solteiro' ? 'selected' : ''; ?>>Solteiro</option>
+                                            <option value="Casado" <?= $colaborador['estado_civil'] == 'Casado' ? 'selected' : ''; ?>>Casado</option>
+                                            <option value="União de Facto" <?= $colaborador['estado_civil'] == 'União de Facto' ? 'selected' : ''; ?>>União de Facto</option>
+                                            <option value="Divorciado" <?= $colaborador['estado_civil'] == 'Divorciado' ? 'selected' : ''; ?>>Divorciado</option>
+                                            <option value="Viúvo" <?= $colaborador['estado_civil'] == 'Viúvo' ? 'selected' : ''; ?>>Viúvo</option>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="niss"><i class='bx bx-id-card'></i> NISS</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-id-card'></i></span>
+                                        <input type="text" id="niss" name="niss" required class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['niss'] ?? ''); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cartaoCidadao"><i class='bx bx-id-card'></i> Número do Cartão de Cidadão</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-id-card'></i></span>
+                                        <input type="text" id="cartaoCidadao" name="cartaoCidadao" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['numero_mecanografico'] ?? ''); ?>">
+                                    </div>
+                                    <div class="upload-container">
+                                        <label for="cartaoCidadaoDoc" class="form-label mt-2">Comprovativo (PDF, JPG, PNG)</label>
+                                        <?php
+                                        $uploadDir = __DIR__ . '/../uploads/documentos/';
+                                        $cartaoCidadaoFiles = glob($uploadDir . 'cartaocidadao_' . $_SESSION['utilizador_id'] . '_*');
+                                        if (!empty($cartaoCidadaoFiles)) {
+                                            $latestFile = array_reduce($cartaoCidadaoFiles, function($a, $b) {
+                                                return filemtime($a) > filemtime($b) ? $a : $b;
+                                            });
+                                            $fileName = basename($latestFile);
+                                            echo '<div class="d-flex align-items-center">
+                                                <a href="../uploads/documentos/' . htmlspecialchars($fileName) . '" target="_blank" class="flex-grow-1 text-primary">
+                                                    <i class="bx bx-file"></i> Ver documento atual
+                                                    <small class="text-muted">(Clique para visualizar)</small>
+                                                </a>
+                                                <button type="button" class="btn btn-danger btn-sm ms-2 btn-apagar-documento" 
+                                                        data-file="' . htmlspecialchars($fileName) . '" 
+                                                        data-field="moradaDoc" 
+                                                        onclick="apagarDocumento(event)">
+                                                    <i class="bx bx-trash"></i>
+                                                </button>
+                                            </div>';
+                                        } else {
+                                            echo '<input type="file" class="form-control" id="cartaoCidadaoDoc" name="cartaoCidadaoDoc" accept=".pdf,.jpg,.jpeg,.png">';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="iban"><i class='bx bx-bank'></i> IBAN</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class='bx bx-bank'></i></span>
+                                        <input type="text" id="iban" name="iban" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['nib'] ?? ''); ?>">
+                                    </div>
+                                    <div class="upload-container">
+                                        <label for="ibanDoc" class="form-label mt-2">Comprovativo Bancário (PDF, JPG, PNG)</label>
+                                        <?php
+                                        $uploadDir = __DIR__ . '/../uploads/documentos/';
+                                        $ibanFiles = glob($uploadDir . 'iban_' . $_SESSION['utilizador_id'] . '_*');
+                                        if (!empty($ibanFiles)) {
+                                            $latestFile = array_reduce($ibanFiles, function($a, $b) {
+                                                return filemtime($a) > filemtime($b) ? $a : $b;
+                                            });
+                                            $fileName = basename($latestFile);
+                                            echo '<div class="d-flex align-items-center">
+                                                <a href="../uploads/documentos/' . htmlspecialchars($fileName) . '" target="_blank" class="flex-grow-1 text-primary">
+                                                    <i class="bx bx-file"></i> Ver documento atual
+                                                    <small class="text-muted">(Clique para visualizar)</small>
+                                                </a>
+                                                <button type="button" class="btn btn-danger btn-sm ms-2 btn-apagar-documento" 
+                                                        data-file="' . htmlspecialchars($fileName) . '" 
+                                                        data-field="moradaDoc" 
+                                                        onclick="apagarDocumento(event)">
+                                                    <i class="bx bx-trash"></i>
+                                                </button>
+                                            </div>';
+                                        } else {
+                                            echo '<input type="file" class="form-control" id="ibanDoc" name="ibanDoc" accept=".pdf,.jpg,.jpeg,.png">';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-group">
                                     <label for="numeroDependentes"><i class='bx bx-group'></i> Número de Dependentes</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class='bx bx-group'></i></span>
-                                        <input type="number" id="numeroDependentes" name="numeroDependentes" min="0" class="form-control form-control-lg">
+                                        <input type="number" id="numeroDependentes" name="numeroDependentes" min="0" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['numero_dependentes'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="habilitacoes"><i class='bx bx-graduation'></i> Habilitações Literárias</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text"><i class='bx bx-graduation'></i></span>
-                                        <select id="habilitacoes" name="habilitacoes" class="form-control form-control-lg">
-                                            <option value="">Selecione...</option>
-                                            <option value="ensino_basico">Ensino Básico</option>
-                                            <option value="ensino_secundario">Ensino Secundário</option>
-                                            <option value="ensino_superior">Ensino Superior</option>
-                                            <option value="outro">Outro</option>
-                                        </select>
-                                    </div>
+                                     <div class="input-group">
+                                         <span class="input-group-text"><i class='bx bx-graduation'></i></span>
+                                         <input type="text" id="habilitacoes" name="habilitacoes" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['habilitacoes'] ?? ''); ?>">
+                                     </div>
                                 </div>
                             </div>
                         </div>
@@ -862,7 +972,8 @@ $page_title = "Perfil do Colaborador";
                                     <label for="contactoEmergencia"><i class='bx bx-user'></i> Contacto de Emergência</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class='bx bx-user'></i></span>
-                                        <input type="text" id="contactoEmergencia" name="contactoEmergencia" class="form-control form-control-lg">
+                                        <input type="text" id="contactoEmergencia" name="contactoEmergencia" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['contacto_emergencia'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -871,7 +982,8 @@ $page_title = "Perfil do Colaborador";
                                     <label for="relacaoEmergencia"><i class='bx bx-link'></i> Relação com o Contacto de Emergência</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class='bx bx-link'></i></span>
-                                        <input type="text" id="relacaoEmergencia" name="relacaoEmergencia" class="form-control form-control-lg">
+                                        <input type="text" id="relacaoEmergencia" name="relacaoEmergencia" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['relacao_emergencia'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
@@ -880,33 +992,231 @@ $page_title = "Perfil do Colaborador";
                                     <label for="telemovelEmergencia"><i class='bx bx-phone'></i> Telemóvel do Contacto de Emergência</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class='bx bx-phone'></i></span>
-                                        <input type="tel" id="telemovelEmergencia" name="telemovelEmergencia" class="form-control form-control-lg">
+                                        <input type="tel" id="telemovelEmergencia" name="telemovelEmergencia" class="form-control form-control-lg" 
+                                            value="<?= htmlspecialchars($colaborador['telemovel_emergencia'] ?? ''); ?>">
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Botão de Envio -->
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <div class="form-actions text-center">
-                                    <button type="submit" class="btn btn-primary btn-lg w-100">Salvar Alterações</button>
+                            <!-- Botão de Envio -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div id="messageContainer" class="mb-3"></div>
+                                    <div class="d-flex justify-content-end mt-4">
+                                        <button type="submit" class="btn btn-primary" id="submitButton">Salvar Alterações</button>
+                                        <div id="loadingOverlay" class="loading-overlay"></div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('profileForm');
+                const submitButton = form.querySelector('button[type="submit"]');
+                
+
+
+                // Adicionar estilo CSS combinado
+                const style = document.createElement('style');
+                style.textContent = `
+                    .loading-spinner {
+                        display: inline-block;
+                        width: 16px;
+                        height: 16px;
+                        border: 2px solid #ccc;
+                        border-top: 2px solid #000;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                    }
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                    .btn-apagar-documento {
+                        transition: opacity 0.2s;
+                    }
+                    .btn-apagar-documento:hover {
+                        opacity: 0.8;
+                    }
+                    .loading-overlay {
+                        display: none;
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        background-color: rgba(255, 255, 255, 0.8);
+                        z-index: 9999;
+                    }
+                    .loading-overlay.active {
+                        display: block;
+                    }
+                    .upload-container {
+                        margin-top: 10px;
+                        padding: 15px;
+                        border: 2px dashed #dee2e6;
+                        border-radius: 8px;
+                        background-color: #f8f9fa;
+                    }
+                    .upload-container:hover {
+                        border-color: #0d6efd;
+                    }
+                    .upload-container .custom-file-label {
+                        background-color: #fff;
+                        border: none;
+                        padding: 8px 12px;
+                    }
+                    .upload-container .custom-file-label::after {
+                        background-color: #0d6efd;
+                        color: white;
+                        border-color: #0d6efd;
+                    }
+                `;
+                document.head.appendChild(style);
+
+                // Função para atualizar o estado do carregamento
+                function updateLoadingState(isLoading) {
+                    const overlay = document.getElementById('loadingOverlay');
+                    if (isLoading) {
+                        overlay.classList.add('active');
+                    } else {
+                        overlay.classList.remove('active');
+                    }
+                }
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Enviar formulário via AJAX
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro na requisição: ' + response.status);
+                        }
+                        return response.text();
+                    })
+                    .then(text => {
+                        let result;
+                        try {
+                            result = JSON.parse(text);
+                        } catch (e) {
+                            throw new Error('Erro ao processar resposta: ' + e.message);
+                        }
+                        return result;
+                    })
+                    .then(result => {
+                        if (result.success) {
+                            // Remover qualquer mensagem anterior
+                            const existingAlert = document.getElementById('messageContainer').querySelector('.alert');
+                            if (existingAlert) {
+                                existingAlert.remove();
+                            }
+                            
+                            // Criar mensagem de sucesso
+                            const successMessage = document.createElement('div');
+                            successMessage.className = 'alert alert-success alert-dismissible fade show';
+                            successMessage.innerHTML = `
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                Dados atualizados com sucesso!
+                            `;
+                            
+                            // Adicionar mensagem ao container
+                            const messageContainer = document.getElementById('messageContainer');
+                            messageContainer.appendChild(successMessage);
+                            
+                            // Remover mensagem após 5 segundos
+                            setTimeout(() => {
+                                successMessage.remove();
+                            }, 5000);
+
+                            // Atualizar tabela de documentos
+                            atualizarTabelaDocumentos();
+                        } else {
+                            // Remover qualquer mensagem anterior
+                            const existingAlert = document.getElementById('messageContainer').querySelector('.alert');
+                            if (existingAlert) {
+                                existingAlert.remove();
+                            }
+                            
+                            // Criar mensagem de erro
+                            const errorMessage = document.createElement('div');
+                            errorMessage.className = 'alert alert-danger alert-dismissible fade show';
+                            errorMessage.innerHTML = `
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                ${result.message}
+                            `;
+                            
+                            // Se houver erros específicos, mostrar cada um
+                            if (result.erros && result.erros.length > 0) {
+                                errorMessage.innerHTML += `
+                                    <ul class="mt-2">
+                                        ${result.erros.map(erro => `<li>${erro}</li>`).join('')}
+                                    </ul>
+                                `;
+                            }
+                            
+                            // Adicionar mensagem ao container
+                            const messageContainer = document.getElementById('messageContainer');
+                            messageContainer.appendChild(errorMessage);
+                            
+                            // Remover mensagem após 5 segundos
+                            setTimeout(() => {
+                                errorMessage.remove();
+                            }, 5000);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro na requisição:', error);
+                        
+                        // Remover qualquer mensagem anterior
+                        const existingAlert = document.getElementById('messageContainer').querySelector('.alert');
+                        if (existingAlert) {
+                            existingAlert.remove();
+                        }
+                        
+                        // Criar mensagem de erro
+                        const errorMessage = document.createElement('div');
+                        errorMessage.className = 'alert alert-danger alert-dismissible fade show';
+                        errorMessage.innerHTML = `
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            Erro ao salvar dados: ${error.message}
+                        `;
+                        
+                        // Adicionar mensagem ao container
+                        const messageContainer = document.getElementById('messageContainer');
+                        messageContainer.appendChild(errorMessage);
+                        
+                        // Remover mensagem após 5 segundos
+                        setTimeout(() => {
+                            errorMessage.remove();
+                        }, 5000);
+                        
+                        throw error; // Re-lança o erro para o finally
+                    })
+                    .finally(() => {
+                        // Remover o overlay de carregamento
+                        updateLoadingState(false);
+                        
+                        // Garantir que o botão esteja disponível novamente
+                        submitButton.disabled = false;
+                    });
+                });
+            });
+        </script>
 
         <!-- Seção de Documentos -->
         <div class="card" id="documentos">
             <div class="card-header">
                 <div class="d-flex justify-content-between align-items-center">
                     <h4>Documentos</h4>
-                    <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                        <i class='bx bx-upload'></i> Upload de Documento
-                    </button>
                 </div>
             </div>
             <div class="card-body">
@@ -922,53 +1232,56 @@ $page_title = "Perfil do Colaborador";
                             </tr>
                         </thead>
                         <tbody id="documentosTableBody">
+                            <?php
+                            // Diretório de uploads
+                            $uploadDir = __DIR__ . '/../uploads/documentos/';
+                              
+                            // Tipos de documentos e seus prefixos
+                            $documentos = [
+                                'morada' => 'Comprovativo de Morada',
+                                'cartaocidadao' => 'Cartão de Cidadão',
+                                'nif' => 'NIF',
+                                'niss' => 'NISS',
+                                'iban' => 'IBAN'
+                            ];
+                              
+                            foreach ($documentos as $prefix => $descricao) {
+                                $files = glob($uploadDir . $prefix . '_' . $_SESSION['utilizador_id'] . '_*');
+                                if (!empty($files)) {
+                                    $latestFile = array_reduce($files, function($a, $b) {
+                                        return filemtime($a) > filemtime($b) ? $a : $b;
+                                    });
+                                    $fileName = basename($latestFile);
+                                    $uploadDate = date('Y-m-d H:i:s', filemtime($latestFile));
+                                    $status = 'Pendente'; // Pode adicionar lógica para verificar status
+                                    
+                                    echo "<tr>";
+                                    echo "<td>" . htmlspecialchars($descricao) . "</td>";
+                                    echo "<td>" . htmlspecialchars($fileName) . "</td>";
+                                    echo "<td>" . htmlspecialchars($uploadDate) . "</td>";
+                                    echo "<td class='text-warning'>" . htmlspecialchars($status) . "</td>";
+                                    echo "<td>";
+                                    echo "<a href='" . htmlspecialchars("../uploads/documentos/" . $fileName) . "' target='_blank' class='btn btn-primary btn-sm'>";
+                                    echo "<i class='bx bx-download'></i> Download";
+                                    echo "</a>";
+                                    echo "<button type='button' class='btn btn-danger btn-sm ms-2 btn-apagar-documento' ";
+                                    echo "data-file='" . htmlspecialchars($fileName) . "' ";
+                                    echo "data-field='" . htmlspecialchars($prefix) . "' ";
+                                    echo "onclick='apagarDocumento(event)'>";
+                                    echo "<i class='bx bx-trash'></i>";
+                                    echo "</button>";
+                                    echo "</td>";
+                                    echo "</tr>";
+                                }
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Modal para Upload de Documentos -->
-        <div class="modal fade" id="uploadModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Upload de Documento</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="uploadForm">
-                            <div class="mb-3">
-                                <label for="tipoDocumento" class="form-label">Tipo de Documento</label>
-                                <select class="form-select" id="tipoDocumento" name="tipoDocumento" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="cartao_cidadao">Cartão de Cidadão</option>
-                                    <option value="nif">NIF</option>
-                                    <option value="niss">NISS</option>
-                                    <option value="outro">Outro</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="arquivo" class="form-label">Arquivo</label>
-                                <input type="file" class="form-control" id="arquivo" name="arquivo" accept=".pdf,.jpg,.jpeg,.png" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="dataValidade" class="form-label">Data de Validade</label>
-                                <input type="date" class="form-control" id="dataValidade" name="dataValidade">
-                            </div>
-                            <div class="mb-3">
-                                <label for="descricao" class="form-label">Descrição</label>
-                                <textarea class="form-control" id="descricao" name="descricao" rows="3"></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-primary" onclick="uploadDocumento()">Upload</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+
 
         <?php include 'footer.php'; ?>
 
@@ -979,8 +1292,8 @@ $page_title = "Perfil do Colaborador";
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-        <script src="js/colaborador.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script>
             // Função para navegação suave entre seções
             function scrollToSection(sectionId) {
@@ -1046,9 +1359,392 @@ $page_title = "Perfil do Colaborador";
                     theme: 'bootstrap-5',
                     width: '100%'
                 });
-
-                // Inicializar DataTables (será feito no colaborador.js)
             });
         </script>
+        <script>
+            // Função para atualizar o formulário
+            function atualizarFormulario() {
+                const form = document.getElementById('profileForm');
+                if (!form) {
+                    console.error('Formulário não encontrado');
+                    return;
+                }
+
+                // Tipos de documentos e seus prefixos
+                const documentos = {
+                    'morada': 'moradaDoc',
+                    'cartaocidadao': 'cartaoCidadaoDoc',
+                    'nif': 'nifDoc',
+                    'niss': 'nissDoc',
+                    'iban': 'ibanDoc'
+                };
+
+                // Para cada tipo de documento
+                Object.entries(documentos).forEach(([prefix, field]) => {
+                    // Primeiro encontrar o elemento do campo
+                    const fieldElement = form.querySelector(`#${field}`);
+                    if (!fieldElement) {
+                        console.error(`Campo ${field} não encontrado`);
+                        return;
+                    }
+
+                    // Encontrar o container de upload
+                    let uploadContainer = fieldElement.closest('.upload-container');
+                    if (!uploadContainer) {
+                        // Se não encontrar pelo closest, tentar encontrar pelo seletor
+                        uploadContainer = form.querySelector(`#${field}`).closest('.upload-container');
+                        if (!uploadContainer) {
+                            console.error(`Container de upload para ${field} não encontrado`);
+                            return;
+                        }
+                    }
+
+                    // Verificar se já existe um arquivo
+                    const existingFile = uploadContainer.querySelector('a');
+                    if (existingFile) {
+                        // Se existe arquivo, manter o link
+                        return;
+                    }
+
+                    // Se não existe arquivo, mostrar o input de upload
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.className = 'form-control';
+                    input.id = field;
+                    input.name = field;
+                    input.accept = '.pdf,.jpg,.jpeg,.png';
+                    uploadContainer.innerHTML = ''; // Limpar conteúdo existente
+                    uploadContainer.appendChild(input);
+                });
+            }
+
+            // Função para atualizar a seção de documentos
+            function atualizarSecaoDocumentos() {
+                const documentosSection = document.getElementById('documentos');
+                if (!documentosSection) {
+                    console.error('Seção de documentos não encontrada');
+                    return;
+                }
+
+                // Obter o ID do utilizador do campo hidden do formulário
+                const utilizadorId = document.getElementById('utilizador_id').value;
+                if (!utilizadorId) {
+                    console.error('ID do utilizador não encontrado');
+                    return;
+                }
+
+                fetch('/LSIS-Equipa-9/UI/documentos.php?id_utilizador=' + encodeURIComponent(utilizadorId))
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro ao carregar documentos: ' + response.status);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        // Atualizar apenas o conteúdo interno do card
+                        const cardBody = documentosSection.querySelector('.card-body');
+                        if (cardBody) {
+                            cardBody.innerHTML = html;
+                        } else {
+                            console.error('Card body não encontrado');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao atualizar documentos:', error);
+                        showAlert('danger', 'Erro ao atualizar documentos');
+                    });
+            }
+
+            // Função para atualizar a tabela de documentos (apenas quando necessário)
+            function atualizarTabelaDocumentos() {
+                // Tipos de documentos e seus prefixos
+                const documentos = {
+                    'morada': 'Comprovativo de Morada',
+                    'cartaocidadao': 'Cartão de Cidadão',
+                    'nif': 'NIF',
+                    'niss': 'NISS',
+                    'iban': 'IBAN'
+                };
+
+                // Para cada tipo de documento
+                Object.entries(documentos).forEach(([prefix, descricao]) => {
+                    // Buscar arquivos mais recentes
+                    fetch(`/LSIS-Equipa-9/UI/busca_documentos.php?prefix=${prefix}&utilizador_id=${$_SESSION['utilizador_id']}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.file) {
+                                // Verificar se já existe um elemento com este arquivo
+                                const existingRow = document.querySelector(`tr[data-file='${data.file}']`);
+                                if (!existingRow) {
+                                    // Criar nova linha apenas se não existir
+                                    const tbody = document.getElementById('documentosTableBody');
+                                    const tr = document.createElement('tr');
+                                    tr.dataset.file = data.file; // Adicionar atributo data-file
+                                    tr.innerHTML = `
+                                        <td>${descricao}</td>
+                                        <td>${data.file}</td>
+                                        <td>${data.uploadDate}</td>
+                                        <td class='text-warning'>Pendente</td>
+                                        <td>
+                                            <a href='../uploads/documentos/${data.file}' target='_blank' class='btn btn-primary btn-sm'>
+                                                <i class='bx bx-download'></i> Download
+                                            </a>
+                                            <button type='button' class='btn btn-danger btn-sm ms-2 btn-apagar-documento' 
+                                                    data-file='${data.file}' 
+                                                    data-field='${prefix}' 
+                                                    onclick='apagarDocumento(event)'>
+                                                <i class='bx bx-trash'></i>
+                                            </button>
+                                        </td>
+                                    `;
+                                    tbody.appendChild(tr);
+                                }
+                            }
+                        })
+                        .catch(error => console.error('Erro ao buscar documentos:', error));
+                });
+            }
+
+            // Inicializar tabela de documentos quando a página carrega
+            document.addEventListener('DOMContentLoaded', function() {
+                // Não faz nada na inicialização, a tabela já vem do PHP
+            });
+
+        </script>
+        <script>
+            // Função para inicializar máscaras
+            function initializeMasks() {
+                $('#telefone, #telemovel_emergencia').mask('000000000');
+                $('#nif').mask('000000000');
+                $('#niss').mask('00000000000');
+            }
+
+            // Função para inicializar Select2
+            function initializeSelect2() {
+                $('.select2').select2();
+            }
+
+
+
+            // Função para inicializar daterangepicker
+            function initializeDateRangePicker() {
+                $('.daterangepicker').daterangepicker({
+                    singleDatePicker: true,
+                    showDropdowns: true,
+                    locale: {
+                        format: 'YYYY-MM-DD'
+                    }
+                });
+            }
+
+            // Função para inicializar o layout
+            function initializeLayout() {
+                // Toggle sidebar em dispositivos móveis
+                const sidebarToggle = document.getElementById('sidebarToggle');
+                if (sidebarToggle) {
+                    sidebarToggle.addEventListener('click', function() {
+                        document.querySelector('.sidebar').classList.toggle('show');
+                    });
+                }
+
+                // Inicializar tooltips
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+
+                // Inicializar popovers
+                var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+                var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                    return new bootstrap.Popover(popoverTriggerEl);
+                });
+            }
+
+            // Função para mostrar alertas
+            function showAlert(type, message) {
+                // Verifica se já existe uma mensagem de sucesso
+                const existingAlert = document.querySelector('.alert');
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+                
+                const messageContainer = document.getElementById('messageContainer');
+                const alert = document.createElement('div');
+                alert.className = `alert alert-${type} alert-dismissible fade show`;
+                alert.innerHTML = `
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    ${message}
+                `;
+                messageContainer.appendChild(alert);
+                
+                // Remove a mensagem após 5 segundos
+                setTimeout(() => {
+                    alert.remove();
+                }, 5000);
+            }
+
+            // Função para exportar dados
+            async function exportarDados() {
+                try {
+                    // Redirecionar para o arquivo de exportação
+                    window.location.href = '/LSIS-Equipa-9/UI/processa_exportar.php';
+                } catch (error) {
+                    console.error('Erro ao exportar:', error);
+                    showAlert('danger', 'Erro ao exportar dados');
+                }
+            }
+
+            // Função para inicializar o tema
+            function initializeTheme() {
+                const themeToggle = document.getElementById('themeToggle');
+                if (themeToggle) {
+                    const savedTheme = localStorage.getItem('theme') || 'light';
+                    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+                    
+                    // Atualiza o ícone inicial
+                    const icon = themeToggle.querySelector('i');
+                    icon.className = savedTheme === 'dark' ? 'bx bx-sun' : 'bx bx-moon';
+
+                    themeToggle.addEventListener('click', function() {
+                        const html = document.documentElement;
+                        const currentTheme = html.getAttribute('data-bs-theme');
+                        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                        
+                        html.setAttribute('data-bs-theme', newTheme);
+                        localStorage.setItem('theme', newTheme);
+                        
+                        // Atualiza o ícone
+                        const icon = this.querySelector('i');
+                        icon.className = newTheme === 'dark' ? 'bx bx-sun' : 'bx bx-moon';
+                    });
+                }
+            }
+
+            // Função para atualizar o perfil
+            function updateProfile() {
+                const form = document.getElementById('profileForm');
+                const submitButton = document.getElementById('submitButton');
+                // Função global para apagar documento
+                window.apagarDocumento = function(event) {
+                    const button = event.currentTarget;
+                    const fileName = button.dataset.file;
+                    const field = button.dataset.field;
+
+                    if (!confirm('Tem a certeza que deseja apagar este documento?')) {
+                        return;
+                    }
+
+                    // Desabilitar botão e mostrar loading
+                    button.disabled = true;
+                    button.innerHTML = '<span class="loading-spinner"></span>';
+
+                    // Enviar requisição para apagar o documento
+                    fetch('apaga_documento.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            fileName: fileName,
+                            field: field
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Atualizar a seção de documentos e o formulário
+                            atualizarSecaoDocumentos();
+                            atualizarFormulario();
+                        } else {
+                            alert('Erro ao apagar documento: ' + data.message);
+                            button.innerHTML = '<i class="bx bx-trash"></i>';
+                            button.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Erro ao apagar documento');
+                        button.innerHTML = '<i class="bx bx-trash"></i>';
+                        button.disabled = false;
+                    });
+                }
+
+                if (!submitButton) {
+                    console.error('Botão de submit não encontrado');
+                    return;
+                }
+                
+                submitButton.addEventListener('click', async function(e) {
+                    e.preventDefault();
+                    
+                    // Adicionar spinner ao botão
+                    const originalText = submitButton.innerHTML;
+                    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+                    submitButton.disabled = true;
+                    submitButton.style.opacity = '0.6'; // Adicionar opacidade durante o processamento
+                    
+                    try {
+                        const formData = new FormData(form);
+                        const response = await fetch('/LSIS-Equipa-9/UI/processa_perfil.php', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            // Remove qualquer mensagem anterior
+                            const existingAlert = document.querySelector('.alert');
+                            if (existingAlert) {
+                                existingAlert.remove();
+                            }
+                            showAlert('success', 'Dados atualizados com sucesso');
+                            
+                            // Atualizar a seção de documentos
+                            atualizarSecaoDocumentos();
+                        } else {
+                            // Se existem erros específicos, mostra-os
+                            if (result.erros && result.erros.length > 0) {
+                                const errorMessages = result.erros.map(error => `<li>${error}</li>`).join('');
+                                showAlert('danger', `
+                                    ${result.message}
+                                    <ul class="mt-2">
+                                        ${errorMessages}
+                                    </ul>
+                                `);
+                            } else {
+                                showAlert('danger', result.message);
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Erro na requisição:', error);
+                        showAlert('danger', 'Erro ao salvar dados');
+                    } finally {
+                        // Restaurar o botão
+                        submitButton.innerHTML = originalText;
+                        submitButton.disabled = false;
+                        submitButton.style.opacity = '1'; // Resetar opacidade
+                        submitButton.offsetHeight; // Forçar reflow
+                        
+                        // Adicionar um setTimeout para garantir que o botão seja atualizado
+                        setTimeout(() => {
+                            submitButton.innerHTML = originalText;
+                            submitButton.style.opacity = '1';
+                        }, 100);
+                    }
+                });
+            }
+
+            // Inicializar tudo quando o documento estiver pronto
+            $(document).ready(function() {
+                initializeMasks();
+                initializeSelect2();
+                initializeDateRangePicker();
+                initializeLayout();
+                initializeTheme();
+                updateProfile();
+            });
+        </script>
+
     </body>
 </html>

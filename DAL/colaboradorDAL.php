@@ -15,11 +15,75 @@ class ColaboradorDAL {
         return $stmt->execute();
     }
 
-    public function buscarPorId($id) {
-        $sql = "SELECT * FROM Colaborador WHERE id_colaborador = :id";
+    public function buscarPorId($id_utilizador) {
+        $sql = "SELECT * FROM Colaborador WHERE id_utilizador = :id_utilizador";
         $stmt = $this->db->prepare($sql);
-        $stmt->execute([':id' => $id]);
+        $stmt->execute([':id_utilizador' => $id_utilizador]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function atualizar($dados) {
+        // Primeiro, buscar os dados atuais do colaborador
+        $colaboradorAtual = $this->buscarPorId($dados['id_utilizador']);
+        
+        // Preparar os campos para atualização
+        $campos = [];
+        $valores = [
+            ':id_utilizador' => $dados['id_utilizador'],
+            ':nome' => $dados['nome'],
+            ':email' => $dados['email'],
+            ':telefone' => $dados['telefone'] ?? null,
+            ':morada' => $dados['morada'] ?? null,
+            ':data_nascimento' => $dados['data_nascimento'] ?? null,
+            ':genero' => $dados['genero'] ?? null,
+            ':estado_civil' => $dados['estado_civil'] ?? null,
+            ':nif' => $dados['nif'] ?? null,
+            ':niss' => $dados['niss'] ?? null,
+            ':numero_mecanografico' => $dados['numero_mecanografico'] ?? null,
+            ':nib' => $dados['nib'] ?? null,
+            ':numero_dependentes' => $dados['numero_dependentes'],
+            ':habilitacoes' => $dados['habilitacoes'] ?? null,
+            ':contacto_emergencia' => $dados['contacto_emergencia'] ?? null,
+            ':relacao_emergencia' => $dados['relacao_emergencia'] ?? null,
+            ':telemovel_emergencia' => $dados['telemovel_emergencia'] ?? null
+        ];
+
+        // Adicionar campos ao SQL apenas se tiverem valor
+        foreach ($valores as $campo => $valor) {
+            if ($valor !== null && $campo !== ':id_utilizador') {
+                $campos[] = substr($campo, 1) . ' = ' . $campo;
+            }
+        }
+
+        // Montar a query dinamicamente
+        $sql = "UPDATE Colaborador SET " . implode(', ', $campos) . " WHERE id_utilizador = :id_utilizador";
+        
+        // Remover campos nulos dos valores
+        $valores = array_filter($valores, function($value) {
+            return $value !== null;
+        });
+
+        try {
+            $stmt = $this->db->prepare($sql);
+            return $stmt->execute($valores);
+        } catch (PDOException $e) {
+            // Se o erro for de duplicidade de NIF, ignorar e continuar
+            if (strpos($e->getMessage(), '1062 Duplicate entry') !== false && strpos($e->getMessage(), 'nif') !== false) {
+                // Remover o NIF dos valores e tentar novamente
+                unset($valores[':nif']);
+                
+                // Remontar a query sem o NIF
+                $campos = array_filter($campos, function($campo) {
+                    return strpos($campo, 'nif') === false;
+                });
+                
+                $sql = "UPDATE Colaborador SET " . implode(', ', $campos) . " WHERE id_utilizador = :id_utilizador";
+                
+                $stmt = $this->db->prepare($sql);
+                return $stmt->execute($valores);
+            }
+            throw $e;
+        }
     }
 
     public function contarTotal() {
