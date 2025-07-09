@@ -1,55 +1,55 @@
 <?php
-// Team data defined in PHP
+// Team data defined in PHP with distinct values
 $teamData = [
     'A' => [
-        'retentionRate' => '85.5%',
-        'averageAge' => '32.7 anos',
-        'averageTenure' => '4.2 anos',
-        'averageSalary' => '2500 €',
-        'hierarquiaData' => [50, 20, 10],
-        'generoData' => [45, 35],
-        'funcaoData' => [30, 25, 15],
-        'geografiaData' => [40, 30, 10],
-        'tempoGeneroData' => [4.5, 3.8],
-        'remuneracaoData' => [1000, 1400, 1200],
+        'retentionRate' => '82.0%', // Lower retention
+        'averageAge' => '28.5 anos', // Younger team
+        'averageTenure' => '3.0 anos', // Shorter tenure
+        'averageSalary' => '2200 €', // Lower salary
+        'hierarquiaData' => [60, 15, 5], // More collaborators, less coordinators/RH
+        'generoData' => [55, 25], // More male, less female
+        'funcaoData' => [40, 20, 10], // More developers, less analysts/gestores
+        'geografiaData' => [50, 20, 10], // More Lisboa, less Porto/Coimbra
+        'tempoGeneroData' => [3.5, 2.8], // Lower tenure by gender
+        'remuneracaoData' => [900, 1300, 1100], // Lower remuneration
         'hierarquiaEtariaData' => [
-            [4, 9, 4, 3],
-            [3, 5, 6, 2],
-            [1, 2, 3, 4]
+            [6, 8, 2, 1], // Younger age distribution
+            [2, 3, 4, 1],
+            [0, 1, 2, 2]
         ]
     ],
     'B' => [
-        'retentionRate' => '78.2%',
-        'averageAge' => '40.0 anos',
-        'averageTenure' => '5.0 anos',
-        'averageSalary' => '2800 €',
-        'hierarquiaData' => [40, 25, 15],
-        'generoData' => [50, 30],
-        'funcaoData' => [25, 30, 20],
-        'geografiaData' => [35, 35, 15],
-        'tempoGeneroData' => [5.2, 4.7],
-        'remuneracaoData' => [1100, 1500, 1300],
+        'retentionRate' => '90.5%', // Higher retention
+        'averageAge' => '38.0 anos', // Older team
+        'averageTenure' => '6.5 anos', // Longer tenure
+        'averageSalary' => '3000 €', // Higher salary
+        'hierarquiaData' => [30, 30, 20], // Balanced hierarchy
+        'generoData' => [40, 40], // Equal gender
+        'funcaoData' => [25, 30, 25], // Balanced functions
+        'geografiaData' => [30, 40, 20], // More Porto, less Lisboa/Coimbra
+        'tempoGeneroData' => [6.0, 5.5], // Higher tenure by gender
+        'remuneracaoData' => [1200, 1600, 1400], // Higher remuneration
         'hierarquiaEtariaData' => [
-            [5, 10, 5, 4],
-            [2, 6, 7, 3],
-            [1, 3, 4, 5]
+            [3, 5, 6, 4], // Mixed age distribution
+            [2, 4, 5, 3],
+            [1, 2, 3, 4]
         ]
     ],
     'C' => [
-        'retentionRate' => '90.1%',
-        'averageAge' => '30.4 anos',
-        'averageTenure' => '3.8 anos',
-        'averageSalary' => '2300 €',
-        'hierarquiaData' => [60, 15, 5],
-        'generoData' => [40, 40],
-        'funcaoData' => [35, 20, 10],
-        'geografiaData' => [45, 25, 10],
-        'tempoGeneroData' => [4.0, 3.5],
-        'remuneracaoData' => [900, 1300, 1100],
+        'retentionRate' => '95.0%', // Highest retention
+        'averageAge' => '33.2 anos', // Middle age
+        'averageTenure' => '4.8 anos', // Middle tenure
+        'averageSalary' => '2600 €', // Middle salary
+        'hierarquiaData' => [45, 25, 10], // Moderate hierarchy
+        'generoData' => [35, 45], // More female, less male
+        'funcaoData' => [30, 25, 15], // Mixed functions
+        'geografiaData' => [25, 35, 30], // More Coimbra, less Lisboa/Porto
+        'tempoGeneroData' => [4.2, 4.0], // Moderate tenure by gender
+        'remuneracaoData' => [1000, 1500, 1300], // Moderate remuneration
         'hierarquiaEtariaData' => [
-            [6, 8, 3, 2],
-            [3, 4, 5, 1],
-            [0, 2, 2, 3]
+            [5, 7, 3, 2], // Balanced age distribution
+            [3, 4, 3, 2],
+            [1, 1, 3, 3]
         ]
     ]
 ];
@@ -216,9 +216,9 @@ $currentData = $teamData[$currentTeam];
 </head>
 <body>
   <div class="team-buttons">
-    <button onclick="window.location.href='index.php?equipa=A'" id="btnEquipaA" class="<?php echo $currentTeam === 'A' ? 'active' : ''; ?>">Equipa A</button>
-    <button onclick="window.location.href='index.php?equipa=B'" id="btnEquipaB" class="<?php echo $currentTeam === 'B' ? 'active' : ''; ?>">Equipa B</button>
-    <button onclick="window.location.href='index.php?equipa=C'" id="btnEquipaC" class="<?php echo $currentTeam === 'C' ? 'active' : ''; ?>">Equipa C</button>
+    <button onclick="switchTeam('A')" id="btnEquipaA" class="<?php echo $currentTeam === 'A' ? 'active' : ''; ?>">Equipa A</button>
+    <button onclick="switchTeam('B')" id="btnEquipaB" class="<?php echo $currentTeam === 'B' ? 'active' : ''; ?>">Equipa B</button>
+    <button onclick="switchTeam('C')" id="btnEquipaC" class="<?php echo $currentTeam === 'C' ? 'active' : ''; ?>">Equipa C</button>
   </div>
 
   <header>
@@ -278,7 +278,7 @@ $currentData = $teamData[$currentTeam];
           <h2>Tempo Médio na Empresa por Género</h2>
           <canvas id="chartTempoGenero"></canvas>
         </div>
-        <div class=`chart-box remuneracao`>
+        <div class="chart-box remuneracao">
           <h2>Remuneração por Hierarquia</h2>
           <canvas id="chartRemuneracao"></canvas>
         </div>
@@ -297,16 +297,37 @@ $currentData = $teamData[$currentTeam];
     Chart.defaults.color = '#003366';
 
     // Team data from PHP
-    const teamData = <?php echo json_encode($currentData); ?>;
+    let teamData = <?php echo json_encode($teamData); ?>;
+    let currentTeam = '<?php echo $currentTeam; ?>';
 
     let chartHierarquia, chartGenero, chartFuncao, chartGeografia, chartTempoGenero, chartRemuneracao, chartHierarquiaEtaria;
 
-    function renderDashboard() {
-      // Update metrics (though already set by PHP, included for consistency)
-      document.getElementById('retentionRate').textContent = teamData.retentionRate;
-      document.getElementById('averageAge').textContent = teamData.averageAge;
-      document.getElementById('averageTenure').textContent = teamData.averageTenure;
-      document.getElementById('averageSalary').textContent = teamData.averageSalary;
+    function switchTeam(team) {
+      currentTeam = team;
+      updateDashboard();
+      document.getElementById('headerTeam').textContent = `Dashboard de Recursos Humanos - Equipa ${currentTeam}`;
+      document.getElementById('btnEquipaA').className = currentTeam === 'A' ? 'active' : '';
+      document.getElementById('btnEquipaB').className = currentTeam === 'B' ? 'active' : '';
+      document.getElementById('btnEquipaC').className = currentTeam === 'C' ? 'active' : '';
+    }
+
+    function updateDashboard() {
+      const currentData = teamData[currentTeam];
+
+      // Update metrics
+      document.getElementById('retentionRate').textContent = currentData.retentionRate;
+      document.getElementById('averageAge').textContent = currentData.averageAge;
+      document.getElementById('averageTenure').textContent = currentData.averageTenure;
+      document.getElementById('averageSalary').textContent = currentData.averageSalary;
+
+      // Destroy existing charts if they exist
+      if (chartHierarquia) chartHierarquia.destroy();
+      if (chartGenero) chartGenero.destroy();
+      if (chartFuncao) chartFuncao.destroy();
+      if (chartGeografia) chartGeografia.destroy();
+      if (chartTempoGenero) chartTempoGenero.destroy();
+      if (chartRemuneracao) chartRemuneracao.destroy();
+      if (chartHierarquiaEtaria) chartHierarquiaEtaria.destroy();
 
       // Chart: Distribuição por Nível Hierárquico
       chartHierarquia = new Chart(document.getElementById('chartHierarquia'), {
@@ -315,7 +336,7 @@ $currentData = $teamData[$currentTeam];
           labels: ['Colaborador', 'Coordenador', 'RH'],
           datasets: [{
             label: 'Total',
-            data: teamData.hierarquiaData,
+            data: currentData.hierarquiaData,
             fill: true,
             backgroundColor: 'rgba(0,119,204,0.2)',
             borderColor: '#0077cc',
@@ -323,14 +344,8 @@ $currentData = $teamData[$currentTeam];
           }]
         },
         options: {
-          plugins: {
-            legend: { display: false },
-            labels: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } }
-          },
-          scales: {
-            y: { beginAtZero: true, ticks: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } } },
-            x: { ticks: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } } }
-          }
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true }, x: { ticks: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } } } }
         }
       });
 
@@ -340,16 +355,13 @@ $currentData = $teamData[$currentTeam];
         data: {
           labels: ['Masculino', 'Feminino'],
           datasets: [{
-            data: teamData.generoData,
+            data: currentData.generoData,
             backgroundColor: ['#0077cc', '#80bfff']
           }]
         },
         options: {
           plugins: {
-            legend: {
-              position: 'bottom',
-              labels: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' }, color: '#003366', boxWidth: 20, padding: 10 }
-            }
+            legend: { position: 'bottom', labels: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' }, color: '#003366', boxWidth: 20, padding: 10 } }
           }
         }
       });
@@ -360,20 +372,14 @@ $currentData = $teamData[$currentTeam];
         data: {
           labels: ['Desenvolvedor', 'Analista', 'Gestor'],
           datasets: [{
-            data: teamData.funcaoData,
+            data: currentData.funcaoData,
             backgroundColor: ['#003f6b', '#005fa3', '#0077cc', '#3399ff']
           }]
         },
         options: {
           indexAxis: 'y',
-          plugins: {
-            legend: { display: false },
-            labels: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } }
-          },
-          scales: {
-            x: { beginAtZero: true, ticks: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } } },
-            y: { ticks: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } } }
-          }
+          plugins: { legend: { display: false } },
+          scales: { x: { beginAtZero: true }, y: { ticks: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } } } }
         }
       });
 
@@ -383,16 +389,13 @@ $currentData = $teamData[$currentTeam];
         data: {
           labels: ['Lisboa', 'Porto', 'Coimbra'],
           datasets: [{
-            data: teamData.geografiaData,
+            data: currentData.geografiaData,
             backgroundColor: ['#004c99', '#0066cc', '#3399ff', '#99ccff']
           }]
         },
         options: {
           plugins: {
-            legend: {
-              position: 'bottom',
-              labels: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' }, color: '#003366', boxWidth: 20, padding: 10 }
-            }
+            legend: { position: 'bottom', labels: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' }, color: '#003366', boxWidth: 20, padding: 10 } }
           }
         }
       });
@@ -403,26 +406,15 @@ $currentData = $teamData[$currentTeam];
         data: {
           labels: ['Masculino', 'Feminino'],
           datasets: [{
-            data: teamData.tempoGeneroData,
+            data: currentData.tempoGeneroData,
             backgroundColor: ['#004c99', '#66b2ff'],
             barThickness: 50
           }]
         },
         options: {
           responsive: true,
-          plugins: {
-            legend: { display: false },
-            title: { display: false },
-            labels: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } }
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: { display: true, text: 'Anos' },
-              ticks: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } }
-            },
-            x: { ticks: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } } }
-          }
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, title: { display: true, text: 'Anos' } } }
         }
       });
 
@@ -433,19 +425,14 @@ $currentData = $teamData[$currentTeam];
           labels: ['Colaborador', 'Coordenador', 'RH'],
           datasets: [{
             label: 'Remuneração Média (€)',
-            data: teamData.remuneracaoData,
+            data: currentData.remuneracaoData,
             backgroundColor: ['#66b2ff', '#3399cc', '#0077cc']
           }]
         },
         options: {
           plugins: { legend: { display: false } },
           responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: { display: true, text: '€ Remuneração' }
-            }
-          }
+          scales: { y: { beginAtZero: true, title: { display: true, text: '€ Remuneração' } } }
         }
       });
 
@@ -455,55 +442,23 @@ $currentData = $teamData[$currentTeam];
         data: {
           labels: ['<25', '25-35', '36-45', '>45'],
           datasets: [
-            {
-              label: 'Colaborador',
-              data: teamData.hierarquiaEtariaData[0],
-              backgroundColor: '#0066cc'
-            },
-            {
-              label: 'Coordenador',
-              data: teamData.hierarquiaEtariaData[1],
-              backgroundColor: '#cc66ff'
-            },
-            {
-              label: 'RH',
-              data: teamData.hierarquiaEtariaData[2],
-              backgroundColor: '#3399cc'
-            }
+            { label: 'Colaborador', data: currentData.hierarquiaEtariaData[0], backgroundColor: '#0066cc' },
+            { label: 'Coordenador', data: currentData.hierarquiaEtariaData[1], backgroundColor: '#cc66ff' },
+            { label: 'RH', data: currentData.hierarquiaEtariaData[2], backgroundColor: '#3399cc' }
           ]
         },
         options: {
-          plugins: {
-            legend: {
-              position: 'right',
-              labels: {
-                font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' },
-                padding: 20,
-                usePointStyle: true
-              }
-            }
-          },
+          plugins: { legend: { position: 'right', labels: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' }, padding: 20 } } },
           responsive: true,
-          scales: {
-            x: { stacked: false, title: { display: false } },
-            y: {
-              beginAtZero: true,
-              stacked: false,
-              title: { display: true, text: 'Nº de Colaboradores' },
-              ticks: {
-                stepSize: 5,
-                min: 0,
-                max: 25,
-                callback: function(value) { return value; }
-              }
-            }
-          }
+          scales: { y: { beginAtZero: true, title: { display: true, text: 'Nº de Colaboradores' }, ticks: { stepSize: 5, min: 0, max: 25 } } }
         }
       });
     }
 
     // Render charts on page load
-    renderDashboard();
+    window.onload = function() {
+      updateDashboard();
+    };
   </script>
 </body>
 </html>
