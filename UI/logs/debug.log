@@ -1177,3 +1177,31 @@
 [2025-07-07 17:59:13] Nome do perfil: Colaborador
 [2025-07-07 17:59:13] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
 [2025-07-07 17:59:13] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-08 10:08:24] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-08 10:08:24] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 08:55:31] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 08:55:31] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 08:59:59] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 08:59:59] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 09:00:14] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 09:00:14] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
