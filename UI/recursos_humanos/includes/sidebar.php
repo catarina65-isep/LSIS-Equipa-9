@@ -17,9 +17,18 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <nav class="flex-grow-1 px-3 pb-4">
             <ul class="nav flex-column" style="gap: 0.5rem;">
                 <li class="nav-item">
-                    <a href="dashboard.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'dashboard.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
-                        <div class="icon-wrapper <?php echo ($current_page == 'dashboard.php') ? 'bg-white bg-opacity-10' : 'bg-primary bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
-                            <i class='bx bxs-dashboard <?php echo ($current_page == 'dashboard.php') ? 'text-white' : 'text-primary'; ?>'></i>
+                    <a href="../colaborador.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'meu_perfil.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'meu_perfil.php') ? 'bg-white bg-opacity-10' : 'bg-success bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-user <?php echo ($current_page == 'meu_perfil.php') ? 'text-white' : 'text-success'; ?>'></i>
+                        </div>
+                        <span>Meu Perfil</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="dash.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'dash.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'dash.php') ? 'bg-white bg-opacity-10' : 'bg-primary bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-dashboard <?php echo ($current_page == 'dash.php') ? 'text-white' : 'text-primary'; ?>'></i>
                         </div>
                         <span>Dashboard</span>
                     </a>
@@ -54,6 +63,16 @@ $current_page = basename($_SERVER['PHP_SELF']);
                 </li>
                 
                 <li class="nav-item">
+                    <a href="gerir_fichas.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'gerir_fichas.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'gerir_fichas.php') ? 'bg-white bg-opacity-10' : 'bg-info bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-file-doc <?php echo ($current_page == 'gerir_fichas.php') ? 'text-white' : 'text-info'; ?>'></i>
+                        </div>
+                        <span>Gerir Fichas</span>
+                    </a>
+                </li>
+                
+
+                <li class="nav-item">
                     <a href="campos_personalizados.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'campos_personalizados.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
                         <div class="icon-wrapper <?php echo ($current_page == 'campos_personalizados.php') ? 'bg-white bg-opacity-10' : 'bg-warning bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
                             <i class='bx bxs-edit-alt <?php echo ($current_page == 'campos_personalizados.php') ? 'text-white' : 'text-warning'; ?>'></i>
@@ -68,6 +87,24 @@ $current_page = basename($_SERVER['PHP_SELF']);
                             <i class='bx bxs-report text-danger'></i>
                         </div>
                         <span>Relatórios</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="enviar-convite.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'enviar-convite.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'enviar-convite.php') ? 'bg-white bg-opacity-10' : 'bg-info bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-envelope <?php echo ($current_page == 'enviar-convite.php') ? 'text-white' : 'text-info'; ?>'></i>
+                        </div>
+                        <span>Enviar Convites</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="alertas.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'alertas.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                        <div class="icon-wrapper <?php echo ($current_page == 'alertas.php') ? 'bg-white bg-opacity-10' : 'bg-pink bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
+                            <i class='bx bxs-bell <?php echo ($current_page == 'alertas.php') ? 'text-white' : 'text-pink'; ?>'></i>
+                        </div>
+                        <span>Alertas</span>
                     </a>
                 </li>
                 

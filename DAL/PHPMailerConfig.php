@@ -16,11 +16,10 @@ use PHPMailer\PHPMailer\Exception;
 function sendEmail($to, $subject, $body, $isHTML = true) {
     $mail = new PHPMailer(true);
     
-    // Configurações de depuração
-    $mail->SMTPDebug = 2; // Ativa saída de depuração detalhada
+    // Configurações de depuração - desativado para produção
+    $mail->SMTPDebug = 0; // Desativa saída de depuração
     $mail->Debugoutput = function($str, $level) {
-        error_log("PHPMailer: $str");
-        echo "PHPMailer: $str<br>\n";
+        // Não faz nada para evitar saída na tela
     };
 
     try {

@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <!-- JavaScript do Colaborador -->
-    <script src="js/colaborador.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/locale/pt.js"></script>
     
@@ -35,8 +34,7 @@
     <!-- Input Mask -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     
-    <!-- Scripts personalizados -->
-    <script src="/LSIS-Equipa-9/UI/assets/js/script.js"></script>
+
     
     <script>
         // Configuração global do AJAX

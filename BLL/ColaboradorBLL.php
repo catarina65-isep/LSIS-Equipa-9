@@ -85,4 +85,12 @@ class ColaboradorBLL {
     public function obterDistribuicaoPorDepartamento() {
         return $this->colaboradorDAL->obterDistribuicaoPorDepartamento();
     }
+
+    public function buscarPorId($id_utilizador) {
+        return $this->colaboradorDAL->buscarPorId($id_utilizador);
+    }
+
+    public function atualizar($dados) {
+        return $this->colaboradorDAL->atualizar($dados);
+    }
 }

@@ -1,7 +1,8 @@
 <?php
 session_start();
-require_once __DIR__ . '/../DAL/database.php';
+require_once __DIR__ . '/../../DAL/database.php';
 
+$page_title = "Enviar Convite - Tlantic";
 $message = '';
 $error = '';
 
@@ -39,9 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $path = '/LSIS-Equipa-9/UI/convidado.php';
                 $link = "$protocol://$host$path?token=$token";
                 
-                // Debug: Mostrar o link gerado
-                error_log("Link gerado: " . $link);
-                echo "<div class='alert alert-info'>Link gerado: <a href='$link' target='_blank'>$link</a></div>";
+                // O link foi gerado e será enviado por e-mail
                 
                 $message = "
                 <html>
@@ -85,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </html>";
                 
                 // Inclui o arquivo de configuração do PHPMailer
-                require_once __DIR__ . '/../DAL/PHPMailerConfig.php';
+                require_once __DIR__ . '/../../DAL/PHPMailerConfig.php';
                 
                 // Corpo do e-mail em HTML
                 $email_body = "
@@ -116,15 +115,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <body>
                     <div class='container'>
                         <h2>Olá!</h2>
-                        <p>Você recebeu um convite para acessar o formulário de convidado.</p>
+                        <p>Recebeu um convite para aceder ao formulário. Por favor preencha com todos os seus dados.</p>
                         <p>Clique no botão abaixo para acessar o formulário:</p>
-                        <p><a href='$link' class='button'>Acessar Formulário</a></p>
+                        <p><a href='$link' class='button'>Aceder ao Formulário</a></p>
                         <p>Ou copie e cole o link abaixo no seu navegador:</p>
                         <p><a href='$link'>$link</a></p>
-                        <p>Este link é válido por 24 horas.</p>
                         <div class='footer'>
                             <p>Se você não solicitou este link, por favor, ignore este e-mail.</p>
-                            <p>Atenciosamente,<br>Equipe Tlantic</p>
+                            <p>Atenciosamente,<br>Equipa Tlantic</p>
                         </div>
                     </div>
                 </body>
@@ -167,120 +165,142 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitar Acesso - Tlantic</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <title><?= htmlspecialchars($page_title) ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #6c757d;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --light-bg: #f8f9fa;
-            --border-radius: 8px;
-            --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #ef476f;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #fff;
-            background-color: #1a237e;
-            margin: 0;
-            padding: 0;
+            background-color: #f5f7fb;
+            color: #4a5568;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            width: calc(100% - 250px);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
+            padding: 20px;
+            transition: all 0.3s;
         }
         
-        .container {
-            max-width: 600px;
-            margin: 2rem auto;
-            padding: 2.5rem;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            color: #333;
-        }
-        
-        .guest-header {
-            text-align: center;
-            margin-bottom: 2.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid #e9ecef;
-        }
-        
-        .guest-header h1 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        
-        .form-group {
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: #fff;
+            border-bottom: 1px solid #e3e6f0;
+            padding: 1.25rem 1.5rem;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.6rem 1rem;
+            border: 1px solid #d1d3e2;
+            border-radius: 0.35rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: #bac8f3;
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
         }
         
         .btn-primary {
             background-color: var(--primary-color);
             border: none;
-            padding: 0.75rem 1.5rem;
+            padding: 0.6rem 1.25rem;
             font-weight: 500;
+            transition: all 0.3s;
         }
         
         .btn-primary:hover {
-            background-color: #1a252f;
+            background-color: #3a56d4;
             transform: translateY(-1px);
-        }
-        
-        .alert {
-            border-radius: var(--border-radius);
-            margin-bottom: 1.5rem;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="guest-header">
-            <h1><i class="bi bi-envelope-paper"></i> Solicitar Acesso</h1>
-            <p class="text-muted">Receba um link para preencher o formulário de convidado</p>
-        </div>
-        
-        <?php if ($message): ?>
-            <div class="alert alert-success">
-                <?php echo $message; ?>
-            </div>
-        <?php endif; ?>
-        
-        <?php if ($error): ?>
-            <div class="alert alert-danger">
-                <?php echo $error; ?>
-            </div>
-        <?php endif; ?>
-        
-        <form method="POST" action="">
-            <div class="form-group">
-                <label for="email" class="form-label">Endereço de E-mail</label>
-                <input type="email" class="form-control form-control-lg" id="email" name="email" required 
-                       placeholder="seu@email.com" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
-                <div class="form-text">Enviaremos um link de acesso para este e-mail.</div>
-            </div>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <?php include 'includes/sidebar.php'; ?>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Page Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4 p-4 bg-white shadow-sm">
+                    <div>
+                        <h1 class="h3 mb-1 text-gray-800">Enviar Convite</h1>
+                        <p class="text-muted mb-0">Insira o email do convidado para este receber o formulário</p>
+                    </div>
+                </div>
+                
+                <div class="container-fluid px-4">
+                    <?php if ($message): ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class='bx bx-check-circle me-2'></i> <?php echo $message; ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <?php if ($error): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class='bx bx-error-circle me-2'></i> <?php echo $error; ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+                    
+                    <div class="card border-0">
+                        <div class="card-header bg-white">
+                            <h5 class="mb-0">Informações do Convite</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Endereço de E-mail</label>
+                                    <input type="email" class="form-control" id="email" name="email" required 
+                                           placeholder="exemplo@email.com" 
+                                           value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>">
+                                    <div class="form-text mt-2">Um link de acesso será enviado para o e-mail informado.</div>
+                                </div>
             
-            <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="bi bi-send"></i> Enviar Link de Acesso
-                </button>
-            </div>
-        </form>
-        
-        <div class="text-center mt-4">
-            <p>Já tem um link de acesso? <a href="convidado.php">Acesse o formulário aqui</a></p>
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class='bx bx-send me-2'></i> Enviar Convite
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Inicializa os tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    </script>
 </body>
 </html>
