@@ -183,11 +183,27 @@ try {
         // Buscar os dados atualizados para confirmar
         $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
         
+        // Obter o nome do arquivo mais recente para cada tipo de documento
+        $uploadDir = __DIR__ . '/../uploads/documentos/';
+        $documentos = [];
+        
+        // Obter o arquivo mais recente para cada tipo de documento
+        foreach (['morada', 'cartaocidadao', 'iban'] as $tipo) {
+            $files = glob($uploadDir . $tipo . '_' . $dados['id_utilizador'] . '_*');
+            if (!empty($files)) {
+                $latestFile = array_reduce($files, function($a, $b) {
+                    return filemtime($a) > filemtime($b) ? $a : $b;
+                });
+                $documentos[$tipo] = basename($latestFile);
+            }
+        }
+
         header('Content-Type: application/json');
         echo json_encode([
             'success' => true,
             'message' => 'Dados atualizados com sucesso',
-            'dados_atualizados' => $colaborador
+            'dados_atualizados' => $colaborador,
+            'documentos' => $documentos
         ]);
         exit;
     } else {

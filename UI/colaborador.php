@@ -1228,8 +1228,6 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                             $documentos = [
                                 'morada' => 'Comprovativo de Morada',
                                 'cartaocidadao' => 'Cartão de Cidadão',
-                                'nif' => 'NIF',
-                                'niss' => 'NISS',
                                 'iban' => 'IBAN'
                             ];
                               
@@ -1690,6 +1688,73 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                             
                             // Atualizar a seção de documentos
                             atualizarSecaoDocumentos();
+                            
+                            // Função para atualizar um campo de upload
+                            function atualizarCampoUpload(field, fileName) {
+                                console.log('Atualizando campo:', field, 'com arquivo:', fileName);
+                                
+                                // Mapear campos especiais
+                                const fieldMap = {
+                                    'cartaocidadao': 'cartaoCidadao'
+                                };
+                                const mappedField = fieldMap[field] || field;
+                                
+                                // Encontrar o container do upload usando o ID do campo
+                                const container = document.querySelector(`.form-group .upload-container:has(label[for="${mappedField}Doc"])`);
+                                if (!container) {
+                                    console.error('Container não encontrado para:', field);
+                                    return;
+                                }
+
+                                console.log('Container encontrado:', container);
+
+                                // Remover qualquer link existente
+                                const existingLink = container.querySelector('a[href]');
+                                if (existingLink) {
+                                    existingLink.remove();
+                                }
+
+                                // Criar o novo link de visualização
+                                const linkContainer = document.createElement('div');
+                                linkContainer.className = 'd-flex align-items-center';
+                                linkContainer.innerHTML = `
+                                    <a href="../uploads/documentos/${fileName}" target="_blank" class="flex-grow-1 text-primary">
+                                        <i class="bx bx-file"></i> Ver documento atual
+                                        <small class="text-muted">(Clique para visualizar)</small>
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-sm ms-2 btn-apagar-documento" 
+                                            data-file="${fileName}" 
+                                            data-field="${field}"
+                                            onclick="apagarDocumento(event)">
+                                        <i class="bx bx-trash"></i>
+                                    </button>
+                                `;
+
+                                // Adicionar o novo link
+                                container.innerHTML = '';
+                                container.appendChild(linkContainer);
+                                console.log('Campo atualizado com sucesso');
+                            }
+
+                            // Atualizar todos os campos de upload
+                            const uploadFields = {
+                                'morada': 'moradaDoc',
+                                'cartaocidadao': 'cartaocidadaoDoc',
+                                'iban': 'ibanDoc'
+                            };
+
+                            console.log('Resultado do servidor:', result);
+
+                            // Atualizar cada campo com seu respectivo arquivo
+                            Object.keys(uploadFields).forEach(field => {
+                                const fileName = result.documentos[field];
+                                if (fileName) {
+                                    console.log('Atualizando campo:', field, 'com arquivo:', fileName);
+                                    atualizarCampoUpload(field, fileName);
+                                } else {
+                                    console.log('Nenhum arquivo encontrado para:', field);
+                                }
+                            });
                         } else {
                             // Se existem erros específicos, mostra-os
                             if (result.erros && result.erros.length > 0) {
