@@ -624,6 +624,7 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                         <a href="#" class="active" onclick="event.preventDefault(); scrollToSection('top')"><i class='bx bx-user'></i> Perfil</a>
                         <a href="#" class="" onclick="event.preventDefault(); scrollToSection('dadosPessoais')"><i class='bx bx-user'></i> Dados Pessoais</a>
                         <a href="#" class="" onclick="event.preventDefault(); scrollToSection('documentos')"><i class='bx bx-file'></i> Documentos</a>
+                        <a href="#" class="" onclick="event.preventDefault(); scrollToSection('vouchers')"><i class='bx bx-gift'></i> Pedir Voucher</a>
                     </nav>
                     <div class="sidebar-footer mt-auto">
                         <a href="/LSIS-Equipa-9/UI/logout.php" class="btn btn-danger w-100">
@@ -1101,7 +1102,62 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
                     
-                    // Enviar formulário via AJAX
+                    // Function to load vouchers
+                    function loadVouchers() {
+                        fetch('obter_vouchers.php')
+                            .then(response => response.json())
+                            .then(data => {
+                                const tbody = document.querySelector('#vouchersTable tbody');
+                                tbody.innerHTML = '';
+                                
+                                if (data.length === 0) {
+                                    const tr = document.createElement('tr');
+                                    tr.innerHTML = `
+                                        <td colspan="5" class="text-center py-4">
+                                            <i class='bx bx-info-circle'></i> Ainda não existem pedidos de voucher.
+                                        </td>
+                                    `;
+                                    tbody.appendChild(tr);
+                                    return;
+                                }
+                                
+                                data.forEach(voucher => {
+                                    const tr = document.createElement('tr');
+                                    const dataPedido = new Date(voucher.data_pedido).toLocaleDateString('pt-PT');
+                                    let estadoBadge = '';
+                                    
+                                    switch(voucher.estado) {
+                                        case 'aprovado':
+                                            estadoBadge = '<span class="badge bg-success">Aprovado</span>';
+                                            break;
+                                        case 'rejeitado':
+                                            estadoBadge = '<span class="badge bg-danger">Rejeitado</span>';
+                                            break;
+                                        default:
+                                            estadoBadge = '<span class="badge bg-warning text-dark">Pendente</span>';
+                                    }
+                                    
+                                    tr.innerHTML = `
+                                        <td>${dataPedido}</td>
+                                        <td>${voucher.tipo}</td>
+                                        <td>${voucher.numero_cliente || '-'}</td>
+                                        <td>${estadoBadge}</td>
+                                    `;
+                                    tbody.appendChild(tr);
+                                });
+                            })
+                            .catch(error => {
+                                console.error('Error loading vouchers:', error);
+                                alert('Erro ao carregar os vouchers');
+                            });
+                    }
+                    
+                    // Load vouchers when page loads
+                    document.addEventListener('DOMContentLoaded', function() {
+                        loadVouchers();
+                    });
+                    
+                    // Handle voucher form submission via AJAX
                     fetch(form.action, {
                         method: 'POST',
                         body: new FormData(form)
@@ -1852,5 +1908,171 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
             });
         </script>
 
+        <!-- Seção de Pedir Voucher -->
+        <div class="card mt-4" id="vouchers">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Vouchers NOS</h4>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pedirVoucherModal">
+                    <i class='bx bx-plus'></i> Novo Pedido
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Nº Cliente</th>
+                                <th>Estado</th>
+                                <th class="text-end">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class='bx bx-info-circle fs-4 d-block mb-2'></i>
+                                        Nenhum pedido de voucher encontrado
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Pedir Voucher -->
+        <div class="modal fade" id="pedirVoucherModal" tabindex="-1" aria-labelledby="pedirVoucherModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="pedirVoucherModalLabel">Pedir Voucher NOS</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <form id="voucherForm">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="tipoVoucher" class="form-label">Tipo de Voucher</label>
+                                <select class="form-select" id="tipoVoucher" required>
+                                    <option value="" selected disabled>Selecione o tipo de voucher</option>
+                                    <option value="telemovel">Telemóvel</option>
+                                    <option value="tvnetvoz">TV+Net+Voz</option>
+                                    <option value="netmovel">Net Móvel</option>
+                                    <option value="cinema">Cinema</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="numeroCliente" class="form-label">Número de Cliente NOS</label>
+                                <input type="text" class="form-control" id="numeroCliente" placeholder="Número de cliente NOS" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="contacto" class="form-label">Contacto Telefónico</label>
+                                <input type="tel" class="form-control" id="contacto" placeholder="912 345 678" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="observacoes" class="form-label">Observações</label>
+                                <textarea class="form-control" id="observacoes" rows="3" placeholder="Adicione alguma observação adicional (opcional)"></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Solicitar Voucher</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Adicionar link no menu lateral
+            document.addEventListener('DOMContentLoaded', function() {
+                // Adicionar link no menu lateral
+                const menuLateral = document.querySelector('.sidebar .nav');
+                if (menuLateral) {
+                    const novoItemMenu = document.createElement('li');
+                    novoItemMenu.className = 'nav-item';
+                    novoItemMenu.innerHTML = `
+                        <a class="nav-link" href="#vouchers" onclick="scrollToSection('vouchers')">
+                            <i class='bx bx-gift'></i> Pedir Voucher
+                        </a>
+                    `;
+                    menuLateral.appendChild(novoItemMenu);
+                }
+
+                // Manipular envio do formulário
+                document.getElementById('voucherForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Show loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> A enviar...';
+                    
+                    // Get form data
+                    const formData = {
+                        tipo: document.getElementById('tipoVoucher').value,
+                        numero_cliente: document.getElementById('numeroCliente').value,
+                        contacto: document.getElementById('contacto').value,
+                        observacoes: document.getElementById('observacoes').value
+                    };
+                    
+                    // Log form data before sending
+                    console.log('Sending form data:', formData);
+                    
+                    // Send request
+                    fetch('processa_voucher.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        if (!response.ok) {
+                            console.error('Response not OK:', response.statusText);
+                            return response.text().then(text => {
+                                console.error('Response text:', text);
+                                try {
+                                    return JSON.parse(text);
+                                } catch (e) {
+                                    throw new Error(`HTTP error! status: ${response.status}, body: ${text}`);
+                                }
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Show success message
+                            alert(data.message);
+                            // Close modal
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('pedirVoucherModal'));
+                            modal.hide();
+                            // Reset form
+                            document.getElementById('voucherForm').reset();
+                            // Refresh vouchers list (we'll implement this next)
+                            // loadVouchers();
+                        } else {
+                            throw new Error(data.message || 'Erro ao processar o pedido');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Erro: ' + error.message);
+                    })
+                    .finally(() => {
+                        // Reset button state
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                    });
+                });
+            });
+        </script>
     </body>
 </html>
