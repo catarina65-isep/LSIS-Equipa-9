@@ -17,7 +17,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <nav class="flex-grow-1 px-3 pb-4">
             <ul class="nav flex-column" style="gap: 0.5rem;">
                 <li class="nav-item">
-                    <a href="meu_perfil.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'meu_perfil.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
+                    <a href="../colaborador.php" class="nav-link d-flex align-items-center py-2 px-3 rounded-3 <?php echo ($current_page == 'meu_perfil.php') ? 'active text-white bg-primary bg-opacity-25' : 'text-white-80 hover-bg-dark-10'; ?>">
                         <div class="icon-wrapper <?php echo ($current_page == 'meu_perfil.php') ? 'bg-white bg-opacity-10' : 'bg-success bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
                             <i class='bx bxs-user <?php echo ($current_page == 'meu_perfil.php') ? 'text-white' : 'text-success'; ?>'></i>
                         </div>

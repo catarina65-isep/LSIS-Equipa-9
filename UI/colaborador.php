@@ -7,8 +7,8 @@ if (!isset($_SESSION['utilizador_id'])) {
     exit;
 }
 
-// Verifica se o perfil é de colaborador (id_perfilacesso = 4)
-if ($_SESSION['id_perfilacesso'] != 4) {
+// Verifica se o perfil é de colaborador ou RH (id_perfilacesso = 4 ou 2)
+if ($_SESSION['id_perfilacesso'] != 4 && $_SESSION['id_perfilacesso'] != 2) {
     header('Location: /LSIS-Equipa-9/UI/index.php');
     exit;
 }
