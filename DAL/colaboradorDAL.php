@@ -122,7 +122,6 @@ class ColaboradorDAL {
                     ROUND((COUNT(*) * 100.0) / (SELECT COUNT(*) FROM colaborador), 2) as percentual
                 FROM colaborador c
                 JOIN departamento d ON c.id_departamento = d.id_departamento
-                WHERE c.ativo = 1 
                 GROUP BY d.nome
                 ORDER BY total DESC";
                 
