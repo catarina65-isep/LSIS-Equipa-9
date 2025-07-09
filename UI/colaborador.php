@@ -48,8 +48,8 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
             --card-border: 1px solid #dee2e6;
             --card-shadow: 0 2px 4px rgba(0,0,0,0.05);
             --spacing-sm: 0.5rem;
-            --spacing-md: 1rem;
-            --spacing-lg: 1.5rem;
+            --spacing-md: 0.75rem;
+            --spacing-lg: 1rem;
             --border-radius-sm: 0.25rem;
             --border-radius-md: 0.5rem;
             --border-radius-lg: 0.75rem;
@@ -214,120 +214,6 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
             width: 100% !important;
             height: auto !important;
             max-height: 300px;
-        }
-        
-        .stat-card {
-            position: relative;
-            overflow: hidden;
-            color: #fff;
-            border-radius: var(--border-radius-lg);
-            padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3);
-        }
-        
-        .stat-card.bg-primary {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-hover) 100%);
-            box-shadow: 0 4px 20px rgba(67, 97, 238, 0.3);
-        }
-        
-        .stat-card.bg-success {
-            background: linear-gradient(135deg, var(--success-color) 0%, #4895ef 100%);
-            box-shadow: 0 4px 20px rgba(76, 201, 240, 0.3);
-        }
-        
-        .stat-card.bg-warning {
-            background: linear-gradient(135deg, var(--warning-color) 0%, #f3722c 100%);
-            box-shadow: 0 4px 20px rgba(248, 150, 30, 0.3);
-        }
-        
-        .stat-card.bg-info {
-            background: linear-gradient(135deg, #7209b7 0%, #b5179e 100%);
-            box-shadow: 0 4px 20px rgba(114, 9, 183, 0.3);
-        }
-        
-        .stat-card.bg-danger {
-            background: linear-gradient(135deg, var(--danger-color) 0%, #b5179e 100%);
-            box-shadow: 0 4px 20px rgba(247, 37, 133, 0.3);
-        }
-        
-        .stat-card.bg-secondary {
-            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
-            box-shadow: 0 4px 20px rgba(108, 117, 125, 0.3);
-        }
-        
-        .stat-icon {
-            position: absolute;
-            right: var(--spacing-lg);
-            top: var(--spacing-lg);
-            font-size: 3.5rem;
-            opacity: 0.2;
-            width: auto;
-            height: auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .stat-icon i {
-            font-size: 3.5rem;
-        }
-        
-        .stat-card .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: var(--spacing-md) 0 var(--spacing-sm);
-        }
-        
-        .stat-card .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-        
-        .stat-card .stat-change {
-            font-size: 0.8rem;
-            margin-top: var(--spacing-sm);
-            display: flex;
-            align-items: center;
-        }
-        
-        .stat-card .stat-change i {
-            position: relative;
-            font-size: 1rem;
-            opacity: 1;
-            margin-right: var(--spacing-sm);
-        }
-        
-        .activity-item {
-            display: flex;
-            padding: var(--spacing-md) 0;
-            border-bottom: var(--card-border);
-            align-items: flex-start;
-        }
-        
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-        
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: var(--spacing-md);
-            flex-shrink: 0;
-        }
-        
-        .activity-content {
-            flex: 1;
-        }
-        
-        .activity-time {
-            font-size: 0.8rem;
-            color: #6c757d;
         }
         
         .top-bar {
@@ -609,6 +495,43 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
             padding-left: 0 !important;
             margin-left: -2rem;
         }
+
+        /* Reduz o espaçamento entre perfil e dados pessoais */
+        .main-content {
+            padding: 0.5rem 1rem 1rem 0;
+        }
+
+        .profile-header {
+            margin-top: 0.5rem;
+        }
+
+        .profile-card {
+            margin-bottom: 0.5rem;
+        }
+
+        .card#perfil {
+            margin-top: -2rem;
+            padding-top: 0.5rem;
+        }
+
+        /* Reduz o espaçamento entre as seções */
+        .main-content {
+            padding: 0.5rem 1rem 1rem 0;
+        }
+
+        .topbar {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Melhora o espaçamento da seção de dados pessoais */
+        .card-body {
+            padding: 1rem;
+        }
+
+        .section-header {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -643,102 +566,55 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                                 </button>
                                 <h1 class="h4 mb-0">O Meu Perfil</h1>
                             </div>
-                     <div class="d-flex align-items-center">
-                        <button type="button" class="btn btn-primary" id="exportButton" onclick="exportarDados()">
-                            <i class='bx bx-download'></i> Exportar Dados
-                        </button>
+                            <div class="d-flex align-items-center">
+                                <button type="button" class="btn btn-primary" id="exportButton" onclick="exportarDados()">
+                                    <i class='bx bx-download'></i> Exportar Dados
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Dados do Perfil -->
-                <div class="profile-header mt-4 profile-section">
-                    <div class="profile-card mb-4">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="profile-image me-4">
-                                <div class="profile-photo">
-                                <div class="rounded-circle bg-light text-center" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
-                                    <i class='bx bx-user-circle' style="font-size: 48px; color: var(--primary-color);"></i>
+                    <!-- Dados do Perfil -->
+                    <div class="profile-header profile-section">
+                        <div class="profile-card">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="profile-image me-4">
+                                    <div class="profile-photo">
+                                        <div class="rounded-circle bg-light text-center" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center;">
+                                            <i class='bx bx-user-circle' style="font-size: 48px; color: var(--primary-color);"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="profile-details">
+                                    <h1 class="mb-1" id="displayName"><?= htmlspecialchars($colaborador['nome']) ?></h1>
+                                    <div class="mt-3">
+                                        <div class="stat-item mb-2">
+                                            <i class='bx bx-envelope'></i>
+                                            <span id="displayEmail" class="ms-2"><?= htmlspecialchars($colaborador['email']) ?></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <i class='bx bx-phone'></i>
+                                            <span id="displayPhone" class="ms-2"><?= htmlspecialchars($colaborador['telefone']) ?></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <div class="profile-actions d-flex gap-2">
+                                <button class="btn btn-primary" id="updatePhoto" onclick="document.getElementById('profilePhoto').click()">
+                                    <i class='bx bx-image'></i>
+                                    Atualizar Foto
+                                </button>
                             </div>
-                            <div class="profile-details">
-                                <h1 class="mb-1" id="displayName"><?= htmlspecialchars($colaborador['nome']) ?></h1>
-                                <div class="mt-3">
-                                     <div class="stat-item mb-2">
-                                         <i class='bx bx-envelope'></i>
-                                         <span id="displayEmail" class="ms-2"><?= htmlspecialchars($colaborador['email']) ?></span>
-                                     </div>
-                                     <div class="stat-item">
-                                         <i class='bx bx-phone'></i>
-                                         <span id="displayPhone" class="ms-2"><?= htmlspecialchars($colaborador['telefone']) ?></span>
-                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="profile-actions d-flex gap-2">
-                            <button class="btn btn-primary" id="updatePhoto" onclick="document.getElementById('profilePhoto').click()">
-                                <i class='bx bx-image'></i>
-                                Atualizar Foto
-                            </button>
-                        </div>
-                        <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
-                    </div>
-                </div>
-
-                <!-- Cards de Estatísticas -->
-                <div class="row g-4 mb-4">
-                    <div class="col-md-3">
-                        <div class="stat-card bg-primary">
-                            <div class="stat-icon">
-                                <i class='bx bx-user'></i>
-                            </div>
-                            <h3 class="stat-value">0</h3>
-                            <p class="stat-label">Documentos Pendentes</p>
-                            <div class="stat-change">
-                                <i class='bx bx-up-arrow-alt text-success'></i>
-                                <span>0%</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="stat-card bg-success">
-                            <div class="stat-icon">
-                                <i class='bx bx-check'></i>
-                            </div>
-                            <h3 class="stat-value">0</h3>
-                            <p class="stat-label">Documentos Aprovados</p>
-                            <div class="stat-change">
-                                <i class='bx bx-up-arrow-alt text-success'></i>
-                                <span>0%</span>
-                            </div>
+                            <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" style="display: none;" onchange="handlePhotoUpload(this)">
                         </div>
                     </div>
 
-                    <div class="col-md-3">
-                        <div class="stat-card bg-danger">
-                            <div class="stat-icon">
-                                <i class='bx bx-x'></i>
-                            </div>
-                            <h3 class="stat-value">0</h3>
-                            <p class="stat-label">Documentos Rejeitados</p>
-                            <div class="stat-change">
-                                <i class='bx bx-down-arrow-alt text-danger'></i>
-                                <span>0%</span>
-                            </div>
+                    <!-- Seção de Dados Pessoais -->
+                    <div class="card mt-3" id="perfil">
+                        <div class="card-header">
+                            <h4>Os Meus Dados</h4>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Conteúdo Principal -->
-        <div class="col-md-9 col-lg-10">
-            <!-- Seção de Dados Pessoais -->
-        <div class="card" id="perfil">
-                    <div class="card-header">
-                        <h4>Os Meus Dados</h4>
-                    </div>
-            <div class="card-body">
+                        <div class="card-body p-4">
                 <div class="collapse show" id="dadosPessoais">
                     <form id="profileForm" action="/LSIS-Equipa-9/UI/processa_perfil.php" method="POST">
                         <input type="hidden" id="utilizador_id" name="utilizador_id" value="<?= htmlspecialchars($_SESSION['utilizador_id']); ?>">
