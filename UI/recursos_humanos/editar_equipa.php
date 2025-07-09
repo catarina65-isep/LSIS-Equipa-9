@@ -250,11 +250,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <select class="form-select" id="coordenador_id" name="coordenador_id" required>
                                         <option value="">Selecione um coordenador</option>
                                         <?php foreach ($coordenadores as $coordenador): 
-                                            $selected = ($coordenador['id_utilizador'] ?? $coordenador['id']) == ($equipa['coordenador_id'] ?? '') ? 'selected' : '';
+                                            $selected = ($equipa && $equipa['coordenador_id'] == $coordenador['id_utilizador']) ? 'selected' : '';
+                                            $cargo = !empty($coordenador['cargo']) ? ' - ' . htmlspecialchars($coordenador['cargo']) : '';
+                                            $tipo = !empty($coordenador['tipo_coordenacao']) ? ' (' . htmlspecialchars($coordenador['tipo_coordenacao']) . ')' : '';
                                         ?>
-                                            <option value="<?php echo $coordenador['id_utilizador'] ?? $coordenador['id']; ?>"
-                                                <?php echo $selected; ?>>
-                                                <?php echo htmlspecialchars($coordenador['nome'] ?? ''); ?>
+                                            <option value="<?php echo $coordenador['id_utilizador']; ?>" <?php echo $selected; ?>>
+                                                <?php echo htmlspecialchars($coordenador['nome']); ?><?php echo $cargo; ?><?php echo $tipo; ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>

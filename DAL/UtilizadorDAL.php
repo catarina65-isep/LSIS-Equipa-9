@@ -87,6 +87,8 @@ class UtilizadorDAL {
         }
     }
     
+
+    
     /**
      * Obtém a distribuição de usuários por perfil
      * 
@@ -206,9 +208,9 @@ class UtilizadorDAL {
                         u.email,
                         c.foto
                     FROM utilizador u
-                    INNER JOIN colaborador c ON u.id_colaborador = c.id_colaborador
+                    INNER JOIN colaborador c ON u.id_utilizador = c.id_utilizador
                     WHERE u.ativo = 1
-                    AND u.id_colaborador IS NOT NULL
+                    AND u.id_utilizador IS NOT NULL
                     AND u.id_utilizador NOT IN (
                         SELECT id_utilizador 
                         FROM utilizador 

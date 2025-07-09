@@ -37,19 +37,52 @@ class EquipaBLL {
             throw new Exception("O coordenador da equipa é obrigatório.");
         }
         
-        // Verificar se o coordenador existe e está ativo
-        $utilizadorBLL = new UtilizadorBLL();
-        $coordenador = $utilizadorBLL->obterPorId($dados['coordenador_id']);
-        if (!$coordenador || (isset($coordenador['ativo']) && $coordenador['ativo'] != 1)) {
-            throw new Exception("O coordenador selecionado não existe ou está inativo.");
+        // Obter o ID do colaborador diretamente da tabela utilizador
+        $utilizadorId = (int)$dados['coordenador_id'];
+        
+        if ($utilizadorId <= 0) {
+            throw new Exception("ID de coordenador inválido.");
         }
         
-        // Obter o ID do colaborador associado ao usuário
-        if (empty($coordenador['id_colaborador'])) {
-            throw new Exception("O usuário selecionado não possui um cadastro de colaborador associado.");
+        $pdo = $this->getPDO();
+       
+
+        // Verifica se o usuário é um coordenador ativo
+        $sql = "SELECT u.id_utilizador, c.id_coordenador, u.ativo, 
+                       (SELECT 1 FROM coordenador WHERE id_utilizador = u.id_utilizador AND ativo = 1) as is_coordenador
+                FROM utilizador u
+                LEFT JOIN coordenador c ON u.id_utilizador = c.id_utilizador
+                WHERE u.id_utilizador = :id";
+                
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(':id', $utilizadorId, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$resultado) {
+            throw new Exception("Usuário não encontrado.");
+        }
+
+        // Verifica se o usuário está ativo
+        if (!isset($resultado['ativo']) || $resultado['ativo'] != 1) {
+            throw new Exception("O usuário selecionado não está ativo.");
+        }
+
+        // Verifica se é um coordenador ativo
+        if (!isset($resultado['is_coordenador']) || $resultado['is_coordenador'] != 1) {
+            throw new Exception("Apenas coordenadores ativos podem ser designados como coordenadores de equipe.");
         }
         
-        $coordenadorId = (int)$coordenador['id_colaborador'];
+        // Obtém o ID do colaborador
+        $coordenadorId = (int)$resultado['id_coordenador'];
+        
+        // Se não encontrou o colaborador, usa o ID do usuário
+        if ($coordenadorId <= 0) {
+            $coordenadorId = (int)$resultado['id_utilizador'];
+        }
+        
+        error_log("ID do coordenador (colaborador) a ser usado: " . $coordenadorId);
 
         $pdo = $this->getPDO();
         $inTransaction = $pdo->inTransaction();
@@ -58,31 +91,50 @@ class EquipaBLL {
             if (!$inTransaction) {
                 $pdo->beginTransaction();
             }
+
+
             $equipaId = $this->equipaDAL->criarEquipa(
                 $dados['nome'],
                 $dados['descricao'] ?? '',
-                $coordenadorId,
-                $dados['id_departamento'] ?? null,
-                $dados['id_equipa_pai'] ?? null
+                $coordenadorId
             );
             
+            //  $l1 = (!empty($dados['membros'])) ? "true" : "false";
+            //  $l2 = (is_array($dados['membros'])) ? "true" : "false";
+                      
+            // if (true) {
+            //         throw new Exception("pois 10 ... " . $l1 ." - " . $l2);
+            //     }
+
             // Adicionar membros à equipe, se fornecidos
             if (!empty($dados['membros']) && is_array($dados['membros'])) {
                 $membros = array_map('intval', $dados['membros']);
                 // Garantir que o coordenador está na lista de membros
-                if (!in_array($dados['coordenador_id'], $membros)) {
-                    $membros[] = $dados['coordenador_id'];
-                }
+                // if (!in_array($dados['coordenador_id'], $membros)) {
+                //     $membros[] = $dados['coordenador_id'];
+                // }
                 
                 foreach ($membros as $membroId) {
                     // Verifica se o membro é o coordenador
                     $isCoordenador = ($membroId == $dados['coordenador_id']);
-                    // Usa o ID do usuário para adicionar o membro
-                    $this->equipaDAL->adicionarMembroEquipa($equipaId, $membroId, $isCoordenador);
+                    // Usa o método adicionarMembro que já gerencia transações
+                    $this->adicionarMembro($equipaId, $membroId, $isCoordenador);
+                }
+            } else {
+
+                // Adicionar apenas o coordenador como membro
+                $this->adicionarMembro($equipaId, $dados['coordenador_id'], true);
+            } 
+
+                foreach ($membros as $membroId) {
+                    // Verifica se o membro é o coordenador
+                    $isCoordenador = ($membroId == $dados['coordenador_id']);
+                    // Usa o método adicionarMembro que já gerencia transações
+                    $this->adicionarMembro($equipaId, $membroId, $isCoordenador);
                 }
             } else {
                 // Adicionar apenas o coordenador como membro
-                $this->equipaDAL->adicionarMembroEquipa($equipaId, $dados['coordenador_id'], true);
+                $this->adicionarMembro($equipaId, $dados['coordenador_id'], true);
             }
             
             if (!$inTransaction) {
@@ -109,55 +161,179 @@ class EquipaBLL {
      * @throws Exception Se houver erro na validação
      */
     public function adicionarMembro($equipaId, $utilizadorId, $coordenador = false) {
-        // Verifica se a equipa existe
-        $equipa = $this->obterEquipa($equipaId);
-        if (!$equipa) {
-            throw new Exception("Equipa não encontrada.");
-        }
+        $pdo = $this->getPDO();
+        $inTransaction = $pdo->inTransaction();
         
-        // Verifica se o utilizador existe
-        $utilizadorBLL = new UtilizadorBLL();
-        $utilizador = $utilizadorBLL->obterPorId($utilizadorId);
-        if (!$utilizador) {
-            throw new Exception("Utilizador não encontrado.");
+
+        try {
+            if (!$inTransaction) {
+                $pdo->beginTransaction();
+            }
+            
+
+            // Verifica se a equipa existe
+            // $equipa = $this->obterEquipa($equipaId);
+            // if (!$equipa===false) {
+            //     throw new Exception("Equipa não encontrada.");
+            // }
+
+            
+            // Verifica se o utilizador existe
+            $utilizadorBLL = new UtilizadorBLL();
+            $utilizador = $utilizadorBLL->obterPorId($utilizadorId);
+            if (!$utilizador) {
+                throw new Exception("Utilizador não encontrado.");
+            }
+
+            
+            // Se for para adicionar como coordenador, verifica se já existe um
+            if ($coordenador) {
+                $this->definirCoordenador($equipaId, $utilizadorId);
+            }
+
+ 
+            $resultado = $this->equipaDAL->adicionarMembroEquipa($equipaId, $utilizadorId, $coordenador);
+            
+            if (!$inTransaction) {
+                $pdo->commit();
+            }
+            
+            return $resultado;
+            
+        } catch (Exception $e) {
+            if (!$inTransaction && $pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            error_log('Erro ao adicionar membro à equipe: ' . $e->getMessage());
+            throw new Exception("Erro ao adicionar membro à equipe: " . $e->getMessage());
         }
-        
-        // Se for para adicionar como coordenador, verifica se já existe um
-        if ($coordenador) {
-            $this->definirCoordenador($equipaId, $utilizadorId);
-        }
-        
-        return $this->equipaDAL->adicionarMembroEquipa($equipaId, $utilizadorId, $coordenador);
     }
     
     /**
      * Define um membro como coordenador da equipa
      * 
      * @param int $equipaId ID da equipa
-     * @param int $utilizadorId ID do novo coordenador
+     * @param int $utilizadorId ID do novo coordenador (id_utilizador)
+     * @return bool Sucesso da operação
+     * @throws Exception Se houver erro na validação
+     */
+    /**
+     * Define um membro como coordenador da equipa
+     * 
+     * @param int $equipaId ID da equipa
+     * @param int $utilizadorId ID do novo coordenador (id_utilizador)
      * @return bool Sucesso da operação
      * @throws Exception Se houver erro na validação
      */
     public function definirCoordenador($equipaId, $utilizadorId) {
-        // Obtém os dados do usuário para pegar o ID do colaborador
-        $utilizadorBLL = new UtilizadorBLL();
-        $utilizador = $utilizadorBLL->obterPorId($utilizadorId);
+        $pdo = $this->getPDO();
+        $inTransaction = $pdo->inTransaction();
         
-        if (!$utilizador) {
-            throw new Exception("Utilizador não encontrado.");
+        try {
+            if (!$inTransaction) {
+                $pdo->beginTransaction();
+            }
+            
+            error_log("Iniciando definição de coordenador. Equipa ID: $equipaId, Utilizador ID: $utilizadorId");
+            
+            // Verifica se o usuário existe
+            $utilizadorBLL = new UtilizadorBLL();
+            $utilizador = $utilizadorBLL->obterPorId($utilizadorId);
+            
+            if (!$utilizador) {
+                error_log("ERRO: Utilizador com ID $utilizadorId não encontrado.");
+                throw new Exception("Utilizador não encontrado.");
+            }
+            
+            // Verifica se o membro pertence à equipa
+            if (!$this->verificarMembroEquipa($equipaId, $utilizadorId)) {
+                error_log("ERRO: Utilizador $utilizadorId não é membro da equipe $equipaId");
+                throw new Exception("O membro não pertence a esta equipa.");
+            }
+            
+            // Busca informações completas do coordenador na tabela coordenador
+            $sql = "SELECT 
+                        c.id_coordenador, 
+                        c.ativo, 
+                        c.id_utilizador, 
+                        c.tipo_coordenacao,
+                        c.id_equipa,
+                        u.username, 
+                        u.email,
+                        col.nome, 
+                        col.apelido
+                    FROM coordenador c
+                    JOIN utilizador u ON c.id_utilizador = u.id_utilizador
+                    LEFT JOIN colaborador col ON u.id_utilizador = col.id_utilizador
+                    WHERE c.id_utilizador = :id_utilizador 
+                    AND c.ativo = 1";
+            
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([':id_utilizador' => $utilizadorId]);
+            $coordenador = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            error_log("Dados do coordenador: " . print_r($coordenador, true));
+            
+            if (!$coordenador) {
+                error_log("ERRO: O usuário ID $utilizadorId não está cadastrado como coordenador ativo");
+                throw new Exception("O usuário selecionado não está cadastrado como coordenador ativo.");
+            }
+            
+            // Verifica se o coordenador tem permissão para coordenar esta equipe
+            if ($coordenador['tipo_coordenacao'] === 'Equipa' && $coordenador['id_equipa'] != $equipaId) {
+                error_log("ERRO: Coordenador ID {$coordenador['id_coordenador']} não tem permissão para coordenar esta equipe");
+                throw new Exception("O coordenador selecionado não tem permissão para coordenar esta equipe.");
+            }
+            
+            // Atualiza a equipe com o novo coordenador
+            $sqlUpdate = "UPDATE equipa SET coordenador_id = :coordenador_id, updated_at = NOW() WHERE id_equipa = :equipa_id";
+            $stmtUpdate = $pdo->prepare($sqlUpdate);
+            $result = $stmtUpdate->execute([
+                ':coordenador_id' => $utilizadorId,
+                ':equipa_id' => $equipaId
+            ]);
+            
+            if (!$result) {
+                $error = $stmtUpdate->errorInfo();
+                error_log("ERRO ao atualizar coordenador da equipe: " . print_r($error, true));
+                throw new Exception("Erro ao atualizar o coordenador da equipe: " . $error[2]);
+            }
+            
+            // Atualiza o registro do coordenador para vincular à equipe, se necessário
+            if ($coordenador['tipo_coordenacao'] === 'Equipa' && $coordenador['id_equipa'] != $equipaId) {
+                $sqlUpdateCoordenador = "UPDATE coordenador SET id_equipa = :equipa_id, updated_at = NOW() WHERE id_coordenador = :id_coordenador";
+                $stmtUpdateCoordenador = $pdo->prepare($sqlUpdateCoordenador);
+                $resultCoordenador = $stmtUpdateCoordenador->execute([
+                    ':equipa_id' => $equipaId,
+                    ':id_coordenador' => $coordenador['id_coordenador']
+                ]);
+                
+                if (!$resultCoordenador) {
+                    $error = $stmtUpdateCoordenador->errorInfo();
+                    error_log("AVISO: Não foi possível atualizar o vínculo do coordenador com a equipe: " . print_r($error, true));
+                    // Não lançamos exceção aqui, pois a operação principal foi bem-sucedida
+                }
+            }
+            
+            if (!$inTransaction) {
+                $pdo->commit();
+            }
+            
+            return true;
+            
+        } catch (PDOException $e) {
+            if (!$inTransaction && $pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            error_log("ERRO no banco de dados ao definir coordenador: " . $e->getMessage());
+            throw new Exception("Erro ao processar a definição do coordenador: " . $e->getMessage());
+        } catch (Exception $e) {
+            if (!$inTransaction && $pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            error_log("ERRO ao verificar coordenador: " . $e->getMessage());
+            throw new Exception("Erro ao verificar as informações do coordenador: " . $e->getMessage());
         }
-        
-        if (empty($utilizador['id_colaborador'])) {
-            throw new Exception("O usuário selecionado não possui um cadastro de colaborador associado.");
-        }
-        
-        // Verifica se o membro pertence à equipa
-        if (!$this->verificarMembroEquipa($equipaId, $utilizadorId)) {
-            throw new Exception("O membro não pertence a esta equipa.");
-        }
-        
-        // Usa o ID do colaborador para definir o coordenador
-        return $this->equipaDAL->definirCoordenador($equipaId, $utilizador['id_colaborador']);
     }
 
     /**
@@ -189,15 +365,16 @@ class EquipaBLL {
      * @return array|false Dados da equipa ou false se não encontrada
      */
     public function obterEquipa($id) {
+
         $equipa = $this->equipaDAL->obterEquipaPorId($id);
-        
-        if ($equipa) {
+
+        if ($equipa===false) {
             // Adiciona informações adicionais
             $equipa['subequipas'] = $this->obterSubequipas($id);
             $equipa['membros'] = $this->obterMembrosEquipa($id);
             $equipa['coordenador'] = $this->obterCoordenador($id);
         }
-        
+
         return $equipa;
     }
     
@@ -271,7 +448,7 @@ class EquipaBLL {
         // Se estiver alterando o coordenador, verifica se o novo coordenador existe
         if (!empty($dados['coordenador_id']) && $dados['coordenador_id'] != $equipaAtual['coordenador_id']) {
             $utilizadorBLL = new UtilizadorBLL();
-            $novoCoordenador = $utilizadorBLL->obterUtilizadorPorId($dados['coordenador_id']);
+            $novoCoordenador = $utilizadorBLL->obterPorId($dados['coordenador_id']);
             if (!$novoCoordenador) {
                 throw new Exception("O coordenador selecionado não existe.");
             }
@@ -415,7 +592,7 @@ class EquipaBLL {
             }
             
             // Garante que o coordenador está na lista de membros
-            if (!empty($equipa['coordenador_id'])) {
+            /*if (!empty($equipa['coordenador_id'])) {
                 $coordenadorEncontrado = false;
                 foreach ($equipa['membros'] as $membro) {
                     if ($membro['id'] == $equipa['coordenador_id']) {
@@ -431,7 +608,7 @@ class EquipaBLL {
                         $equipa['membros'][] = $coordenador;
                     }
                 }
-            }
+            }*/
         }
         
         return $equipa;

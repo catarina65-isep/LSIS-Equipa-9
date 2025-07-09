@@ -46,47 +46,117 @@ class UtilizadorBLL {
     }
 
     /**
-     * Obtém a lista de coordenadores ativos
+     * Obtém a lista de coordenadores ativos diretamente da tabela coordenador
      * 
-     * @return array Lista de coordenadores com id_utilizador e nome
+     * @return array Lista de coordenadores com id_utilizador, nome, email e cargo
      */
     public function obterCoordenadores() {
         try {
-            // Primeiro tenta buscar pelo perfil de coordenador (ID 2)
-            $coordenadores = $this->utilizadorDAL->listarPorPerfil(2);
+            error_log("Iniciando consulta de coordenadores ativos...");
             
-            // Se não encontrar coordenadores, tenta buscar administradores e gestores
-            if (empty($coordenadores)) {
-                $sql = "SELECT 
-                            u.id_utilizador as id,
-                            COALESCE(CONCAT(c.nome, ' ', c.apelido), u.username) as nome,
-                            u.email
-                        FROM utilizador u
-                        LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
-                        WHERE u.ativo = 1
-                        AND u.id_perfil_acesso IN (1, 2, 3)  -- Administrador, RH ou Gestor
-                        AND u.username != 'rh'  -- Remove o usuário genérico 'rh'
-                        ORDER BY COALESCE(c.nome, u.username)";
-                
-                $stmt = $this->utilizadorDAL->getPDO()->prepare($sql);
-                $stmt->execute();
-                $coordenadores = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $sql = "SELECT 
+                        c.id_coordenador,
+                        u.id_utilizador,
+                        COALESCE(CONCAT(col.nome, ' ', col.apelido), u.username) as nome,
+                        u.email,
+                        c.cargo,
+                        c.tipo_coordenacao
+                    FROM coordenador c
+                    JOIN utilizador u ON c.id_utilizador = u.id_utilizador
+                    LEFT JOIN colaborador col ON u.id_utilizador = col.id_utilizador
+                    WHERE c.ativo = 1
+                    ORDER BY col.nome, col.apelido";
+            
+            error_log("SQL: $sql");
+            
+            $stmt = $this->getPDO()->prepare($sql);
+            $stmt->execute();
+            
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            error_log("Total de coordenadores encontrados: " . count($resultados));
+            
+            // Log detalhado de cada coordenador encontrado
+            foreach ($resultados as $i => $coord) {
+                error_log(sprintf(
+                    "Coordenador #%d: ID=%d, Nome=%s, Email=%s, Cargo=%s, Tipo=%s",
+                    $i + 1,
+                    $coord['id_utilizador'],
+                    $coord['nome'],
+                    $coord['email'],
+                    $coord['cargo'],
+                    $coord['tipo_coordenacao']
+                ));
             }
             
-            // Verifica se os dados estão no formato correto
-            $resultado = [];
-            foreach ($coordenadores as $coordenador) {
-                $resultado[] = [
-                    'id_utilizador' => $coordenador['id'] ?? $coordenador['id_utilizador'] ?? 0,
-                    'nome' => $coordenador['nome'] ?? ($coordenador['username'] ?? 'Desconhecido'),
-                    'email' => $coordenador['email'] ?? ''
-                ];
-            }
-            
-            return $resultado;
+            return $resultados;
             
         } catch (Exception $e) {
-            error_log('Erro ao listar coordenadores: ' . $e->getMessage());
+            $erro = 'Erro ao listar coordenadores: ' . $e->getMessage();
+            error_log($erro);
+            error_log("Stack trace: " . $e->getTraceAsString());
+            return [];
+        }
+    }
+    
+    /**
+     * Lista todos os utilizadores ativos com informações de colaborador
+     * 
+     * @return array Lista de utilizadores ativos com informações adicionais
+     */
+    public function listarUtilizadoresAtivos() {
+        try {
+            error_log("Iniciando consulta de utilizadores ativos...");
+            
+            $sql = "SELECT 
+                        u.id_utilizador,
+                        u.username,
+                        u.email,
+                        u.ativo,
+                        u.id_colaborador,
+                        COALESCE(CONCAT(c.nome, ' ', c.apelido), u.username) as nome_completo,
+                        c.cargo,
+                        c.departamento,
+                        c.data_entrada,
+                        c.estado
+                    FROM utilizador u
+                    LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
+                    WHERE u.ativo = 1
+                    ORDER BY c.nome, c.apelido, u.username";
+            
+            error_log("SQL para listar utilizadores ativos: $sql");
+            
+            $stmt = $this->getPDO()->prepare($sql);
+            $stmt->execute();
+            
+            $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
+            error_log("Total de utilizadores ativos encontrados: " . count($resultados));
+            
+            // Log detalhado dos primeiros 5 usuários para depuração
+            $totalLog = min(5, count($resultados));
+            for ($i = 0; $i < $totalLog; $i++) {
+                $user = $resultados[$i];
+                error_log(sprintf(
+                    "Utilizador #%d: ID=%d, Nome=%s, Email=%s, Cargo=%s",
+                    $i + 1,
+                    $user['id_utilizador'],
+                    $user['nome_completo'],
+                    $user['email'],
+                    $user['cargo'] ?? 'Não definido'
+                ));
+            }
+            
+            if (count($resultados) > 5) {
+                error_log("... e mais " . (count($resultados) - 5) . " utilizadores");
+            }
+            
+            return $resultados;
+            
+        } catch (Exception $e) {
+            $erro = 'Erro ao listar utilizadores ativos: ' . $e->getMessage();
+            error_log($erro);
+            error_log("Stack trace: " . $e->getTraceAsString());
             return [];
         }
     }
@@ -290,19 +360,6 @@ class UtilizadorBLL {
         }
     }
     
-    /**
-     * Lista todos os usuários ativos
-     * @return array Lista de usuários ativos
-     */
-    public function listarUtilizadoresAtivos() {
-        try {
-            // A DAL já filtra por usuários ativos
-            return $this->utilizadorDAL->listarTodos();
-        } catch (Exception $e) {
-            error_log('Erro ao listar usuários ativos: ' . $e->getMessage());
-            return [];
-        }
-    }
     
     /**
      * Atualiza os dados de um usuário
