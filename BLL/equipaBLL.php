@@ -47,42 +47,39 @@ class EquipaBLL {
         $pdo = $this->getPDO();
        
 
-        // Verifica se o usuário é um coordenador ativo
-        $sql = "SELECT u.id_utilizador, c.id_coordenador, u.ativo, 
-                       (SELECT 1 FROM coordenador WHERE id_utilizador = u.id_utilizador AND ativo = 1) as is_coordenador
-                FROM utilizador u
-                LEFT JOIN coordenador c ON u.id_utilizador = c.id_utilizador
-                WHERE u.id_utilizador = :id";
-                
+        // 1. Verifica se o usuário existe e está ativo
+        $sql = "SELECT id_utilizador, ativo FROM utilizador WHERE id_utilizador = :id";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':id', $utilizadorId, PDO::PARAM_INT);
         $stmt->execute();
         
-        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        if (!$resultado) {
+        if (!$usuario) {
             throw new Exception("Usuário não encontrado.");
         }
 
         // Verifica se o usuário está ativo
-        if (!isset($resultado['ativo']) || $resultado['ativo'] != 1) {
+        if (!isset($usuario['ativo']) || $usuario['ativo'] != 1) {
             throw new Exception("O usuário selecionado não está ativo.");
         }
-
-        // Verifica se é um coordenador ativo
-        if (!isset($resultado['is_coordenador']) || $resultado['is_coordenador'] != 1) {
-            throw new Exception("Apenas coordenadores ativos podem ser designados como coordenadores de equipe.");
+        
+        // 2. Verifica se o usuário é um coordenador ativo e obtém o id_coordenador
+        $sqlCoordenador = "SELECT id_coordenador, ativo, tipo_coordenacao 
+                          FROM coordenador 
+                          WHERE id_utilizador = :id_utilizador AND ativo = 1";
+        $stmtCoordenador = $pdo->prepare($sqlCoordenador);
+        $stmtCoordenador->bindParam(':id_utilizador', $utilizadorId, PDO::PARAM_INT);
+        $stmtCoordenador->execute();
+        $coordenador = $stmtCoordenador->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$coordenador) {
+            throw new Exception("Apenas coordenadores ativos podem ser designados como coordenadores de equipe. Por favor, selecione um usuário que já seja um coordenador ativo no sistema.");
         }
         
-        // Obtém o ID do colaborador
-        $coordenadorId = (int)$resultado['id_coordenador'];
-        
-        // Se não encontrou o colaborador, usa o ID do usuário
-        if ($coordenadorId <= 0) {
-            $coordenadorId = (int)$resultado['id_utilizador'];
-        }
-        
-        error_log("ID do coordenador (colaborador) a ser usado: " . $coordenadorId);
+        // 3. Obtém o id_coordenador para usar na chave estrangeira
+        $idCoordenador = (int)$coordenador['id_coordenador'];
+        error_log("ID do coordenador a ser usado: " . $idCoordenador);
 
         $pdo = $this->getPDO();
         $inTransaction = $pdo->inTransaction();
@@ -96,7 +93,7 @@ class EquipaBLL {
             $equipaId = $this->equipaDAL->criarEquipa(
                 $dados['nome'],
                 $dados['descricao'] ?? '',
-                $coordenadorId
+                $idCoordenador  // Usando o id_coordenador obtido da tabela coordenador
             );
             
             //  $l1 = (!empty($dados['membros'])) ? "true" : "false";
@@ -106,24 +103,20 @@ class EquipaBLL {
             //         throw new Exception("pois 10 ... " . $l1 ." - " . $l2);
             //     }
 
-            // Adicionar membros à equipe, se fornecidos
+            // Primeiro, definimos o coordenador da equipe
+            $this->definirCoordenador($equipaId, $dados['coordenador_id']);
+            
+            // Depois, adicionamos os membros da equipe, se houver
             if (!empty($dados['membros']) && is_array($dados['membros'])) {
                 $membros = array_map('intval', $dados['membros']);
                 
-                // Garantir que o coordenador está na lista de membros
-                // if (!in_array($dados['coordenador_id'], $membros)) {
-                //     $membros[] = $dados['coordenador_id'];
-                // }
+                // Remove o coordenador da lista de membros, se estiver presente
+                $membros = array_diff($membros, [$dados['coordenador_id']]);
                 
+                // Adiciona os membros da equipe
                 foreach ($membros as $membroId) {
-                    // Verifica se o membro é o coordenador
-                    $isCoordenador = ($membroId == $dados['coordenador_id']);
-                    // Usa o método adicionarMembro que já gerencia transações
-                    $this->adicionarMembro($equipaId, $membroId, $isCoordenador);
+                    $this->adicionarMembro($equipaId, $membroId, false);
                 }
-            } else {
-                // Adicionar apenas o coordenador como membro
-                $this->adicionarMembro($equipaId, $dados['coordenador_id'], true);
             }
             
             if (!$inTransaction) {
@@ -153,10 +146,19 @@ class EquipaBLL {
         $pdo = $this->getPDO();
         $inTransaction = $pdo->inTransaction();
         
+
         try {
             if (!$inTransaction) {
                 $pdo->beginTransaction();
             }
+            
+
+            // Verifica se a equipa existe
+            // $equipa = $this->obterEquipa($equipaId);
+            // if (!$equipa===false) {
+            //     throw new Exception("Equipa não encontrada.");
+            // }
+
             
             // Verifica se o utilizador existe
             $utilizadorBLL = new UtilizadorBLL();
@@ -164,15 +166,15 @@ class EquipaBLL {
             if (!$utilizador) {
                 throw new Exception("Utilizador não encontrado.");
             }
+
             
-            // Adiciona o membro à equipe
-            $resultado = $this->equipaDAL->adicionarMembroEquipa($equipaId, $utilizadorId, $coordenador);
-            
-            // Se for para adicionar como coordenador, define como coordenador
+            // Se for para adicionar como coordenador, verifica se já existe um
             if ($coordenador) {
-                // Não inicia nova transação, usa a existente
                 $this->definirCoordenador($equipaId, $utilizadorId);
             }
+
+ 
+            $resultado = $this->equipaDAL->adicionarMembroEquipa($equipaId, $utilizadorId, $coordenador);
             
             if (!$inTransaction) {
                 $pdo->commit();
@@ -225,11 +227,8 @@ class EquipaBLL {
                 throw new Exception("Utilizador não encontrado.");
             }
             
-            // Verifica se o membro pertence à equipa
-            if (!$this->verificarMembroEquipa($equipaId, $utilizadorId)) {
-                error_log("ERRO: Utilizador $utilizadorId não é membro da equipe $equipaId");
-                throw new Exception("O membro não pertence a esta equipa.");
-            }
+            // O coordenador não precisa ser membro da equipe
+            // Removida a verificação de membro da equipe
             
             // Busca informações completas do coordenador na tabela coordenador
             $sql = "SELECT 
@@ -260,16 +259,19 @@ class EquipaBLL {
             }
             
             // Verifica se o coordenador tem permissão para coordenar esta equipe
-            if ($coordenador['tipo_coordenacao'] === 'Equipa' && $coordenador['id_equipa'] != $equipaId) {
-                error_log("ERRO: Coordenador ID {$coordenador['id_coordenador']} não tem permissão para coordenar esta equipe");
-                throw new Exception("O coordenador selecionado não tem permissão para coordenar esta equipe.");
+            // Se for um coordenador de equipe específica e já estiver associado a outra equipe, não permite
+            if ($coordenador['tipo_coordenacao'] === 'Equipa' && 
+                !empty($coordenador['id_equipa']) && 
+                $coordenador['id_equipa'] != $equipaId) {
+                error_log("ERRO: Coordenador ID {$coordenador['id_coordenador']} já está associado à equipe ID {$coordenador['id_equipa']}");
+                throw new Exception("O coordenador selecionado já está associado a outra equipe.");
             }
             
-            // Atualiza a equipe com o novo coordenador
-            $sqlUpdate = "UPDATE equipa SET coordenador_id = :coordenador_id, updated_at = NOW() WHERE id_equipa = :equipa_id";
+            // Atualiza a equipe com o id_coordenador correto
+            $sqlUpdate = "UPDATE equipa SET id_coordenador = :id_coordenador WHERE id_equipa = :equipa_id";
             $stmtUpdate = $pdo->prepare($sqlUpdate);
             $result = $stmtUpdate->execute([
-                ':coordenador_id' => $utilizadorId,
+                ':id_coordenador' => $coordenador['id_coordenador'], // Usando o id_coordenador da tabela coordenador
                 ':equipa_id' => $equipaId
             ]);
             
@@ -279,9 +281,10 @@ class EquipaBLL {
                 throw new Exception("Erro ao atualizar o coordenador da equipe: " . $error[2]);
             }
             
-            // Atualiza o registro do coordenador para vincular à equipe, se necessário
-            if ($coordenador['tipo_coordenacao'] === 'Equipa' && $coordenador['id_equipa'] != $equipaId) {
-                $sqlUpdateCoordenador = "UPDATE coordenador SET id_equipa = :equipa_id, updated_at = NOW() WHERE id_coordenador = :id_coordenador";
+            // Atualiza o registro do coordenador para vincular à equipe
+            // Se for um coordenador de equipe específica, atualiza o vínculo
+            if ($coordenador['tipo_coordenacao'] === 'Equipa') {
+                $sqlUpdateCoordenador = "UPDATE coordenador SET id_equipa = :equipa_id WHERE id_coordenador = :id_coordenador";
                 $stmtUpdateCoordenador = $pdo->prepare($sqlUpdateCoordenador);
                 $resultCoordenador = $stmtUpdateCoordenador->execute([
                     ':equipa_id' => $equipaId,
