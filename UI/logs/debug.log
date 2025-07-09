@@ -1387,3 +1387,45 @@
 [2025-07-08 22:39:08] Nome do perfil: Colaborador
 [2025-07-08 22:39:08] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
 [2025-07-08 22:39:08] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-09 09:55:16] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 09:55:16] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 09:55:16] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-09 09:55:16] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-09 09:55:16] ID do perfil do usuário: 1
+[2025-07-09 09:55:16] Nome do perfil: Administrador
+[2025-07-09 09:55:16] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-09 09:55:16] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+[2025-07-09 09:55:34] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 09:55:34] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 09:55:34] Tentando autenticar usuário: colaborador@tlantic.pt
+[2025-07-09 09:55:34] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => colaborador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-09 09:55:34] ID do perfil do usuário: 4
+[2025-07-09 09:55:34] Nome do perfil: Colaborador
+[2025-07-09 09:55:34] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-09 09:55:34] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php

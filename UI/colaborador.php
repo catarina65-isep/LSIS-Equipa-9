@@ -1362,6 +1362,99 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
             });
         </script>
         <script>
+            // Função para atualizar o formulário
+            function atualizarFormulario() {
+                const form = document.getElementById('profileForm');
+                if (!form) {
+                    console.error('Formulário não encontrado');
+                    return;
+                }
+
+                // Tipos de documentos e seus prefixos
+                const documentos = {
+                    'morada': 'moradaDoc',
+                    'cartaocidadao': 'cartaoCidadaoDoc',
+                    'nif': 'nifDoc',
+                    'niss': 'nissDoc',
+                    'iban': 'ibanDoc'
+                };
+
+                // Para cada tipo de documento
+                Object.entries(documentos).forEach(([prefix, field]) => {
+                    // Primeiro encontrar o elemento do campo
+                    const fieldElement = form.querySelector(`#${field}`);
+                    if (!fieldElement) {
+                        console.error(`Campo ${field} não encontrado`);
+                        return;
+                    }
+
+                    // Encontrar o container de upload
+                    let uploadContainer = fieldElement.closest('.upload-container');
+                    if (!uploadContainer) {
+                        // Se não encontrar pelo closest, tentar encontrar pelo seletor
+                        uploadContainer = form.querySelector(`#${field}`).closest('.upload-container');
+                        if (!uploadContainer) {
+                            console.error(`Container de upload para ${field} não encontrado`);
+                            return;
+                        }
+                    }
+
+                    // Verificar se já existe um arquivo
+                    const existingFile = uploadContainer.querySelector('a');
+                    if (existingFile) {
+                        // Se existe arquivo, manter o link
+                        return;
+                    }
+
+                    // Se não existe arquivo, mostrar o input de upload
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.className = 'form-control';
+                    input.id = field;
+                    input.name = field;
+                    input.accept = '.pdf,.jpg,.jpeg,.png';
+                    uploadContainer.innerHTML = ''; // Limpar conteúdo existente
+                    uploadContainer.appendChild(input);
+                });
+            }
+
+            // Função para atualizar a seção de documentos
+            function atualizarSecaoDocumentos() {
+                const documentosSection = document.getElementById('documentos');
+                if (!documentosSection) {
+                    console.error('Seção de documentos não encontrada');
+                    return;
+                }
+
+                // Obter o ID do utilizador do campo hidden do formulário
+                const utilizadorId = document.getElementById('utilizador_id').value;
+                if (!utilizadorId) {
+                    console.error('ID do utilizador não encontrado');
+                    return;
+                }
+
+                fetch('/LSIS-Equipa-9/UI/documentos.php?id_utilizador=' + encodeURIComponent(utilizadorId))
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Erro ao carregar documentos: ' + response.status);
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        // Atualizar apenas o conteúdo interno do card
+                        const cardBody = documentosSection.querySelector('.card-body');
+                        if (cardBody) {
+                            cardBody.innerHTML = html;
+                        } else {
+                            console.error('Card body não encontrado');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao atualizar documentos:', error);
+                        showAlert('danger', 'Erro ao atualizar documentos');
+                    });
+            }
+
             // Função para atualizar a tabela de documentos (apenas quando necessário)
             function atualizarTabelaDocumentos() {
                 // Tipos de documentos e seus prefixos
@@ -1541,8 +1634,6 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                         return;
                     }
 
-                    const container = button.closest('.upload-container');
-                    
                     // Desabilitar botão e mostrar loading
                     button.disabled = true;
                     button.innerHTML = '<span class="loading-spinner"></span>';
@@ -1561,19 +1652,9 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // Remover o link e mostrar o input de upload
-                            const link = container.querySelector('a');
-                            link.remove();
-                            const input = document.createElement('input');
-                            input.type = 'file';
-                            input.className = 'form-control';
-                            input.id = field;
-                            input.name = field;
-                            input.accept = '.pdf,.jpg,.jpeg,.png';
-                            container.appendChild(input);
-                            
-                            // Remover o botão de apagar
-                            button.remove();
+                            // Atualizar a seção de documentos e o formulário
+                            atualizarSecaoDocumentos();
+                            atualizarFormulario();
                         } else {
                             alert('Erro ao apagar documento: ' + data.message);
                             button.innerHTML = '<i class="bx bx-trash"></i>';
@@ -1618,6 +1699,9 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
                                 existingAlert.remove();
                             }
                             showAlert('success', 'Dados atualizados com sucesso');
+                            
+                            // Atualizar a seção de documentos
+                            atualizarSecaoDocumentos();
                         } else {
                             // Se existem erros específicos, mostra-os
                             if (result.erros && result.erros.length > 0) {
