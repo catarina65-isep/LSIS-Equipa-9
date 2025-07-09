@@ -201,7 +201,6 @@ try {
                                             <th>Nome</th>
                                             <th>Coordenador</th>
                                             <th>Membros</th>
-                                            <th>Departamento</th>
                                             <th>Estado</th>
                                             <th class="text-end">Ações</th>
                                         </tr>
@@ -209,7 +208,7 @@ try {
                                     <tbody>
                                         <?php if (empty($equipas)): ?>
                                             <tr>
-                                                <td colspan="6" class="text-center">Nenhuma equipa registada.</td>
+                                                <td colspan="5" class="text-center">Nenhuma equipa registada.</td>
                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($equipas as $equipa): ?>
@@ -217,7 +216,6 @@ try {
                                                     <td><?= htmlspecialchars($equipa['nome']) ?></td>
                                                     <td><?= htmlspecialchars($equipa['coordenador_nome'] ?? 'Não definido') ?></td>
                                                     <td><?= $equipa['total_membros'] ?? 0 ?></td>
-                                                    <td><?= htmlspecialchars($equipa['departamento_nome'] ?? '-') ?></td>
                                                     <td>
                                                         <span class="badge bg-<?= $equipa['ativo'] ? 'success' : 'secondary' ?>">
                                                             <?= $equipa['ativo'] ? 'Ativo' : 'Inativo' ?>

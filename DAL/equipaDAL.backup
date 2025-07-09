@@ -91,8 +91,19 @@ class EquipaDAL {
                 throw new Exception('Este utilizador já é membro ativo desta equipa.');
             }
             
-            // A validação de coordenador ativo é feita na camada BLL
-            // Aqui apenas adicionamos o membro conforme solicitado
+            // Se for para adicionar como coordenador, verifica se o usuário é um coordenador ativo
+            if ($coordenador) {
+                $sqlCheckCoordenador = "SELECT COUNT(*) as total FROM coordenador 
+                                      WHERE id_utilizador = :utilizador_id AND ativo = 1";
+                $stmtCheck = $this->pdo->prepare($sqlCheckCoordenador);
+                $stmtCheck->execute([':utilizador_id' => $utilizadorId]);
+                $result = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+                
+                if ((int)$result['total'] === 0) {
+                    error_log("Usuário $utilizadorId não é um coordenador ativo");
+                    throw new Exception('Apenas coordenadores ativos podem ser designados como coordenadores de equipe.');
+                }
+            }
             
             $sql = "INSERT INTO equipa_membros (
                         equipa_id, 
@@ -671,55 +682,49 @@ class EquipaDAL {
      * @return array Lista de equipes com informações dos coordenadores
      */
     public function obterTodasEquipas() {
-        // Primeiro, busca todas as equipes ativas com contagem de membros
-        $sql = "SELECT e.*, 
-                       (SELECT COUNT(*) FROM equipa_membros em WHERE em.equipa_id = e.id_equipa AND em.ativo = 1) as total_membros
-                FROM equipa e 
-                WHERE e.ativo = 1 
-                ORDER BY e.nome";
+        // Primeiro, busca todas as equipes ativas
+        $sql = "SELECT * FROM equipa WHERE ativo = 1 ORDER BY nome";
         $stmt = $this->pdo->query($sql);
         $equipas = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         // Para cada equipe, busca as informações do coordenador
         foreach ($equipas as &$equipa) {
-            // Primeiro tenta buscar o coordenador diretamente pelo id_coordenador da tabela equipa
-            if (!empty($equipa['id_coordenador'])) {
-                $sqlCoordenador = "SELECT 
-                                    u.id_utilizador,
-                                    COALESCE(CONCAT(c.nome, ' ', c.apelido), u.username) as nome,
-                                    u.email,
-                                    co.cargo,
-                                    co.tipo_coordenacao,
-                                    co.id_coordenador,
-                                    co.ativo as coordenador_ativo
-                                FROM coordenador co
-                                JOIN utilizador u ON co.id_utilizador = u.id_utilizador
-                                LEFT JOIN colaborador c ON u.id_utilizador = c.id_utilizador
-                                WHERE co.id_coordenador = :id_coordenador";
-                
-                $stmtCoordenador = $this->pdo->prepare($sqlCoordenador);
-                $stmtCoordenador->execute([':id_coordenador' => $equipa['id_coordenador']]);
-                $coordenador = $stmtCoordenador->fetch(PDO::FETCH_ASSOC);
-            }
+            $sqlCoordenador = "SELECT 
+                                u.id_utilizador,
+                                COALESCE(CONCAT(c.nome, ' ', c.apelido), u.username) as nome,
+                                u.email,
+                                co.cargo,
+                                co.tipo_coordenacao,
+                                co.id_coordenador,
+                                co.ativo as coordenador_ativo
+                              FROM coordenador co
+                              JOIN utilizador u ON co.id_utilizador = u.id_utilizador
+                              LEFT JOIN colaborador c ON u.id_utilizador = c.id_utilizador
+                              WHERE co.ativo = 1 
+                              AND (co.id_equipa = :equipa_id OR co.tipo_coordenacao = 'Geral')
+                              LIMIT 1";
             
-            // Se não encontrou pelo id_coordenador, tenta pelo id_utilizador (backward compatibility)
-            if (empty($coordenador) && !empty($equipa['coordenador_id'])) {
-                $sqlCoordenador = "SELECT 
-                                    u.id_utilizador,
-                                    COALESCE(CONCAT(c.nome, ' ', c.apelido), u.username) as nome,
-                                    u.email,
-                                    co.cargo,
-                                    co.tipo_coordenacao,
-                                    co.id_coordenador,
-                                    co.ativo as coordenador_ativo
-                                FROM coordenador co
-                                JOIN utilizador u ON co.id_utilizador = u.id_utilizador
-                                LEFT JOIN colaborador c ON u.id_utilizador = c.id_utilizador
-                                WHERE u.id_utilizador = :coordenador_id";
-                
-                $stmtCoordenador = $this->pdo->prepare($sqlCoordenador);
-                $stmtCoordenador->execute([':coordenador_id' => $equipa['coordenador_id']]);
-                $coordenador = $stmtCoordenador->fetch(PDO::FETCH_ASSOC);
+            $stmtCoordenador = $this->pdo->prepare($sqlCoordenador);
+            $stmtCoordenador->execute([':equipa_id' => $equipa['id_equipa']]);
+            $coordenador = $stmtCoordenador->fetch(PDO::FETCH_ASSOC);
+            
+            // Se não encontrou um coordenador específico, tenta obter o coordenador da tabela equipa
+            if (!$coordenador && !empty($equipa['coordenador_id'])) {
+                $sqlCoordenadorEquipa = "SELECT 
+                                            u.id_utilizador,
+                                            COALESCE(CONCAT(c.nome, ' ', c.apelido), u.username) as nome,
+                                            u.email,
+                                            'Coordenador' as cargo,
+                                            'Equipa' as tipo_coordenacao,
+                                            NULL as id_coordenador,
+                                            1 as coordenador_ativo
+                                        FROM utilizador u
+                                        LEFT JOIN colaborador c ON u.id_utilizador = c.id_utilizador
+                                        WHERE u.id_utilizador = :coordenador_id";
+                                        
+                $stmtCoordenadorEquipa = $this->pdo->prepare($sqlCoordenadorEquipa);
+                $stmtCoordenadorEquipa->execute([':coordenador_id' => $equipa['coordenador_id']]);
+                $coordenador = $stmtCoordenadorEquipa->fetch(PDO::FETCH_ASSOC);
             }
             
             // Adiciona as informações do coordenador à equipe

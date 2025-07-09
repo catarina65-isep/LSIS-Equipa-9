@@ -41,52 +41,50 @@ $colaborador = [
     'cep' => '01234-567'
 ];
 
-// Define a página atual para destacar no menu
-$pagina_atual = 'equipe';
-
 // Define o título da página
 $page_title = "Perfil do Colaborador - " . $colaborador['nome'] . " - Tlantic";
+$page_heading = "Perfil do Colaborador";
 
-// Inclui o cabeçalho
-include_once __DIR__ . '/../includes/header.php';
+// Inclui o template base
+include_once __DIR__ . '/includes/base_template.php';
 ?>
 
+<!-- Conteúdo da página -->
 <div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <?php include_once __DIR__ . '/../includes/sidebar.php'; ?>
-        
-        <!-- Conteúdo principal -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="equipe.php">Minha Equipe</a></li>
-                        <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($colaborador['nome']) ?></li>
-                    </ol>
-                </nav>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <a href="equipe.php" class="btn btn-sm btn-outline-secondary me-2">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-                </div>
-            </div>
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-transparent p-0 mb-3">
+            <li class="breadcrumb-item"><a href="index.php" class="text-decoration-none">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="equipe.php" class="text-decoration-none">Minha Equipe</a></li>
+            <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($colaborador['nome']) ?></li>
+        </ol>
+    </nav>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0"><?= htmlspecialchars($colaborador['nome']) ?></h1>
+        <div>
+            <a href="#" class="btn btn-outline-secondary me-2">
+                <i class="fas fa-print me-1"></i> Imprimir
+            </a>
+            <a href="editar_colaborador.php?id=<?= $colaborador_id ?>" class="btn btn-primary">
+                <i class="fas fa-edit me-1"></i> Editar
+            </a>
+        </div>
+    </div>
 
-            <div class="row">
-                <!-- Coluna da esquerda - Foto e informações básicas -->
-                <div class="col-md-4 mb-4">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <img src="<?= htmlspecialchars($colaborador['foto']) ?>" class="rounded-circle mb-3" alt="Foto de <?= htmlspecialchars($colaborador['nome']) ?>" style="width: 150px; height: 150px; object-fit: cover;">
-                            <h4 class="card-title mb-1"><?= htmlspecialchars($colaborador['nome']) ?></h4>
-                            <p class="text-muted mb-3"><?= htmlspecialchars($colaborador['cargo']) ?></p>
-                            
-                            <div class="d-flex justify-content-center mb-3">
-                                <span class="badge bg-<?= $colaborador['status'] == 'Ativo' ? 'success' : 'warning' ?> fs-6">
-                                    <?= htmlspecialchars($colaborador['status']) ?>
-                                </span>
-                            </div>
+    <div class="row">
+        <!-- Coluna da esquerda - Foto e informações básicas -->
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <img src="<?= htmlspecialchars($colaborador['foto']) ?>" class="rounded-circle mb-3" alt="Foto de <?= htmlspecialchars($colaborador['nome']) ?>" style="width: 150px; height: 150px; object-fit: cover;">
+                    <h4 class="card-title mb-1"><?= htmlspecialchars($colaborador['nome']) ?></h4>
+                    <p class="text-muted mb-3"><?= htmlspecialchars($colaborador['cargo']) ?></p>
+                    
+                    <div class="d-flex justify-content-center mb-3">
+                        <span class="badge bg-<?= $colaborador['status'] == 'Ativo' ? 'success' : 'warning' ?> fs-6">
+                            <?= htmlspecialchars($colaborador['status']) ?>
+                        </span>
+                    </div>
                             
                             <div class="d-grid gap-2">
                                 <button class="btn btn-primary">
@@ -235,11 +233,11 @@ include_once __DIR__ . '/../includes/header.php';
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
     </div>
 </div>
 
 <?php
-// Inclui o rodapé
-include_once __DIR__ . '/../includes/footer.php';
+// Inclui o rodapé do template base
+include_once __DIR__ . '/includes/base_footer.php';
 ?>
