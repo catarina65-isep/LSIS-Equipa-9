@@ -54,23 +54,42 @@ class UtilizadorBLL {
         try {
             error_log("Iniciando consulta de coordenadores ativos...");
             
+            // Verificar se a conexão PDO está disponível
+            $pdo = $this->getPDO();
+            if (!$pdo) {
+                error_log("Erro: Não foi possível obter a conexão PDO");
+                return [];
+            }
+            
             $sql = "SELECT 
                         c.id_coordenador,
                         u.id_utilizador,
-                        COALESCE(CONCAT(col.nome, ' ', col.apelido), u.username) as nome,
-                        u.email,
+                        COALESCE(CONCAT(
+                            COALESCE(col.nome, u.username), 
+                            CASE WHEN col.apelido IS NOT NULL THEN CONCAT(' ', col.apelido) ELSE '' END
+                        ), u.username) as nome,
+                        COALESCE(u.email, col.email) as email,
                         c.cargo,
-                        c.tipo_coordenacao
+                        c.tipo_coordenacao,
+                        c.ativo as coordenador_ativo,
+                        u.ativo as usuario_ativo
                     FROM coordenador c
-                    JOIN utilizador u ON c.id_utilizador = u.id_utilizador
+                    INNER JOIN utilizador u ON c.id_utilizador = u.id_utilizador
                     LEFT JOIN colaborador col ON u.id_utilizador = col.id_utilizador
-                    WHERE c.ativo = 1
-                    ORDER BY col.nome, col.apelido";
+                    WHERE c.ativo = 1 
+                    AND u.ativo = 1
+                    ORDER BY 
+                        CASE WHEN col.nome IS NOT NULL THEN col.nome ELSE u.username END,
+                        CASE WHEN col.apelido IS NOT NULL THEN col.apelido ELSE '' END";
             
             error_log("SQL: $sql");
             
-            $stmt = $this->getPDO()->prepare($sql);
-            $stmt->execute();
+            $stmt = $pdo->prepare($sql);
+            if (!$stmt->execute()) {
+                $errorInfo = $stmt->errorInfo();
+                error_log("Erro ao executar a consulta: " . print_r($errorInfo, true));
+                return [];
+            }
             
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
@@ -79,13 +98,15 @@ class UtilizadorBLL {
             // Log detalhado de cada coordenador encontrado
             foreach ($resultados as $i => $coord) {
                 error_log(sprintf(
-                    "Coordenador #%d: ID=%d, Nome=%s, Email=%s, Cargo=%s, Tipo=%s",
+                    "Coordenador #%d: ID=%d, Nome=%s, Email=%s, Cargo=%s, Tipo=%s, Coordenador Ativo=%d, Usuário Ativo=%d",
                     $i + 1,
                     $coord['id_utilizador'],
                     $coord['nome'],
                     $coord['email'],
                     $coord['cargo'],
-                    $coord['tipo_coordenacao']
+                    $coord['tipo_coordenacao'],
+                    $coord['coordenador_ativo'],
+                    $coord['usuario_ativo']
                 ));
             }
             
@@ -163,43 +184,70 @@ class UtilizadorBLL {
     
 
 
-    public function obterPorId($id) {
+    /**
+     * Obtém um usuário pelo ID, verificando se ele é um coordenador ativo
+     * 
+     * @param int $id ID do usuário
+     * @return array|false Dados do usuário ou false se não encontrado/inativo
+     */
+    public function obterPorId($id, $verificarCoordenador = false) {
         try {
+            error_log("Iniciando obterPorId - ID: $id, Verificar Coordenador: " . ($verificarCoordenador ? 'Sim' : 'Não'));
+            
             if (!is_numeric($id) || $id <= 0) {
+                error_log("ID inválido: $id");
                 return false;
             }
             
-            // Busca o usuário no banco de dados
-            $sql = "SELECT 
-                        u.*, 
-                        c.id_colaborador,
-                        c.nome as nome_colaborador,
-                        c.apelido as apelido_colaborador,
-                        p.descricao as perfil
-                    FROM utilizador u
-                    LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
-                    LEFT JOIN perfilacesso p ON u.id_perfil_acesso = p.id_perfil_acesso
-                    WHERE u.id_utilizador = :id";
-                    
-            $stmt = $this->getPDO()->prepare($sql);
-            $stmt->execute([':id' => $id]);
-            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+            // Busca o usuário no banco de dados usando o método da DAL
+            $usuario = $this->utilizadorDAL->obterPorId($id);
             
             if (!$usuario) {
+                error_log("Usuário com ID $id não encontrado na tabela utilizador");
                 return false;
+            }
+            
+            error_log("Dados do usuário encontrado: " . print_r($usuario, true));
+            
+            // Verifica se o usuário está ativo
+            if (isset($usuario['ativo']) && $usuario['ativo'] != 1) {
+                error_log("Usuário com ID $id está inativo");
+                return false;
+            }
+            
+            // Se precisar verificar se é coordenador
+            if ($verificarCoordenador) {
+                // Verifica se o usuário tem o perfil de coordenador (id_perfil_acesso = 3)
+                $idPerfilAcesso = $usuario['id_perfil_acesso'] ?? $usuario['id_perfilacesso'] ?? null;
+                
+                error_log("Verificando perfil de coordenador - ID Perfil: " . ($idPerfilAcesso ?? 'nulo'));
+                
+                if ($idPerfilAcesso != 3) { // 3 é o ID do perfil de coordenador
+                    error_log("Usuário com ID $id não tem perfil de coordenador (perfil: $idPerfilAcesso)");
+                    return false; // Não é um coordenador
+                }
+                
+                error_log("Usuário com ID $id é um coordenador válido");
             }
             
             // Formata os dados para manter compatibilidade
-            return [
+            $dadosUsuario = [
                 'id_utilizador' => $usuario['id_utilizador'],
-                'username' => $usuario['username'],
-                'email' => $usuario['email'],
-                'id_perfil_acesso' => $usuario['id_perfil_acesso'],
-                'perfil' => $usuario['perfil'],
-                'id_colaborador' => $usuario['id_colaborador'],
-                'nome' => $usuario['nome_colaborador'] . ' ' . $usuario['apelido_colaborador'],
-                'ativo' => $usuario['ativo']
+                'username' => $usuario['username'] ?? '',
+                'email' => $usuario['email'] ?? '',
+                // Garante compatibilidade com ambos os nomes de campo
+                'id_perfil_acesso' => $usuario['id_perfil_acesso'] ?? $usuario['id_perfilacesso'] ?? null,
+                'id_perfilacesso' => $usuario['id_perfilacesso'] ?? $usuario['id_perfil_acesso'] ?? null,
+                'perfil' => $usuario['perfil'] ?? null,
+                'id_colaborador' => $usuario['id_colaborador'] ?? null,
+                'nome' => ($usuario['nome'] ?? $usuario['username']) . (isset($usuario['apelido']) ? ' ' . $usuario['apelido'] : ''),
+                'ativo' => $usuario['ativo'] ?? 0
             ];
+            
+            error_log("Dados do usuário retornados: " . print_r($dadosUsuario, true));
+            
+            return $dadosUsuario;
+            
         } catch (Exception $e) {
             error_log('Erro ao obter usuário: ' . $e->getMessage());
             return null;
@@ -369,7 +417,7 @@ class UtilizadorBLL {
     public function atualizar($dados) {
         try {
             // Validar dados obrigatórios
-            $camposObrigatorios = ['id_utilizador', 'nome', 'email', 'username', 'id_perfilacesso'];
+            $camposObrigatorios = ['id_utilizador', 'nome', 'email', 'username', 'id_perfil_acesso']; // Corrigido o nome do campo
             foreach ($camposObrigatorios as $campo) {
                 if (!isset($dados[$campo]) || $dados[$campo] === '') {
                     throw new Exception("O campo {$campo} é obrigatório.");

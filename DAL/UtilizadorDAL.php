@@ -305,10 +305,11 @@ class UtilizadorDAL {
                             u.username, 
                             u.ativo, 
                             u.data_criacao,
-                            u.id_colaborador,
-                            u.id_perfilacesso
+                            u.id_utilizador,
+                            u.id_perfil_acesso
                         FROM utilizador u
-                        LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
+                        LEFT JOIN colaborador c ON u.id_utilizador = c.id_utilizador
+
                         WHERE u.id_utilizador = :id";
                 
                 $stmt = $this->pdo->prepare($sql);
@@ -318,6 +319,22 @@ class UtilizadorDAL {
                 $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
                 
                 if ($resultado) {
+                    // Garante que id_perfil_acesso esteja definido, mesmo que como nulo
+                    if (!isset($resultado['id_perfil_acesso']) && !isset($resultado['id_perfilacesso'])) {
+                        error_log("Aviso: Nenhum campo de perfil de acesso encontrado para o usuário ID: $id");
+                    }
+                    
+                    // Se id_perfil_acesso não estiver definido, mas id_perfilacesso estiver, copia o valor
+                    if (!isset($resultado['id_perfil_acesso']) && isset($resultado['id_perfilacesso'])) {
+                        $resultado['id_perfil_acesso'] = $resultado['id_perfilacesso'];
+                    }
+                    
+                    // Se id_perfilacesso não estiver definido, mas id_perfil_acesso estiver, copia o valor
+                    if (!isset($resultado['id_perfilacesso']) && isset($resultado['id_perfil_acesso'])) {
+                        $resultado['id_perfilacesso'] = $resultado['id_perfil_acesso'];
+                    }
+                    
+                    error_log("Dados do usuário retornados: " . print_r($resultado, true));
                     return $resultado;
                 }
                 
@@ -335,6 +352,7 @@ class UtilizadorDAL {
                         ativo, 
                         data_criacao,
                         id_colaborador,
+                        id_perfil_acesso,
                         id_perfilacesso
                     FROM utilizador 
                     WHERE id_utilizador = :id";
@@ -343,7 +361,28 @@ class UtilizadorDAL {
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
             
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($resultado) {
+                // Garante que id_perfil_acesso esteja definido, mesmo que como nulo
+                if (!isset($resultado['id_perfil_acesso']) && !isset($resultado['id_perfilacesso'])) {
+                    error_log("Aviso: Nenhum campo de perfil de acesso encontrado para o usuário ID: $id (consulta simples)");
+                }
+                
+                // Se id_perfil_acesso não estiver definido, mas id_perfilacesso estiver, copia o valor
+                if (!isset($resultado['id_perfil_acesso']) && isset($resultado['id_perfilacesso'])) {
+                    $resultado['id_perfil_acesso'] = $resultado['id_perfilacesso'];
+                }
+                
+                // Se id_perfilacesso não estiver definido, mas id_perfil_acesso estiver, copia o valor
+                if (!isset($resultado['id_perfilacesso']) && isset($resultado['id_perfil_acesso'])) {
+                    $resultado['id_perfilacesso'] = $resultado['id_perfil_acesso'];
+                }
+                
+                error_log("Dados do usuário retornados (consulta simples): " . print_r($resultado, true));
+            }
+            
+            return $resultado;
             
         } catch (Exception $e) {
             error_log('Erro em obterPorId(): ' . $e->getMessage());

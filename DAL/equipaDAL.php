@@ -18,79 +18,60 @@ class EquipaDAL {
     }
 
     public function criarEquipa($nome, $descricao, $coordenadorId, $nivel = 1) {
-        $inTransaction = $this->pdo->inTransaction();
-        
-        try {
-            if (!$inTransaction) {
-                $this->pdo->beginTransaction();
-            }
-            
-            // Verificar se a conexão com o banco de dados está ativa
-            if (!$this->pdo) {
-                throw new Exception('Não foi possível conectar ao banco de dados');
-            }
-            
-            error_log('Tentando inserir equipe no banco de dados: ' . print_r([
-                'nome' => $nome,
-                'descricao' => $descricao,
-                'id_coordenador' => $coordenadorId,
-                'nivel' => $nivel
-            ], true));
-            
-            // Inserir a equipe
-            $sql = "INSERT INTO equipa (
-                        nome, 
-                        descricao,
-                        nivel, 
-                        id_coordenador, 
-                        ativo, 
-                        data_criacao
-                    ) VALUES (
-                        :nome, 
-                        :descricao,
-                        :nivel, 
-                        :id_coordenador, 
-                        1, 
-                        NOW()
-                    )";
-                    
-            $stmt = $this->pdo->prepare($sql);
-            $params = [
-                ':nome' => $nome,
-                ':descricao' => $descricao,
-                ':nivel' => $nivel,
-                ':id_coordenador' => $coordenadorId
-            ];
-            
-            error_log('SQL: ' . $sql);
-            error_log('Parâmetros: ' . print_r($params, true));
-            
-            $result = $stmt->execute($params);
-            
-            if (!$result) {
-                $errorInfo = $stmt->errorInfo();
-                throw new Exception('Erro ao executar a consulta: ' . ($errorInfo[2] ?? 'Erro desconhecido'));
-            }
-            
-            $equipaId = $this->pdo->lastInsertId();
-            error_log('Equipa criada com sucesso. ID: ' . $equipaId);
-            
-            // Adiciona o coordenador como membro da equipe
-            $this->adicionarMembroEquipa($equipaId, $coordenadorId, true);
-            
-            if (!$inTransaction) {
-                $this->pdo->commit();
-            }
-            
-            return $equipaId;
-            
-        } catch (Exception $e) {
-            if (!$inTransaction && $this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-            error_log('Erro ao criar equipe: ' . $e->getMessage());
-            throw $e;
+        // Verificar se a conexão com o banco de dados está ativa
+        if (!$this->pdo) {
+            throw new Exception('Não foi possível conectar ao banco de dados');
         }
+        
+        error_log('Tentando inserir equipe no banco de dados: ' . print_r([
+            'nome' => $nome,
+            'descricao' => $descricao,
+            'id_coordenador' => $coordenadorId,
+            'nivel' => $nivel
+        ], true));
+        
+        // Inserir a equipe
+        $sql = "INSERT INTO equipa (
+                    nome, 
+                    descricao,
+                    nivel, 
+                    id_coordenador, 
+                    ativo, 
+                    data_criacao
+                ) VALUES (
+                    :nome, 
+                    :descricao,
+                    :nivel, 
+                    :id_coordenador, 
+                    1, 
+                    NOW()
+                )";
+                
+        $stmt = $this->pdo->prepare($sql);
+        $params = [
+            ':nome' => $nome,
+            ':descricao' => $descricao,
+            ':nivel' => $nivel,
+            ':id_coordenador' => $coordenadorId
+        ];
+        
+        error_log('SQL: ' . $sql);
+        error_log('Parâmetros: ' . print_r($params, true));
+        
+        $result = $stmt->execute($params);
+        
+        if (!$result) {
+            $errorInfo = $stmt->errorInfo();
+            throw new Exception('Erro ao executar a consulta: ' . ($errorInfo[2] ?? 'Erro desconhecido'));
+        }
+        
+        $equipaId = $this->pdo->lastInsertId();
+        error_log('Equipa criada com sucesso. ID: ' . $equipaId);
+        
+        // Adiciona o coordenador como membro da equipe
+        $this->adicionarMembroEquipa($equipaId, $coordenadorId, true);
+        
+        return $equipaId;
     }
 
     /**
@@ -103,13 +84,7 @@ class EquipaDAL {
      * @throws Exception Em caso de erro na operação
      */
     public function adicionarMembroEquipa($equipaId, $utilizadorId, $coordenador = false) {
-        $inTransaction = $this->pdo->inTransaction();
-        
         try {
-            if (!$inTransaction) {
-                $this->pdo->beginTransaction();
-            }
-            
             // Verifica se o usuário já é membro ativo da equipe
             if ($this->verificarMembroEquipa($equipaId, $utilizadorId)) {
                 error_log("Usuário $utilizadorId já é membro ativo da equipe $equipaId");
@@ -172,29 +147,16 @@ class EquipaDAL {
                 $this->definirCoordenador($equipaId, $utilizadorId);
             }
             
-            if (!$inTransaction) {
-                $this->pdo->commit();
-            }
-            
             return $result;
             
-        } catch (Exception $e) {
-            if (!$inTransaction && $this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-            error_log('Erro ao adicionar membro à equipe: ' . $e->getMessage());
+        } catch (PDOException $e) {
+            error_log('Erro PDO ao adicionar membro à equipe: ' . $e->getMessage());
             throw new Exception('Erro ao adicionar membro à equipe: ' . $e->getMessage());
         }
     }
 
     public function removerMembroEquipa($equipaId, $utilizadorId) {
-        $inTransaction = $this->pdo->inTransaction();
-        
         try {
-            if (!$inTransaction) {
-                $this->pdo->beginTransaction();
-            }
-            
             // Em vez de excluir, vamos marcar como inativo para manter o histórico
             $sql = "UPDATE equipa_membros 
                     SET ativo = 0 
@@ -219,19 +181,9 @@ class EquipaDAL {
                 throw new Exception('Erro ao remover membro da equipe: ' . ($errorInfo[2] ?? 'Erro desconhecido'));
             }
             
-            if (!$inTransaction) {
-                $this->pdo->commit();
-            }
-            
             return $result;
             
-        } catch (Exception $e) {
-            if (!$inTransaction && $this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-            error_log('Erro ao remover membro da equipe: ' . $e->getMessage());
-            throw $e;
-        }
+        } catch (PDOException $e) {
             error_log('Erro PDO ao remover membro da equipe: ' . $e->getMessage());
             throw new Exception('Erro ao remover membro da equipe: ' . $e->getMessage());
         }
@@ -305,10 +257,10 @@ class EquipaDAL {
                     co.id_coordenador,
                     co.cargo,
                     co.tipo_coordenacao,
-                    CASE WHEN e.coordenador_id = u.id_utilizador THEN 1 ELSE 0 END as eh_coordenador
+                    CASE WHEN e.id_coordenador = u.id_utilizador THEN 1 ELSE 0 END as eh_coordenador
                 FROM equipa_membros em
                 JOIN utilizador u ON em.utilizador_id = u.id_utilizador
-                LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
+                LEFT JOIN colaborador c ON u.id_utilizador = c.id_utilizador
                 LEFT JOIN coordenador co ON u.id_utilizador = co.id_utilizador
                 LEFT JOIN equipa e ON e.id_equipa = em.equipa_id
                 WHERE em.equipa_id = :equipa_id
@@ -538,12 +490,8 @@ class EquipaDAL {
      * @return bool True se a operação for bem-sucedida, false caso contrário
      */
     public function definirCoordenador($equipaId, $utilizadorId) {
-        $inTransaction = $this->pdo->inTransaction();
-        
         try {
-            if (!$inTransaction) {
-                $this->pdo->beginTransaction();
-            }
+            $this->pdo->beginTransaction();
             
             // Primeiro, atualiza o coordenador na tabela de equipa
             $sql = "UPDATE equipa SET coordenador_id = :coordenador_id WHERE id_equipa = :equipa_id";
@@ -561,26 +509,15 @@ class EquipaDAL {
             
             // Garante que o coordenador é membro da equipa
             if (!$this->verificarMembroEquipa($equipaId, $utilizadorId)) {
-                // Se já estivermos em uma transação, não inicie outra
-                if ($inTransaction) {
-                    $this->adicionarMembroEquipa($equipaId, $utilizadorId);
-                } else {
-                    // Se não estiver em uma transação, chama o método normalmente
-                    $this->adicionarMembroEquipa($equipaId, $utilizadorId);
-                }
+                $this->adicionarMembroEquipa($equipaId, $utilizadorId);
             }
             
-            if (!$inTransaction) {
-                $this->pdo->commit();
-            }
-            
+            $this->pdo->commit();
             return true;
             
         } catch (Exception $e) {
-            if (!$inTransaction && $this->pdo->inTransaction()) {
-                $this->pdo->rollBack();
-            }
-            error_log('Erro na definição de coordenador: ' . $e->getMessage());
+            $this->pdo->rollBack();
+            error_log('Erro na transação de definição de coordenador: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -763,7 +700,7 @@ class EquipaDAL {
                                 co.ativo as coordenador_ativo
                               FROM coordenador co
                               JOIN utilizador u ON co.id_utilizador = u.id_utilizador
-                              LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
+                              LEFT JOIN colaborador c ON u.id_utilizador = c.id_utilizador
                               WHERE co.ativo = 1 
                               AND (co.id_equipa = :equipa_id OR co.tipo_coordenacao = 'Geral')
                               LIMIT 1";
@@ -783,7 +720,7 @@ class EquipaDAL {
                                             NULL as id_coordenador,
                                             1 as coordenador_ativo
                                         FROM utilizador u
-                                        LEFT JOIN colaborador c ON u.id_colaborador = c.id_colaborador
+                                        LEFT JOIN colaborador c ON u.id_utilizador = c.id_utilizador
                                         WHERE u.id_utilizador = :coordenador_id";
                                         
                 $stmtCoordenadorEquipa = $this->pdo->prepare($sqlCoordenadorEquipa);

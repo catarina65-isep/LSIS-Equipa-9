@@ -10,15 +10,6 @@ if (!isset($_SESSION['utilizador_id']) || $_SESSION['id_perfilacesso'] != 3) {
     exit;
 }
 
-// Define a página atual para destacar no menu
-$pagina_atual = 'aniversariantes';
-
-// Define o título da página
-$page_title = "Aniversariantes - Coordenador - Tlantic";
-
-// Inclui o cabeçalho
-include_once __DIR__ . '/../includes/header.php';
-
 // Mês atual
 $mes_atual = date('n');
 $meses = [
@@ -26,25 +17,32 @@ $meses = [
     5 => 'Maio', 6 => 'Junho', 7 => 'Julho', 8 => 'Agosto',
     9 => 'Setembro', 10 => 'Outubro', 11 => 'Novembro', 12 => 'Dezembro'
 ];
+
+// Define o título da página
+$page_title = "Aniversariantes - Coordenador - Tlantic";
+$page_heading = "Aniversariantes";
+
+// Inclui o template base
+include_once __DIR__ . '/includes/base_template.php';
 ?>
 
+<!-- Conteúdo da página -->
 <div class="container-fluid">
-    <div class="row">
-        <!-- Sidebar -->
-        <?php include_once __DIR__ . '/../includes/sidebar.php'; ?>
-        
-        <!-- Conteúdo principal -->
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">Aniversariantes</h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <div class="btn-group me-2">
-                        <button type="button" class="btn btn-sm btn-outline-secondary">
-                            <i class="bi bi-download"></i> Exportar
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb bg-transparent p-0 mb-3">
+            <li class="breadcrumb-item"><a href="index.php" class="text-decoration-none">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Aniversariantes</li>
+        </ol>
+    </nav>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0">Aniversariantes</h1>
+        <div>
+            <button type="button" class="btn btn-outline-secondary">
+                <i class="fas fa-download me-1"></i> Exportar
+            </button>
+        </div>
+    </div>
 
             <!-- Filtros -->
             <div class="card mb-4">
@@ -61,9 +59,9 @@ $meses = [
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="equipe" class="form-label">Equipe</label>
-                            <select id="equipe" class="form-select">
-                                <option selected>Todas as Equipes</option>
+                            <label for="equipa" class="form-label">Equipa</label>
+                            <select id="equipa" class="form-select">
+                                <option selected>Todas as Equipas</option>
                                 <option>Desenvolvimento</option>
                                 <option>Design</option>
                                 <option>Marketing</option>
@@ -95,7 +93,7 @@ $meses = [
                                         </span>
                                     </div>
                                     <h5 class="card-title mb-1">João Silva</h5>
-                                    <p class="text-muted mb-2">Desenvolvedor Sênior</p>
+                                    <p class="text-muted mb-2">Desenvolvedor Sénior</p>
                                     <div class="d-flex justify-content-center gap-2">
                                         <a href="ver_colaborador.php?id=1" class="btn btn-sm btn-outline-primary">
                                             <i class="bi bi-person"></i> Ver Perfil
@@ -178,7 +176,7 @@ $meses = [
                                     <th>Data</th>
                                     <th>Colaborador</th>
                                     <th>Cargo</th>
-                                    <th>Equipe</th>
+                                    <th>Equipa</th>
                                     <th class="text-end">Ações</th>
                                 </tr>
                             </thead>
@@ -236,11 +234,10 @@ $meses = [
                     </div>
                 </div>
             </div>
-        </main>
     </div>
 </div>
 
 <?php
-// Inclui o rodapé
-include_once __DIR__ . '/../includes/footer.php';
+// Inclui o rodapé do template base
+include_once __DIR__ . '/includes/base_footer.php';
 ?>

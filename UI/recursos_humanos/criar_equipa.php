@@ -78,10 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $dadosEquipa = [
                 'nome' => $nome,
                 'descricao' => $descricao,
-                'coordenador_id' => $coordenador_id
+                'coordenador_id' => $coordenador_id,
+                'membros' => $membros
             ];
             
             $equipa_id = $equipaBLL->criarEquipa($dadosEquipa);
+
             
             if ($equipa_id) {
                 // Adicionar membros à equipa
