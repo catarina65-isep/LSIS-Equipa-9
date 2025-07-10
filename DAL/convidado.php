@@ -47,6 +47,7 @@ class Convidado {
                 ativo,
                 aceite_termos,
                 matricula,
+                observacoes,
                 data_criacao,
                 data_atualizacao
             ) VALUES (
@@ -98,6 +99,7 @@ class Convidado {
             $stmt->bindValue(29, $dados['ativo'], PDO::PARAM_INT);  // ativo
             $stmt->bindValue(30, $dados['aceite_termos'], PDO::PARAM_INT);  // aceite_termos
             $stmt->bindValue(31, $dados['matricula']);  // matricula
+            $stmt->bindValue(32, $dados['observacoes']);  // observacoes
             $stmt->bindValue(32, 'CURRENT_TIMESTAMP', PDO::PARAM_STR);  // data_criacao
             $stmt->bindValue(33, 'CURRENT_TIMESTAMP', PDO::PARAM_STR);  // data_atualizacao
 
@@ -134,6 +136,57 @@ class Convidado {
             return $novoNome;
         }
         return null;
+    }
+
+    public function listarTodos() {
+        try {
+            $query = "SELECT 
+                id_convidado,
+                nome_completo,
+                email,
+                contacto_telefonico,
+                localidade,
+                data_inicio,
+                ativo,
+                observacoes
+            FROM convidado 
+            ORDER BY nome_completo";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            throw new Exception("Erro ao listar convidados: " . $e->getMessage());
+        }
+    }
+
+    public function aceitar($id) {
+        try {
+            $query = "UPDATE convidado SET ativo = 2 WHERE id_convidado = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([$id]);
+        } catch (Exception $e) {
+            throw new Exception("Erro ao aceitar candidato: " . $e->getMessage());
+        }
+    }
+
+    public function rejeitar($id) {
+        try {
+            $query = "UPDATE convidado SET ativo = 0 WHERE id_convidado = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([$id]);
+        } catch (Exception $e) {
+            throw new Exception("Erro ao rejeitar candidato: " . $e->getMessage());
+        }
+    }
+
+    public function excluir($id) {
+        try {
+            $query = "DELETE FROM convidado WHERE id_convidado = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([$id]);
+        } catch (Exception $e) {
+            throw new Exception("Erro ao excluir candidato: " . $e->getMessage());
+        }
     }
 
     public function validarDados($dados) {
