@@ -161,6 +161,99 @@ class Convidado {
 
     public function aceitar($id) {
         try {
+            // Primeiro buscar os dados do convidado
+            $query = "SELECT * FROM convidado WHERE id_convidado = ?";
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([$id]);
+            $convidado = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if (!$convidado) {
+                throw new Exception("Convidado não encontrado");
+            }
+
+            // Criar novo colaborador com os dados do convidado
+            $query = "INSERT INTO colaborador (
+                nome,
+                apelido,
+                genero,
+                data_nascimento,
+                estado_civil,
+                numero_dependentes,
+                nacionalidade,
+                nif,
+                niss,
+                telefone,
+                telemovel,
+                email,
+                email_pessoal,
+                morada,
+                codigo_postal,
+                localidade,
+                pais,
+                contacto_emergencia,
+                relacao_emergencia,
+                telemovel_emergencia,
+                data_entrada,
+                data_saida,
+                estado,
+                data_criacao,
+                data_atualizacao
+            ) VALUES (
+                :nome,
+                :apelido,
+                :genero,
+                :data_nascimento,
+                :estado_civil,
+                :numero_dependentes,
+                :nacionalidade,
+                :nif,
+                :niss,
+                :telefone,
+                :telemovel,
+                :email,
+                :email_pessoal,
+                :morada,
+                :codigo_postal,
+                :localidade,
+                :pais,
+                :contacto_emergencia,
+                :relacao_emergencia,
+                :telemovel_emergencia,
+                :data_entrada,
+                :data_saida,
+                :estado,
+                CURRENT_TIMESTAMP,
+                CURRENT_TIMESTAMP
+            )";
+
+            $stmt = $this->conn->prepare($query);
+            $stmt->execute([
+                ':nome' => explode(' ', $convidado['nome_completo'])[0],
+                ':apelido' => implode(' ', array_slice(explode(' ', $convidado['nome_completo']), 1)),
+                ':genero' => $convidado['sexo'],
+                ':data_nascimento' => $convidado['data_nascimento'],
+                ':estado_civil' => $convidado['situacao_irs'],
+                ':numero_dependentes' => $convidado['dependentes'],
+                ':nacionalidade' => $convidado['nacionalidade'],
+                ':nif' => $convidado['nif'],
+                ':niss' => $convidado['niss'],
+                ':telefone' => $convidado['contacto_telefonico'],
+                ':telemovel' => $convidado['telemovel'],
+                ':email' => $convidado['email'],
+                ':email_pessoal' => $convidado['email'],
+                ':morada' => $convidado['morada_residencia'],
+                ':codigo_postal' => $convidado['codigo_postal'],
+                ':localidade' => $convidado['localidade'],
+                ':pais' => 'Portugal',
+                ':contacto_emergencia' => $convidado['nome_emergencia'],
+                ':relacao_emergencia' => $convidado['parentesco_emergencia'],
+                ':telemovel_emergencia' => $convidado['telefone_emergencia'],
+                ':data_entrada' => $convidado['data_inicio'],
+                ':data_saida' => $convidado['data_fim'],
+                ':estado' => 'Ativo'
+            ]);
+
+            // Atualizar o status do convidado para aceito
             $query = "UPDATE convidado SET ativo = 2 WHERE id_convidado = ?";
             $stmt = $this->conn->prepare($query);
             $stmt->execute([$id]);
