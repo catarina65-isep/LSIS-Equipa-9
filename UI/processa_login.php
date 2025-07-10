@@ -96,7 +96,22 @@ try {
     
     // Obtém o nome do perfil
     $loginDAL = new LoginDAL();
-    $_SESSION['perfil_nome'] = $loginDAL->obterNomePerfil($usuario['id_perfil_acesso']);
+    $perfilNome = $loginDAL->obterNomePerfil($usuario['id_perfil_acesso']);
+    $_SESSION['perfil_nome'] = $perfilNome;
+    
+    // Registra o acesso do usuário
+    $loginDAL->registrarAtividade(
+        $usuario['id_utilizador'], 
+        'Login', 
+        'Sistema', 
+        null, 
+        [
+            'perfil' => $perfilNome,
+            'email' => $usuario['email'],
+            'ip' => $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0',
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'Desconhecido'
+        ]
+    );
     
     // Log do perfil do usuário para depuração
     debug_log("ID do perfil do usuário: " . $_SESSION['id_perfilacesso']);

@@ -158,5 +158,64 @@ class LoginDAL {
     public function getConnection() {
         return $this->conn;
     }
+    
+    /**
+     * Registra uma atividade no histórico
+     */
+    public function registrarAtividade($idUtilizador, $acao, $modulo = 'Sistema', $idRegistro = null, $dadosAdicionais = null) {
+        try {
+            $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+            $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? 'Desconhecido';
+            $dados = $dadosAdicionais ? json_encode($dadosAdicionais, JSON_UNESCAPED_UNICODE) : null;
+            
+            $query = "INSERT INTO historico_acesso 
+                     (id_utilizador, acao, modulo, id_registro, ip, user_agent, dados) 
+                     VALUES (:id_utilizador, :acao, :modulo, :id_registro, :ip, :user_agent, :dados)";
+                     
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id_utilizador', $idUtilizador, PDO::PARAM_INT);
+            $stmt->bindParam(':acao', $acao);
+            $stmt->bindParam(':modulo', $modulo);
+            $stmt->bindParam(':id_registro', $idRegistro, PDO::PARAM_INT);
+            $stmt->bindParam(':ip', $ip);
+            $stmt->bindParam(':user_agent', $userAgent);
+            $stmt->bindParam(':dados', $dados);
+            
+            return $stmt->execute();
+        } catch (PDOException $e) {
+            error_log("Erro ao registrar atividade: " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    /**
+     * Obtém o histórico de atividades
+     */
+    public function obterHistoricoAtividades($limite = 100) {
+        try {
+            $query = "SELECT 
+                        h.*, 
+                        COALESCE(u.username, 'Usuário Removido') as username, 
+                        COALESCE(u.email, CONCAT('user_', h.id_utilizador, '@exemplo.com')) as email,
+                        p.nome as perfil
+                     FROM historico_acesso h
+                     LEFT JOIN utilizador u ON h.id_utilizador = u.id_utilizador
+                     LEFT JOIN perfilacesso p ON u.id_perfil_acesso = p.id_perfilacesso
+                     ORDER BY h.data_acesso DESC
+                     LIMIT :limite";
+                     
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindValue(':limite', (int)$limite, PDO::PARAM_INT);
+            
+            if (!$stmt->execute()) {
+                return [];
+            }
+            
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Erro ao obter histórico de atividades: " . $e->getMessage());
+            return [];
+        }
+    }
 }
 ?>
