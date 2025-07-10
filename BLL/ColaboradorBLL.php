@@ -86,6 +86,23 @@ class ColaboradorBLL {
         return $this->colaboradorDAL->obterDistribuicaoPorDepartamento();
     }
 
+    /**
+     * Obtém a lista de colaboradores que fazem aniversário no mês especificado
+     * 
+     * @param int $mes Mês (1-12)
+     * @return array Lista de colaboradores aniversariantes
+     */
+    public function obterAniversariantesDoMes($mes) {
+        try {
+            // Formata o mês com dois dígitos
+            $mesFormatado = str_pad($mes, 2, '0', STR_PAD_LEFT);
+            return $this->colaboradorDAL->obterAniversariantesPorMes($mesFormatado);
+        } catch (Exception $e) {
+            error_log("Erro ao buscar aniversariantes: " . $e->getMessage());
+            return [];
+        }
+    }
+
     public function buscarPorId($id_utilizador) {
         return $this->colaboradorDAL->buscarPorId($id_utilizador);
     }

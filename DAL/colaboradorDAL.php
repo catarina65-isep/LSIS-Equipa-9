@@ -116,16 +116,17 @@ class ColaboradorDAL {
     }
 
     public function obterDistribuicaoPorDepartamento() {
-        // Como a tabela colaborador não tem id_departamento, vamos buscar os departamentos através da função
         $sql = "SELECT 
-                    'Departamento Indefinido' as departamento,
+                    d.nome as departamento, 
                     COUNT(*) as total,
                     ROUND((COUNT(*) * 100.0) / (SELECT COUNT(*) FROM colaborador), 2) as percentual
                 FROM colaborador c
-                GROUP BY 1
+                JOIN departamento d ON c.id_departamento = d.id_departamento
+                GROUP BY d.nome
                 ORDER BY total DESC";
-        
-        $stmt = $this->db->query($sql);
+                
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -158,5 +159,32 @@ class ColaboradorDAL {
             'distribuicao_departamento' => $this->obterDistribuicaoPorDepartamento(),
             'recentes' => $this->listarRecentes(5)
         ];
+    }
+    
+    /**
+     * Obtém a lista de colaboradores que fazem aniversário no mês especificado
+     * 
+     * @param string $mes Mês com dois dígitos (ex: '01' para janeiro)
+     * @return array Lista de colaboradores aniversariantes
+     */
+    public function obterAniversariantesPorMes($mes) {
+        $sql = "SELECT 
+                    c.id_utilizador,
+                    c.nome,
+                    c.data_nascimento,
+                    f.titulo as cargo,
+                    d.nome as departamento
+                FROM Colaborador c
+                LEFT JOIN Funcao f ON c.id_funcao = f.id_funcao
+                LEFT JOIN Departamento d ON c.id_departamento = d.id_departamento
+                WHERE c.ativo = 1
+                AND DATE_FORMAT(c.data_nascimento, '%m') = :mes
+                ORDER BY DAY(c.data_nascimento) ASC";
+                
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':mes', $mes, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

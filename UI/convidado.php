@@ -193,14 +193,19 @@ session_start();
     </style>
 </head>
 <body>
-    <div class="container-fluid">
+    <?php
+if (isset($_GET['erro'])) {
+    echo '<div class="alert alert-danger">' . htmlspecialchars($_GET['erro']) . '</div>';
+}
+?>
+<div class="container-fluid">
         <div class="guest-container">
             <div class="guest-header">
                 <h1>Bem-vindo à Tlantic</h1>
                 <p>Área de acesso para convidados</p>
             </div>
 
-            <form id="guestForm" enctype="multipart/form-data">
+            <form id="guestForm" action="processar_convidado.php" method="POST" enctype="multipart/form-data">
                 <!-- Identificação -->
                 <div class="form-section">
                     <h3><i class="bi bi-person-badge-fill"></i> Identificação</h3>
@@ -282,26 +287,30 @@ session_start();
                 <!-- Morada de Residência -->
                 <div class="form-section">
                     <h3><i class="bi bi-house-door-fill"></i> Morada de Residência</h3>
-                    <div class="form-group">
-                        <label for="morada" class="form-label required-field">Morada Completa</label>
-                        <input type="text" class="form-control" id="morada" name="morada" required>
-                    </div>
                     <div class="form-row">
+                        <div class="form-group">
+                            <label for="morada_residencia" class="form-label required-field">Morada de Residência</label>
+                            <textarea class="form-control" id="morada_residencia" name="morada_residencia" rows="2" required></textarea>
+                        </div>
                         <div class="form-group">
                             <label for="localidade" class="form-label required-field">Localidade</label>
                             <input type="text" class="form-control" id="localidade" name="localidade" required>
                         </div>
-                        <div class="form-group">
-                            <label for="codigo_postal" class="form-label required-field">Código Postal</label>
-                            <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" required>
-                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="comprovativo_morada" class="form-label required-field">Comprovativo de Morada</label>
-                            <input type="file" class="form-control" id="comprovativo_morada" name="comprovativo_morada" accept=".pdf,.jpg,.jpeg,.png" required>
-                            <div class="form-note">Formatos aceites: PDF, JPG, PNG (tamanho máximo: 5MB)</div>
+                            <label for="codigo_postal" class="form-label required-field">Código Postal</label>
+                            <input type="text" class="form-control" id="codigo_postal" name="codigo_postal" required>
+                            <div class="form-note">Formato: 4444-444</div>
                         </div>
+                        <div class="form-group">
+                            <label for="comprovativomorada" class="form-label required-field">Comprovativo de Morada</label>
+                            <input type="file" class="form-control" id="comprovativomorada" name="comprovativomorada" accept=".pdf,.jpg,.jpeg,.png" required>
+                            <div class="form-note">Fotografia ou digitalização do comprovativo de morada (frente e verso)</div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+
                     </div>
                 </div>
 
@@ -450,41 +459,38 @@ session_start();
         document.addEventListener('DOMContentLoaded', function() {
             // Definir data mínima como hoje
             const hoje = new Date().toISOString().split('T')[0];
-            document.getElementById('data_visita').min = hoje;
             
-            // Carregar responsáveis (exemplo)
-            const responsaveis = [
-                { id: 1, nome: 'João Silva' },
-                { id: 2, nome: 'Maria Santos' },
-                { id: 3, nome: 'Carlos Oliveira' }
-            ];
-            
-            const selectResponsavel = document.getElementById('responsavel');
-            responsaveis.forEach(responsavel => {
-                const option = document.createElement('option');
-                option.value = responsavel.id;
-                option.textContent = responsavel.nome;
-                selectResponsavel.appendChild(option);
-            });
-            
-            // Máscara para NIF
-            const nifInput = document.getElementById('nif');
-            if (nifInput) {
-                nifInput.addEventListener('input', function(e) {
-                    let value = e.target.value.replace(/\D/g, '');
-                    e.target.value = value;
-                });
+            // Configurar data máxima para data de nascimento (18 anos atrás)
+            const dataNascimento = document.getElementById('data_nascimento');
+            if (dataNascimento) {
+                const hoje = new Date();
+                const maxDate = new Date(hoje.getFullYear() - 18, hoje.getMonth(), hoje.getDate());
+                dataNascimento.max = maxDate.toISOString().split('T')[0];
             }
+            
+            // Máscara para campos numéricos
+            const camposNumericos = ['nif', 'niss', 'cc', 'dependentes'];
+            camposNumericos.forEach(campo => {
+                const input = document.getElementById(campo);
+                if (input) {
+                    input.addEventListener('input', function(e) {
+                        let value = e.target.value.replace(/\D/g, '');
+                        if (campo === 'nif') value = value.slice(0, 9);
+                        if (campo === 'niss') value = value.slice(0, 11);
+                        e.target.value = value;
+                    });
+                }
+            });
+
             
             // Máscara para telefone
             const phoneInputs = document.querySelectorAll('input[type="tel"]');
             phoneInputs.forEach(input => {
                 input.addEventListener('input', function(e) {
+                    // Remover caracteres não numéricos
                     let value = e.target.value.replace(/\D/g, '');
+                    // Limitar a 9 dígitos
                     if (value.length > 9) value = value.substring(0, 9);
-                    if (value.length > 0) {
-                        value = value.replace(/^(\d{2,3})(\d{3})(\d{3})$/, '$1 $2 $3');
-                    }
                     e.target.value = value;
                 });
             });
@@ -501,66 +507,41 @@ session_start();
                     e.target.value = value;
                 });
             }
-            
-            // Validação do formulário
-            const form = document.getElementById('guestForm');
-            if (form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    if (!form.checkValidity()) {
-                        e.stopPropagation();
-                        form.classList.add('was-validated');
-                        return;
-                    }
-                    
-                    submitGuestForm();
-                });
-            }
         });
-        
-        function submitGuestForm() {
-            const form = document.getElementById('guestForm');
-            const formData = new FormData(form);
-            
-            // Adicionar campos adicionais se necessário
-            formData.append('data_submissao', new Date().toISOString());
-            formData.append('phone', document.getElementById('phone').value);
-            formData.append('cv', document.getElementById('cv').files[0]);
-            formData.append('visitDate', document.getElementById('visitDate').value);
-            formData.append('visitTime', document.getElementById('visitTime').value);
-            formData.append('purpose', document.getElementById('purpose').value);
 
-            fetch('api/guest.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Visita agendada com sucesso!');
-                    window.location.href = 'index.php';
-                } else {
-                    alert('Erro ao agendar visita: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('Erro ao processar a solicitação: ' + error.message);
-            });
+        // Validar upload de arquivos
+        function validarArquivo(input, tiposPermitidos, maxSizeMB = 5) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            const tipo = file.type.toLowerCase();
+            const maxSizeBytes = maxSizeMB * 1024 * 1024;
+            
+            if (!tiposPermitidos.includes(tipo)) {
+                alert(`Por favor, selecione um arquivo do tipo: ${tiposPermitidos.join(', ')}`);
+                input.value = '';
+                return false;
+            }
+            
+            if (file.size > maxSizeBytes) {
+                alert(`O arquivo deve ter no máximo ${maxSizeMB}MB.`);
+                input.value = '';
+                return false;
+            }
+            
+            return true;
         }
 
-        // Adicionar validação de tipo de arquivo
-        document.getElementById('cv').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                if (file.type !== 'application/pdf') {
-                    alert('Por favor, selecione um arquivo PDF.');
-                    e.target.value = '';
-                } else if (file.size > 5 * 1024 * 1024) { // 5MB
-                    alert('O arquivo é muito grande. O máximo permitido é 5MB.');
-                    e.target.value = '';
-                }
-            }
+        // Adicionar validação para Cartão de Cidadão
+        document.getElementById('cartaocidadao')?.addEventListener('change', function() {
+            const tiposPermitidos = ['image/jpeg', 'image/png', 'application/pdf'];
+            validarArquivo(this, tiposPermitidos);
+        });
+
+        // Adicionar validação para Comprovativo de Morada
+        document.getElementById('comprovativomorada')?.addEventListener('change', function() {
+            const tiposPermitidos = ['image/jpeg', 'image/png', 'application/pdf'];
+            validarArquivo(this, tiposPermitidos);
         });
     </script>
 </body>
