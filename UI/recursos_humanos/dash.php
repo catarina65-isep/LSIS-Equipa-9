@@ -10,23 +10,25 @@ if (!isset($_SESSION['utilizador_id']) || !isset($_SESSION['id_perfilacesso'])) 
 // Define o título da página
 $page_title = 'Dashboard - Tlantic';
 
-// Dados fixos do dashboard (similares aos originais)
+// Inclui a classe de métricas
+require_once dirname(dirname(__DIR__)) . '/DAL/metricas_rh.php';
+
+// Cria uma instância da classe de métricas
+$metricas = new MetricasRH();
+
+// Obtém os dados reais da base de dados
 $data = [
-    'retentionRate' => '85.5%',
-    'averageAge' => '32.7 anos',
-    'averageTenure' => '4.2 anos',
-    'averageSalary' => '2500 €',
-    'hierarquiaData' => [50, 20, 10],
-    'generoData' => [45, 35],
-    'funcaoData' => [30, 25, 15],
-    'geografiaData' => [40, 30, 10],
-    'tempoGeneroData' => [4.5, 3.8],
-    'remuneracaoData' => [1000, 1400, 1200],
-    'hierarquiaEtariaData' => [
-        [4, 9, 4, 3],
-        [3, 5, 6, 2],
-        [1, 2, 3, 4]
-    ]
+    'retentionRate' => $metricas->getTaxaRetencao(),
+    'averageAge' => $metricas->getIdadeMedia(),
+    'averageTenure' => $metricas->getTempoMedioPermanencia(),
+    'averageSalary' => $metricas->getSalarioMedio(),
+    'hierarquiaData' => $metricas->getDistribuicaoHierarquia(),
+    'generoData' => $metricas->getDistribuicaoGenero(),
+    'funcaoData' => $metricas->getDistribuicaoFuncao(),
+    'geografiaData' => $metricas->getDistribuicaoGeografia(),
+    'tempoGeneroData' => $metricas->getTempoPorGenero(),
+    'remuneracaoData' => $metricas->getRemuneracaoPorFuncao(),
+    'hierarquiaEtariaData' => $metricas->getHierarquiaPorIdade()
 ];
 ?>
 <!DOCTYPE html>
