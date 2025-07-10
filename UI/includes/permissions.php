@@ -59,6 +59,7 @@ function verificarPermissao($pagina, $perfilId) {
         PERFIL_COORDENADOR => [
             'equipas/' => true,
             'colaborador/ver_equipa' => true,
+            'colaborador.php' => true,
             'relatorios/equipa' => true,
         ],
         PERFIL_COLABORADOR => [

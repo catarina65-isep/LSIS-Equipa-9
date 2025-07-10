@@ -21,7 +21,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <div class="icon-wrapper <?php echo ($current_page == 'index.php') ? 'bg-white bg-opacity-10' : 'bg-primary bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
                             <i class='bx bxs-dashboard <?php echo ($current_page == 'index.php') ? 'text-white' : 'text-primary'; ?>'></i>
                         </div>
-                        <span>Dashboard</span>
+                        <span>Painel Principal</span>
                     </a>
                 </li>
                 
@@ -30,7 +30,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <div class="icon-wrapper <?php echo ($current_page == 'equipe.php') ? 'bg-white bg-opacity-10' : 'bg-success bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
                             <i class='bx bxs-group <?php echo ($current_page == 'equipe.php') ? 'text-white' : 'text-success'; ?>'></i>
                         </div>
-                        <span>Minha Equipe</span>
+                        <span>A Minha Equipa</span>
                     </a>
                 </li>
                 
@@ -48,7 +48,7 @@ $current_page = basename($_SERVER['PHP_SELF']);
                         <div class="icon-wrapper <?php echo ($current_page == 'aniversariantes.php') ? 'bg-white bg-opacity-10' : 'bg-info bg-opacity-10'; ?> rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 36px; height: 36px;">
                             <i class='bx bxs-cake <?php echo ($current_page == 'aniversariantes.php') ? 'text-white' : 'text-info'; ?>'></i>
                         </div>
-                        <span>Aniversariantes</span>
+                                                <span>Aniversariantes</span>
                     </a>
                 </li>
                 
@@ -81,13 +81,13 @@ $current_page = basename($_SERVER['PHP_SELF']);
         <div class="mt-auto p-3 text-center text-white-50 small">
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center justify-content-center text-white-50 text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://ui-avatars.com/api/?name=<?= urlencode($_SESSION['nome'] ?? $_SESSION['utilizador_nome'] ?? 'Usuário') ?>" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <span class="d-none d-md-inline"><?= htmlspecialchars($_SESSION['nome'] ?? $_SESSION['utilizador_nome'] ?? 'Usuário') ?></span>
+                    <img src="https://ui-avatars.com/api/?name=<?= urlencode(htmlspecialchars($_SESSION['nome'] ?? $_SESSION['utilizador_nome'] ?? 'Utilizador')) ?>" alt="" width="32" height="32" class="rounded-circle me-2">
+                    <span class="d-none d-md-inline"><?= htmlspecialchars($_SESSION['nome'] ?? $_SESSION['utilizador_nome'] ?? 'Utilizador') ?></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser">
                     <li><a class="dropdown-item" href="perfil.php">Perfil</a></li>
                     <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="/LSIS-Equipa-9/UI/logout.php">Sair</a></li>
+                    <li><a class="dropdown-item" href="/LSIS-Equipa-9/UI/logout.php">Terminar Sessão</a></li>
                 </ul>
             </div>
             <div class="mt-2">

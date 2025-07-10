@@ -264,7 +264,7 @@ header('Content-Type: text/html; charset=utf-8');
                     <button class="btn btn-link text-dark d-lg-none me-2" id="sidebarToggle">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h4 class="mb-0"><?= htmlspecialchars($page_heading ?? 'Dashboard') ?></h4>
+                    <h4 class="mb-0"><?= htmlspecialchars($page_heading ?? 'Painel Principal') ?></h4>
                 </div>
                 <div class="d-flex align-items-center">
                     <!-- Menu de usuário removido -->

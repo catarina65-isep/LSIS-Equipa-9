@@ -42,7 +42,7 @@ class LoginDAL {
                 return [
                     'id_utilizador' => 1,
                     'email' => $email,
-                    'username' => 'Usuário de Teste',
+                    'username' => 'Utilizador de Teste',
                     'id_perfil_acesso' => $perfil,
                     'perfil' => $this->obterNomePerfil($perfil)
                 ];
@@ -64,7 +64,7 @@ class LoginDAL {
                 return [
                     'id_utilizador' => 1,
                     'email' => $email,
-                    'username' => 'Usuário de Teste',
+                    'username' => 'Utilizador de Teste',
                     'id_perfil_acesso' => $perfil,
                     'perfil' => $this->obterNomePerfil($perfil)
                 ];

@@ -14,11 +14,13 @@ require_once __DIR__ . '/includes/permissions.php';
 if (isset($_SESSION['utilizador_id']) && isset($_SESSION['id_perfilacesso'])) {
     switch ($_SESSION['id_perfilacesso']) {
         case 1: // Admin
-        case 3: // Coordenador
             header('Location: /LSIS-Equipa-9/UI/dashboard.php');
             break;
         case 2: // RH
             header('Location: /LSIS-Equipa-9/UI/rh.php');
+            break;
+        case 3: // Coordenador
+            header('Location: /LSIS-Equipa-9/UI/coordenador/');
             break;
         case 4: // Colaborador
             header('Location: /LSIS-Equipa-9/UI/colaborador.php');

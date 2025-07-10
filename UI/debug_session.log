@@ -1,0 +1,48 @@
+Sessao: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => ana.martins@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfilacesso] => 4
+    [perfil_nome] => Colaborador
+)
+
+Sessao: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => ana.martins@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfilacesso] => 4
+    [perfil_nome] => Colaborador
+)
+
+Sessao: Array
+(
+)
+
+Sessao: Array
+(
+)
+
+Sessao: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => ana.martins@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfilacesso] => 4
+    [perfil_nome] => Colaborador
+)
+
+Sessao: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => ana.martins@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfilacesso] => 4
+    [perfil_nome] => Colaborador
+)
+

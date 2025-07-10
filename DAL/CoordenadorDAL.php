@@ -61,17 +61,41 @@ class CoordenadorDAL {
      * @return array Lista de equipes gerenciadas pelo coordenador
      */
     public function obterEquipesGerenciadas($idCoordenador) {
+        // Log para depuração
+        error_log("Buscando equipes para o coordenador ID: " . $idCoordenador);
+        
+        // Primeiro, obtém o ID da equipe associada ao coordenador
+        $sql = "SELECT id_equipa, id_utilizador FROM coordenador WHERE id_coordenador = :id_coordenador AND ativo = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':id_coordenador' => $idCoordenador]);
+        $coordenador = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        error_log("Dados do coordenador: " . print_r($coordenador, true));
+        
+        if (!$coordenador) {
+            error_log("Coordenador não encontrado ou inativo: " . $idCoordenador);
+            return [];
+        }
+        
+        if (empty($coordenador['id_equipa'])) {
+            error_log("Coordenador não está associado a nenhuma equipe: " . $idCoordenador);
+            return [];
+        }
+        
+        // Agora busca os dados da equipe
         $sql = "SELECT e.*, d.nome as nome_departamento
                 FROM equipa e
                 LEFT JOIN departamento d ON e.id_departamento = d.id_departamento
-                WHERE e.id_coordenador = :id_coordenador
-                AND e.ativo = 1
-                ORDER BY e.nome";
+                WHERE e.id_equipa = :id_equipa
+                AND e.ativo = 1";
                 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':id_coordenador' => $idCoordenador]);
+        $stmt->execute([':id_equipa' => $coordenador['id_equipa']]);
         
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $equipa = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        // Retorna como array para manter a compatibilidade
+        return $equipa ? [$equipa] : [];
     }
     
     /**

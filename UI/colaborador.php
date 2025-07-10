@@ -1,17 +1,30 @@
 <?php
 session_start();
 
-// Verifica se o utilizador está logado e é um colaborador
+// Ativar logs de erro
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// Log da sessão atual
+file_put_contents('debug_session.log', "Sessao: " . print_r($_SESSION, true) . "\n", FILE_APPEND);
+
+// Verifica se o utilizador está logado
 if (!isset($_SESSION['utilizador_id'])) {
+    file_put_contents('debug_redirect.log', "Redirecionando para login - Sessao nao iniciada\n", FILE_APPEND);
     header('Location: /LSIS-Equipa-9/UI/login.php');
     exit;
 }
 
-// Verifica se o perfil é de colaborador ou RH (id_perfilacesso = 4 ou 2)
-if ($_SESSION['id_perfilacesso'] != 4 && $_SESSION['id_perfilacesso'] != 2) {
+// Verifica se o perfil é de colaborador, RH ou coordenador (id_perfilacesso = 2, 3 ou 4)
+$perfisPermitidos = [2, 3, 4]; // 2=RH, 3=Coordenador, 4=Colaborador
+if (!in_array($_SESSION['id_perfilacesso'], $perfisPermitidos)) {
+    file_put_contents('debug_redirect.log', "Redirecionando para index - Perfil nao autorizado: " . $_SESSION['id_perfilacesso'] . "\n", FILE_APPEND);
     header('Location: /LSIS-Equipa-9/UI/index.php');
     exit;
 }
+
+// Log de sucesso no acesso
+file_put_contents('debug_access.log', "Acesso autorizado para usuario ID: " . $_SESSION['utilizador_id'] . " com perfil: " . $_SESSION['id_perfilacesso'] . "\n", FILE_APPEND);
 
 require_once __DIR__ . '/../BLL/ColaboradorBLL.php';
 
@@ -30,6 +43,19 @@ $colaborador = $colaboradorBLL->buscarPorId($_SESSION['utilizador_id']);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?= htmlspecialchars($page_title) ?></title>
+    <script>
+        // Log de redirecionamentos no cliente
+        console.log('Página carregada: ' + window.location.href);
+        
+        // Monitora mudanças de URL
+        let currentHref = window.location.href;
+        setInterval(function() {
+            if (currentHref !== window.location.href) {
+                console.log('URL mudou para: ' + window.location.href);
+                currentHref = window.location.href;
+            }
+        }, 100);
+    </script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
