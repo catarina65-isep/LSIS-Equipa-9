@@ -98,6 +98,23 @@ try {
     $loginDAL = new LoginDAL();
     $_SESSION['perfil_nome'] = $loginDAL->obterNomePerfil($usuario['id_perfil_acesso']);
     
+    // Registra a atividade de login
+    try {
+        require_once __DIR__ . '/../DAL/AtividadeDAL.php';
+        $atividadeDAL = new AtividadeDAL();
+        $atividadeDAL->registrarAtividade(
+            $usuario['id_utilizador'],
+            $usuario['email'],
+            'login',
+            $_SERVER['REMOTE_ADDR'],
+            $_SERVER['HTTP_USER_AGENT'] ?? null,
+            'sucesso',
+            'Login realizado com sucesso'
+        );
+    } catch (Exception $e) {
+        error_log("Erro ao registrar atividade de login: " . $e->getMessage());
+    }
+    
     // Log do perfil do usuário para depuração
     debug_log("ID do perfil do usuário: " . $_SESSION['id_perfilacesso']);
     debug_log("Nome do perfil: " . $_SESSION['perfil_nome']);
