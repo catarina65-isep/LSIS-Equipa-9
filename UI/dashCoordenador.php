@@ -1,58 +1,48 @@
 <?php
-// Team data defined in PHP with distinct values
+// Configuração da ligação à base de dados
+$host = 'localhost';
+$dbname = 'ficha_colaboradores';
+$username = 'root';
+$password = 'root';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die("Erro na ligação à base de dados: " . $e->getMessage());
+}
+
+// Consulta para obter os dados dos colaboradores
+$stmt = $pdo->prepare("SELECT nome, genero, id_equipa, id_departamento, localidade, data_entrada FROM colaborador WHERE estado = 'Ativo'");
+$stmt->execute();
 $teamData = [
-    'A' => [
-        'retentionRate' => '82.0%', // Lower retention
-        'averageAge' => '28.5 anos', // Younger team
-        'averageTenure' => '3.0 anos', // Shorter tenure
-        'averageSalary' => '2200 €', // Lower salary
-        'hierarquiaData' => [60, 15, 5], // More collaborators, less coordinators/RH
-        'generoData' => [55, 25], // More male, less female
-        'funcaoData' => [40, 20, 10], // More developers, less analysts/gestores
-        'geografiaData' => [50, 20, 10], // More Lisboa, less Porto/Coimbra
-        'tempoGeneroData' => [3.5, 2.8], // Lower tenure by gender
-        'remuneracaoData' => [900, 1300, 1100], // Lower remuneration
-        'hierarquiaEtariaData' => [
-            [6, 8, 2, 1], // Younger age distribution
-            [2, 3, 4, 1],
-            [0, 1, 2, 2]
-        ]
-    ],
-    'B' => [
-        'retentionRate' => '90.5%', // Higher retention
-        'averageAge' => '38.0 anos', // Older team
-        'averageTenure' => '6.5 anos', // Longer tenure
-        'averageSalary' => '3000 €', // Higher salary
-        'hierarquiaData' => [30, 30, 20], // Balanced hierarchy
-        'generoData' => [40, 40], // Equal gender
-        'funcaoData' => [25, 30, 25], // Balanced functions
-        'geografiaData' => [30, 40, 20], // More Porto, less Lisboa/Coimbra
-        'tempoGeneroData' => [6.0, 5.5], // Higher tenure by gender
-        'remuneracaoData' => [1200, 1600, 1400], // Higher remuneration
-        'hierarquiaEtariaData' => [
-            [3, 5, 6, 4], // Mixed age distribution
-            [2, 4, 5, 3],
-            [1, 2, 3, 4]
-        ]
-    ],
-    'C' => [
-        'retentionRate' => '95.0%', // Highest retention
-        'averageAge' => '33.2 anos', // Middle age
-        'averageTenure' => '4.8 anos', // Middle tenure
-        'averageSalary' => '2600 €', // Middle salary
-        'hierarquiaData' => [45, 25, 10], // Moderate hierarchy
-        'generoData' => [35, 45], // More female, less male
-        'funcaoData' => [30, 25, 15], // Mixed functions
-        'geografiaData' => [25, 35, 30], // More Coimbra, less Lisboa/Porto
-        'tempoGeneroData' => [4.2, 4.0], // Moderate tenure by gender
-        'remuneracaoData' => [1000, 1500, 1300], // Moderate remuneration
-        'hierarquiaEtariaData' => [
-            [5, 7, 3, 2], // Balanced age distribution
-            [3, 4, 3, 2],
-            [1, 1, 3, 3]
-        ]
-    ]
+    'A' => ['generoData' => [0, 0, 0], 'funcaoData' => [0, 0, 0], 'geografiaData' => [0, 0, 0], 'tempoGeneroData' => [0, 0, 0]],
+    'B' => ['generoData' => [0, 0, 0], 'funcaoData' => [0, 0, 0], 'geografiaData' => [0, 0, 0], 'tempoGeneroData' => [0, 0, 0]]
 ];
+
+while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $team = ($row['id_equipa'] == 1 || $row['id_departamento'] == 1) ? 'A' : 'B';
+    if ($row['genero'] == 'Masculino') $teamData[$team]['generoData'][0]++;
+    elseif ($row['genero'] == 'Feminino') $teamData[$team]['generoData'][1]++;
+    elseif ($row['genero'] == 'Outro' || $row['genero'] == 'Prefiro não dizer') $teamData[$team]['generoData'][2]++;
+    if ($row['localidade'] == 'Lisboa') $teamData[$team]['geografiaData'][0]++;
+    elseif ($row['localidade'] == 'Porto') $teamData[$team]['geografiaData'][1]++;
+    elseif ($row['localidade'] == 'Coimbra') $teamData[$team]['geografiaData'][2]++;
+    if ($row['data_entrada']) {
+        $tenure = floor((time() - strtotime($row['data_entrada'])) / (365 * 24 * 60 * 60));
+        if ($row['genero'] == 'Masculino') $teamData[$team]['tempoGeneroData'][0] += $tenure;
+        elseif ($row['genero'] == 'Feminino') $teamData[$team]['tempoGeneroData'][1] += $tenure;
+        elseif ($row['genero'] == 'Outro' || $row['genero'] == 'Prefiro não dizer') $teamData[$team]['tempoGeneroData'][2] += $tenure;
+    }
+}
+
+// Normalizar tempo médio (dividir pelo número de colaboradores por género)
+foreach (['A', 'B'] as $team) {
+    $totalM = $teamData[$team]['generoData'][0] ? $teamData[$team]['tempoGeneroData'][0] / $teamData[$team]['generoData'][0] : 0;
+    $totalF = $teamData[$team]['generoData'][1] ? $teamData[$team]['tempoGeneroData'][1] / $teamData[$team]['generoData'][1] : 0;
+    $totalO = $teamData[$team]['generoData'][2] ? $teamData[$team]['tempoGeneroData'][2] / $teamData[$team]['generoData'][2] : 0;
+    $teamData[$team]['tempoGeneroData'] = [$totalM, $totalF, $totalO];
+}
 
 // Default team
 $defaultTeam = 'A';
@@ -135,6 +125,7 @@ $currentData = $teamData[$currentTeam];
       width: 100%;
       overflow-x: auto;
       align-self: flex-start;
+      justify-content: center;
     }
     .chart-box {
       background-color: white;
@@ -156,12 +147,6 @@ $currentData = $teamData[$currentTeam];
     .container.pairs .chart-box.tempo-genero {
       max-width: 600px;
     }
-    .container.pairs .chart-box.remuneracao {
-      max-width: 600px;
-    }
-    .container.pairs .chart-box.hierarquia-etaria {
-      max-width: 550px;
-    }
     .compact-box {
       padding: 10px;
       max-height: 150px;
@@ -172,12 +157,6 @@ $currentData = $teamData[$currentTeam];
       height: 200px !important;
     }
     .container.pairs .chart-box.tempo-genero canvas {
-      height: 350px !important;
-    }
-    .container.pairs .chart-box.remuneracao canvas {
-      height: 350px !important;
-    }
-    .container.pairs .chart-box.hierarquia-etaria canvas {
       height: 350px !important;
     }
     h2 {
@@ -218,7 +197,6 @@ $currentData = $teamData[$currentTeam];
   <div class="team-buttons">
     <button onclick="switchTeam('A')" id="btnEquipaA" class="<?php echo $currentTeam === 'A' ? 'active' : ''; ?>">Equipa A</button>
     <button onclick="switchTeam('B')" id="btnEquipaB" class="<?php echo $currentTeam === 'B' ? 'active' : ''; ?>">Equipa B</button>
-    <button onclick="switchTeam('C')" id="btnEquipaC" class="<?php echo $currentTeam === 'C' ? 'active' : ''; ?>">Equipa C</button>
   </div>
 
   <header>
@@ -231,29 +209,25 @@ $currentData = $teamData[$currentTeam];
     <div class="container individual">
       <div class="chart-box compact-box">
         <h2>Taxa de Retenção</h2>
-        <div class="metric-value" id="retentionRate"><?php echo $currentData['retentionRate']; ?></div>
+        <div class="metric-value" id="retentionRate">N/A</div>
         <div class="metric-legend">Percentagem de colaboradores retidos na empresa</div>
       </div>
       <div class="chart-box compact-box">
         <h2>Idade Média</h2>
-        <div class="metric-value" id="averageAge"><?php echo $currentData['averageAge']; ?></div>
+        <div class="metric-value" id="averageAge">N/A</div>
         <div class="metric-legend">Média de idade dos colaboradores da Tlantic</div>
       </div>
       <div class="chart-box compact-box">
         <h2>Tempo Médio na Tlantic</h2>
-        <div class="metric-value" id="averageTenure"><?php echo $currentData['averageTenure']; ?></div>
+        <div class="metric-value" id="averageTenure">N/A</div>
         <div class="metric-legend">Tempo médio de permanência dos colaboradores na empresa</div>
       </div>
       <div class="chart-box compact-box">
         <h2>Remuneração Média</h2>
-        <div class="metric-value" id="averageSalary"><?php echo $currentData['averageSalary']; ?></div>
+        <div class="metric-value" id="averageSalary">N/A</div>
         <div class="metric-legend">Remuneração média mensal dos colaboradores</div>
       </div>
       <div class="charts-row">
-        <div class="chart-box">
-          <h2>Distribuição por Nível Hierárquico</h2>
-          <canvas id="chartHierarquia"></canvas>
-        </div>
         <div class="chart-box">
           <h2>Distribuição por Género</h2>
           <canvas id="chartGenero"></canvas>
@@ -278,14 +252,6 @@ $currentData = $teamData[$currentTeam];
           <h2>Tempo Médio na Empresa por Género</h2>
           <canvas id="chartTempoGenero"></canvas>
         </div>
-        <div class="chart-box remuneracao">
-          <h2>Remuneração por Hierarquia</h2>
-          <canvas id="chartRemuneracao"></canvas>
-        </div>
-      </div>
-      <div class="chart-box hierarquia-etaria">
-        <h2>Nível Hierárquico por Faixa Etária</h2>
-        <canvas id="chartHierarquiaEtaria"></canvas>
       </div>
     </div>
   </div>
@@ -300,7 +266,7 @@ $currentData = $teamData[$currentTeam];
     let teamData = <?php echo json_encode($teamData); ?>;
     let currentTeam = '<?php echo $currentTeam; ?>';
 
-    let chartHierarquia, chartGenero, chartFuncao, chartGeografia, chartTempoGenero, chartRemuneracao, chartHierarquiaEtaria;
+    let chartGenero, chartFuncao, chartGeografia, chartTempoGenero;
 
     function switchTeam(team) {
       currentTeam = team;
@@ -308,55 +274,31 @@ $currentData = $teamData[$currentTeam];
       document.getElementById('headerTeam').textContent = `Dashboard de Recursos Humanos - Equipa ${currentTeam}`;
       document.getElementById('btnEquipaA').className = currentTeam === 'A' ? 'active' : '';
       document.getElementById('btnEquipaB').className = currentTeam === 'B' ? 'active' : '';
-      document.getElementById('btnEquipaC').className = currentTeam === 'C' ? 'active' : '';
     }
 
     function updateDashboard() {
       const currentData = teamData[currentTeam];
 
-      // Update metrics
-      document.getElementById('retentionRate').textContent = currentData.retentionRate;
-      document.getElementById('averageAge').textContent = currentData.averageAge;
-      document.getElementById('averageTenure').textContent = currentData.averageTenure;
-      document.getElementById('averageSalary').textContent = currentData.averageSalary;
+      // Update metrics (placeholder, adjust with DB queries if needed)
+      document.getElementById('retentionRate').textContent = 'N/A';
+      document.getElementById('averageAge').textContent = 'N/A';
+      document.getElementById('averageTenure').textContent = 'N/A';
+      document.getElementById('averageSalary').textContent = 'N/A';
 
       // Destroy existing charts if they exist
-      if (chartHierarquia) chartHierarquia.destroy();
       if (chartGenero) chartGenero.destroy();
       if (chartFuncao) chartFuncao.destroy();
       if (chartGeografia) chartGeografia.destroy();
       if (chartTempoGenero) chartTempoGenero.destroy();
-      if (chartRemuneracao) chartRemuneracao.destroy();
-      if (chartHierarquiaEtaria) chartHierarquiaEtaria.destroy();
-
-      // Chart: Distribuição por Nível Hierárquico
-      chartHierarquia = new Chart(document.getElementById('chartHierarquia'), {
-        type: 'line',
-        data: {
-          labels: ['Colaborador', 'Coordenador', 'RH'],
-          datasets: [{
-            label: 'Total',
-            data: currentData.hierarquiaData,
-            fill: true,
-            backgroundColor: 'rgba(0,119,204,0.2)',
-            borderColor: '#0077cc',
-            tension: 0.3
-          }]
-        },
-        options: {
-          plugins: { legend: { display: false } },
-          scales: { y: { beginAtZero: true }, x: { ticks: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' } } } }
-        }
-      });
 
       // Chart: Distribuição por Género
       chartGenero = new Chart(document.getElementById('chartGenero'), {
         type: 'pie',
         data: {
-          labels: ['Masculino', 'Feminino'],
+          labels: ['Masculino', 'Feminino', 'Outro'],
           datasets: [{
             data: currentData.generoData,
-            backgroundColor: ['#0077cc', '#80bfff']
+            backgroundColor: ['#0077cc', '#80bfff', '#99ccff']
           }]
         },
         options: {
@@ -366,14 +308,14 @@ $currentData = $teamData[$currentTeam];
         }
       });
 
-      // Chart: Distribuição por Função
+      // Chart: Distribuição por Função (placeholder, requires funcaoData from DB)
       chartFuncao = new Chart(document.getElementById('chartFuncao'), {
         type: 'bar',
         data: {
           labels: ['Desenvolvedor', 'Analista', 'Gestor'],
           datasets: [{
-            data: currentData.funcaoData,
-            backgroundColor: ['#003f6b', '#005fa3', '#0077cc', '#3399ff']
+            data: [0, 0, 0], // Substituir por dados reais de funcaoData
+            backgroundColor: ['#003f6b', '#005fa3', '#0077cc']
           }]
         },
         options: {
@@ -390,7 +332,7 @@ $currentData = $teamData[$currentTeam];
           labels: ['Lisboa', 'Porto', 'Coimbra'],
           datasets: [{
             data: currentData.geografiaData,
-            backgroundColor: ['#004c99', '#0066cc', '#3399ff', '#99ccff']
+            backgroundColor: ['#004c99', '#0066cc', '#3399ff']
           }]
         },
         options: {
@@ -404,10 +346,10 @@ $currentData = $teamData[$currentTeam];
       chartTempoGenero = new Chart(document.getElementById('chartTempoGenero'), {
         type: 'bar',
         data: {
-          labels: ['Masculino', 'Feminino'],
+          labels: ['Masculino', 'Feminino', 'Outro'],
           datasets: [{
             data: currentData.tempoGeneroData,
-            backgroundColor: ['#004c99', '#66b2ff'],
+            backgroundColor: ['#004c99', '#66b2ff', '#99ccff'],
             barThickness: 50
           }]
         },
@@ -415,42 +357,6 @@ $currentData = $teamData[$currentTeam];
           responsive: true,
           plugins: { legend: { display: false } },
           scales: { y: { beginAtZero: true, title: { display: true, text: 'Anos' } } }
-        }
-      });
-
-      // Chart: Remuneração por Hierarquia
-      chartRemuneracao = new Chart(document.getElementById('chartRemuneracao'), {
-        type: 'bar',
-        data: {
-          labels: ['Colaborador', 'Coordenador', 'RH'],
-          datasets: [{
-            label: 'Remuneração Média (€)',
-            data: currentData.remuneracaoData,
-            backgroundColor: ['#66b2ff', '#3399cc', '#0077cc']
-          }]
-        },
-        options: {
-          plugins: { legend: { display: false } },
-          responsive: true,
-          scales: { y: { beginAtZero: true, title: { display: true, text: '€ Remuneração' } } }
-        }
-      });
-
-      // Chart: Nível Hierárquico por Faixa Etária
-      chartHierarquiaEtaria = new Chart(document.getElementById('chartHierarquiaEtaria'), {
-        type: 'bar',
-        data: {
-          labels: ['<25', '25-35', '36-45', '>45'],
-          datasets: [
-            { label: 'Colaborador', data: currentData.hierarquiaEtariaData[0], backgroundColor: '#0066cc' },
-            { label: 'Coordenador', data: currentData.hierarquiaEtariaData[1], backgroundColor: '#cc66ff' },
-            { label: 'RH', data: currentData.hierarquiaEtariaData[2], backgroundColor: '#3399cc' }
-          ]
-        },
-        options: {
-          plugins: { legend: { position: 'right', labels: { font: { size: 14, family: "'Segoe UI', sans-serif", weight: '500' }, padding: 20 } } },
-          responsive: true,
-          scales: { y: { beginAtZero: true, title: { display: true, text: 'Nº de Colaboradores' }, ticks: { stepSize: 5, min: 0, max: 25 } } }
         }
       });
     }

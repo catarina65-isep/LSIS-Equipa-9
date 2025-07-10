@@ -7,7 +7,7 @@ class Database {
         $host = 'localhost';
         $dbname = 'ficha_colaboradores';
         $username = 'root';
-        $password = ''; // Senha vazia para XAMPP
+        $password = 'root'; // Senha vazia para XAMPP
 
         try {
             $this->connection = new PDO(
