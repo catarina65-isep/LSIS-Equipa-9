@@ -94,9 +94,12 @@ class ColaboradorDAL {
     }
 
     public function contarAdmissoesPorPeriodo($dataInicio, $dataFim) {
-        // Se não existe coluna de data de admissão, apenas conte todos
-        $sql = "SELECT COUNT(*) as total FROM Colaborador";
-        $stmt = $this->db->query($sql);
+        $sql = "SELECT COUNT(*) as total FROM Colaborador 
+                WHERE data_entrada BETWEEN :dataInicio AND :dataFim";
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':dataInicio', $dataInicio, PDO::PARAM_STR);
+        $stmt->bindParam(':dataFim', $dataFim, PDO::PARAM_STR);
+        $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return (int) $result['total'];
     }
