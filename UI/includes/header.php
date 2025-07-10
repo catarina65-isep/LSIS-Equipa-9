@@ -96,7 +96,7 @@ $pdo = Database::getInstance();
         /* Top Bar */
         .top-bar {
             background: #fff;
-            padding: 1rem 1.5rem;
+            padding: 0.5rem 1rem;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             position: sticky;
             top: 0;
