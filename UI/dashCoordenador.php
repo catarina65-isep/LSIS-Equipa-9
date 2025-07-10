@@ -8,35 +8,49 @@ $password = 'root';
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Depuração: Confirma ligação bem-sucedida (comentar para uso normal)
+    // echo "Ligação à base de dados bem-sucedida!<br>";
 } catch (PDOException $e) {
     die("Erro na ligação à base de dados: " . $e->getMessage());
 }
 
-// Consulta para obter os dados dos colaboradores
-$stmt = $pdo->prepare("SELECT nome, genero, id_equipa, id_departamento, localidade, data_entrada FROM colaborador WHERE estado = 'Ativo'");
+// Consulta para obter os dados das equipas mapeadas
+$stmt = $pdo->prepare("
+    SELECT c.nome, c.genero, c.localidade, c.data_entrada, e.nome AS equipa_nome
+    FROM colaborador c
+    LEFT JOIN equipa e ON c.id_equipa = e.id_equipa
+    WHERE e.nome IN ('equipa1', 'Rafael') AND c.estado = 'Ativo'
+");
 $stmt->execute();
+// Depuração: Mostra número de registos encontrados (comentar para uso normal)
+// echo "Número de registos encontrados: " . $stmt->rowCount() . "<br>";
 $teamData = [
-    'A' => ['generoData' => [0, 0, 0], 'funcaoData' => [0, 0, 0], 'geografiaData' => [0, 0, 0], 'tempoGeneroData' => [0, 0, 0]],
-    'B' => ['generoData' => [0, 0, 0], 'funcaoData' => [0, 0, 0], 'geografiaData' => [0, 0, 0], 'tempoGeneroData' => [0, 0, 0]]
+    'A' => ['generoData' => [0, 0, 0], 'geografiaData' => [0, 0, 0], 'tempoGeneroData' => [0, 0, 0]],
+    'B' => ['generoData' => [0, 0, 0], 'geografiaData' => [0, 0, 0], 'tempoGeneroData' => [0, 0, 0]]
 ];
 
 while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    $team = ($row['id_equipa'] == 1 || $row['id_departamento'] == 1) ? 'A' : 'B';
-    if ($row['genero'] == 'Masculino') $teamData[$team]['generoData'][0]++;
-    elseif ($row['genero'] == 'Feminino') $teamData[$team]['generoData'][1]++;
-    elseif ($row['genero'] == 'Outro' || $row['genero'] == 'Prefiro não dizer') $teamData[$team]['generoData'][2]++;
-    if ($row['localidade'] == 'Lisboa') $teamData[$team]['geografiaData'][0]++;
-    elseif ($row['localidade'] == 'Porto') $teamData[$team]['geografiaData'][1]++;
-    elseif ($row['localidade'] == 'Coimbra') $teamData[$team]['geografiaData'][2]++;
+    // Depuração: Mostra dados de cada registo (comentar para uso normal)
+    // echo "Nome: " . $row['nome'] . ", Género: " . $row['genero'] . ", Equipa: " . $row['equipa_nome'] . ", Localidade: " . $row['localidade'] . ", Data Entrada: " . $row['data_entrada'] . "<br>";
+    $team = ($row['equipa_nome'] === 'equipa1') ? 'A' : 'B'; // Mapeia equipa1 para A, Rafael para B
+    $genero = $row['genero'] ?? 'Outro';
+    if ($genero == 'Masculino') $teamData[$team]['generoData'][0]++;
+    elseif ($genero == 'Feminino') $teamData[$team]['generoData'][1]++;
+    else $teamData[$team]['generoData'][2]++;
+    $localidade = $row['localidade'] ?? 'Outros';
+    if ($localidade == 'Lisboa') $teamData[$team]['geografiaData'][0]++;
+    elseif ($localidade == 'Porto') $teamData[$team]['geografiaData'][1]++;
+    elseif ($localidade == 'Coimbra') $teamData[$team]['geografiaData'][2]++;
     if ($row['data_entrada']) {
-        $tenure = floor((time() - strtotime($row['data_entrada'])) / (365 * 24 * 60 * 60));
-        if ($row['genero'] == 'Masculino') $teamData[$team]['tempoGeneroData'][0] += $tenure;
-        elseif ($row['genero'] == 'Feminino') $teamData[$team]['tempoGeneroData'][1] += $tenure;
-        elseif ($row['genero'] == 'Outro' || $row['genero'] == 'Prefiro não dizer') $teamData[$team]['tempoGeneroData'][2] += $tenure;
+        $dataEntrada = new DateTime($row['data_entrada']);
+        $dataAtual = new DateTime('2025-07-10 12:04:00'); // Data e hora atual
+        $tenure = $dataEntrada->diff($dataAtual)->y + ($dataEntrada->diff($dataAtual)->m / 12); // Anos com meses fracionários
+        if ($genero == 'Masculino') $teamData[$team]['tempoGeneroData'][0] += $tenure;
+        elseif ($genero == 'Feminino') $teamData[$team]['tempoGeneroData'][1] += $tenure;
+        else $teamData[$team]['tempoGeneroData'][2] += $tenure;
     }
 }
 
-// Normalizar tempo médio (dividir pelo número de colaboradores por género)
 foreach (['A', 'B'] as $team) {
     $totalM = $teamData[$team]['generoData'][0] ? $teamData[$team]['tempoGeneroData'][0] / $teamData[$team]['generoData'][0] : 0;
     $totalF = $teamData[$team]['generoData'][1] ? $teamData[$team]['tempoGeneroData'][1] / $teamData[$team]['generoData'][1] : 0;
@@ -44,7 +58,6 @@ foreach (['A', 'B'] as $team) {
     $teamData[$team]['tempoGeneroData'] = [$totalM, $totalF, $totalO];
 }
 
-// Default team
 $defaultTeam = 'A';
 $currentTeam = isset($_GET['equipa']) && array_key_exists($_GET['equipa'], $teamData) ? $_GET['equipa'] : $defaultTeam;
 $currentData = $teamData[$currentTeam];
@@ -262,7 +275,6 @@ $currentData = $teamData[$currentTeam];
     Chart.defaults.font.weight = '500';
     Chart.defaults.color = '#003366';
 
-    // Team data from PHP
     let teamData = <?php echo json_encode($teamData); ?>;
     let currentTeam = '<?php echo $currentTeam; ?>';
 
@@ -279,19 +291,16 @@ $currentData = $teamData[$currentTeam];
     function updateDashboard() {
       const currentData = teamData[currentTeam];
 
-      // Update metrics (placeholder, adjust with DB queries if needed)
       document.getElementById('retentionRate').textContent = 'N/A';
       document.getElementById('averageAge').textContent = 'N/A';
       document.getElementById('averageTenure').textContent = 'N/A';
       document.getElementById('averageSalary').textContent = 'N/A';
 
-      // Destroy existing charts if they exist
       if (chartGenero) chartGenero.destroy();
       if (chartFuncao) chartFuncao.destroy();
       if (chartGeografia) chartGeografia.destroy();
       if (chartTempoGenero) chartTempoGenero.destroy();
 
-      // Chart: Distribuição por Género
       chartGenero = new Chart(document.getElementById('chartGenero'), {
         type: 'pie',
         data: {
@@ -308,13 +317,12 @@ $currentData = $teamData[$currentTeam];
         }
       });
 
-      // Chart: Distribuição por Função (placeholder, requires funcaoData from DB)
       chartFuncao = new Chart(document.getElementById('chartFuncao'), {
         type: 'bar',
         data: {
           labels: ['Desenvolvedor', 'Analista', 'Gestor'],
           datasets: [{
-            data: [0, 0, 0], // Substituir por dados reais de funcaoData
+            data: [0, 0, 0], // Placeholder, requer dados de funcaoData
             backgroundColor: ['#003f6b', '#005fa3', '#0077cc']
           }]
         },
@@ -325,7 +333,6 @@ $currentData = $teamData[$currentTeam];
         }
       });
 
-      // Chart: Distribuição por Geografia
       chartGeografia = new Chart(document.getElementById('chartGeografia'), {
         type: 'pie',
         data: {
@@ -342,7 +349,6 @@ $currentData = $teamData[$currentTeam];
         }
       });
 
-      // Chart: Tempo Médio na Empresa por Género
       chartTempoGenero = new Chart(document.getElementById('chartTempoGenero'), {
         type: 'bar',
         data: {
@@ -361,7 +367,6 @@ $currentData = $teamData[$currentTeam];
       });
     }
 
-    // Render charts on page load
     window.onload = function() {
       updateDashboard();
     };
