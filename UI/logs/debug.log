@@ -1240,3 +1240,24 @@
 [2025-07-10 12:55:36] Nome do perfil: Recursos Humanos
 [2025-07-10 12:55:36] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
 [2025-07-10 12:55:36] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 16:42:51] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 16:42:51] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 16:42:51] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 16:42:51] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 16:42:51] ID do perfil do usuário: 2
+[2025-07-10 16:42:51] Nome do perfil: Recursos Humanos
+[2025-07-10 16:42:51] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 16:42:51] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php

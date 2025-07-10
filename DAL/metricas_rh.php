@@ -90,6 +90,7 @@ class MetricasRH {
     }
 
     public function getDistribuicaoGenero() {
+        // Primeiro, contar os colaboradores por gênero
         $sql = "SELECT 
             COUNT(*) as total,
             genero
@@ -99,35 +100,82 @@ class MetricasRH {
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        $dados = [];
+        
+        // Inicializar os valores com 0
+        $masculino = 0;
+        $feminino = 0;
+        $outros = 0;
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $dados[] = (int)$row['total'];
+            if ($row['genero'] === 'Masculino') {
+                $masculino = (int)$row['total'];
+            } elseif ($row['genero'] === 'Feminino') {
+                $feminino = (int)$row['total'];
+            } else { // NULL ou outro valor
+                $outros = (int)$row['total'];
+            }
         }
         
-        return $dados;
+        return [
+            'labels' => ['Masculino', 'Feminino', 'Outros'],
+            'data' => [$masculino, $feminino, $outros]
+        ];
     }
 
     public function getDistribuicaoFuncao() {
+        // Primeiro, contar os colaboradores sem função
+        $sqlNull = "SELECT COUNT(*) as total FROM colaborador WHERE estado = 'Ativo' AND id_funcao IS NULL";
+        $stmtNull = $this->db->prepare($sqlNull);
+        $stmtNull->execute();
+        $nullCount = $stmtNull->fetch(PDO::FETCH_ASSOC)['total'];
+
+        // Depois, contar os colaboradores com função
         $sql = "SELECT 
             COUNT(*) as total,
             f.titulo as funcao
             FROM colaborador c
             LEFT JOIN funcao f ON c.id_funcao = f.id_funcao
-            WHERE c.estado = 'Ativo'
+            WHERE c.estado = 'Ativo' AND c.id_funcao IS NOT NULL
             GROUP BY f.titulo
             ORDER BY total DESC
-            LIMIT 3";
+            LIMIT 2"; // Limitado a 2 porque queremos adicionar as outras funções
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
-        $dados = [];
         
+        // Separar os dados em totais e rótulos
+        $totais = [];
+        $rotulos = [];
+        
+        // Adicionar os dois primeiros cargos
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $dados[] = (int)$row['total'];
+            $totais[] = (int)$row['total'];
+            $rotulos[] = $row['funcao'];
         }
+
+        // Adicionar os colaboradores sem função e os restantes cargos como "Outras Funções"
+        $sqlOutras = "SELECT SUM(total) as total FROM (
+            SELECT COUNT(*) as total
+            FROM colaborador c
+            LEFT JOIN funcao f ON c.id_funcao = f.id_funcao
+            WHERE c.estado = 'Ativo' AND c.id_funcao IS NOT NULL
+            GROUP BY f.titulo
+            ORDER BY total DESC
+            LIMIT 3, 1000
+        ) as subquery";
         
-        return $dados;
+        $stmtOutras = $this->db->prepare($sqlOutras);
+        $stmtOutras->execute();
+        $outrosCount = $stmtOutras->fetch(PDO::FETCH_ASSOC)['total'];
+
+        // Somar os colaboradores sem função com os outros cargos
+        $totais[] = (int)$nullCount + (int)$outrosCount;
+        $rotulos[] = 'Outras Funções';
+        
+        return [
+            'labels' => $rotulos,
+            'data' => $totais
+        ];    
     }
 
     public function getDistribuicaoGeografia() {
@@ -153,44 +201,77 @@ class MetricasRH {
     }
 
     public function getTempoPorGenero() {
-        $sql = "SELECT 
-            genero,
-            AVG(TIMESTAMPDIFF(YEAR, data_entrada, CURDATE())) as tempo_medio
-            FROM colaborador
-            WHERE estado = 'Ativo'
-            GROUP BY genero";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
-        $dados = [];
-        
-        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $dados[] = (float)$row['tempo_medio'];
+    // Primeiro, calcular o tempo médio por gênero
+    $sql = "SELECT 
+        genero,
+        AVG(TIMESTAMPDIFF(YEAR, data_entrada, CURDATE())) as tempo_medio
+        FROM colaborador
+        WHERE estado = 'Ativo'
+        GROUP BY genero";
+    
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute();
+    
+    // Inicializar os valores com 0
+    $masculino = 0;
+    $feminino = 0;
+    
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        if ($row['genero'] === 'Masculino') {
+            $masculino = (float)$row['tempo_medio'];
+        } elseif ($row['genero'] === 'Feminino') {
+            $feminino = (float)$row['tempo_medio'];
         }
-        
-        return $dados;
     }
+    
+    return [
+        'labels' => ['Masculino', 'Feminino'],
+        'data' => [
+            round($masculino, 1),
+            round($feminino, 1)
+        ]
+    ];
+}
 
-    public function getRemuneracaoPorFuncao() {
+    public function getRemuneracaoPorHierarquia() {
         $sql = "SELECT 
             f.titulo as funcao,
-            AVG(remuneracao_bruta) as salario_medio
+            AVG(c.remuneracao_bruta) as salario_medio
             FROM colaborador c
-            LEFT JOIN funcao f ON c.id_funcao = f.id_funcao
+            JOIN funcao f ON c.id_funcao = f.id_funcao  -- Mudando para JOIN simples
             WHERE c.estado = 'Ativo'
             GROUP BY f.titulo
-            ORDER BY salario_medio DESC
-            LIMIT 3";
+            ORDER BY f.titulo";
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
+        
         $dados = [];
+        $labels = [];
         
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $dados[] = (float)$row['salario_medio'];
+            $funcao = trim($row['funcao']);
+            if (!empty($funcao)) {
+                $labels[] = $funcao;
+                $dados[] = (float)$row['salario_medio'];
+            }
         }
         
-        return $dados;
+        // Se não houver dados, retornar array vazio
+        if (empty($labels)) {
+            return [
+                'labels' => ['Nenhuma função encontrada'],
+                'data' => [0]
+            ];
+        }
+        
+        // Ordenar os dados para garantir que estão na mesma ordem
+        array_multisort($labels, SORT_ASC, $dados);
+        
+        return [
+            'labels' => $labels,
+            'data' => $dados
+        ];
     }
 
     public function getHierarquiaPorIdade() {

@@ -25,10 +25,8 @@ $data = [
     'hierarquiaData' => $metricas->getDistribuicaoHierarquia(),
     'generoData' => $metricas->getDistribuicaoGenero(),
     'funcaoData' => $metricas->getDistribuicaoFuncao(),
-    'geografiaData' => $metricas->getDistribuicaoGeografia(),
     'tempoGeneroData' => $metricas->getTempoPorGenero(),
-    'remuneracaoData' => $metricas->getRemuneracaoPorFuncao(),
-    'hierarquiaEtariaData' => $metricas->getHierarquiaPorIdade()
+    'remuneracaoData' => $metricas->getRemuneracaoPorHierarquia()
 ];
 ?>
 <!DOCTYPE html>
@@ -360,10 +358,6 @@ $data = [
                         <h2>Distribuição por Função</h2>
                         <canvas id="chartFuncao"></canvas>
                     </div>
-                    <div class="chart-box">
-                        <h2>Distribuição por Geografia</h2>
-                        <canvas id="chartGeografia"></canvas>
-                    </div>
                 </div>
             </div>
         </div>
@@ -384,12 +378,7 @@ $data = [
                         <canvas id="chartRemuneracao"></canvas>
                     </div>
                 </div>
-                <div class="col-12 col-lg-4 d-flex">
-                    <div class="chart-box hierarquia-etaria flex-fill w-100">
-                        <h2>Nível Hierárquico por Faixa Etária</h2>
-                        <canvas id="chartHierarquiaEtaria"></canvas>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
@@ -425,7 +414,7 @@ $data = [
         // Data from PHP
         const data = <?php echo json_encode($data); ?>;
 
-        let chartHierarquia, chartGenero, chartFuncao, chartGeografia, chartTempoGenero, chartRemuneracao, chartHierarquiaEtaria;
+        let chartHierarquia, chartGenero, chartFuncao, chartTempoGenero, chartRemuneracao, chartHierarquiaEtaria;
 
         function renderDashboard() {
             // Update metrics
@@ -458,68 +447,104 @@ $data = [
             chartGenero = new Chart(document.getElementById('chartGenero'), {
                 type: 'pie',
                 data: {
-                    labels: ['Masculino', 'Feminino'],
-                    datasets: [{ data: data.generoData, backgroundColor: ['#0077cc', '#80bfff'] }]
+                    labels: data.generoData.labels,
+                    datasets: [{ 
+                        data: data.generoData.data,
+                        backgroundColor: ['#0077cc', '#80bfff', '#66b2ff']
+                    }]
                 },
-                options: { plugins: { legend: { position: 'bottom' } } }
+                options: { 
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
             });
 
             // Chart: Distribuição por Função
             chartFuncao = new Chart(document.getElementById('chartFuncao'), {
                 type: 'bar',
                 data: {
-                    labels: ['Desenvolvedor', 'Analista', 'Gestor'],
-                    datasets: [{ data: data.funcaoData, backgroundColor: ['#003f6b', '#005fa3', '#0077cc'] }]
+                    labels: data.funcaoData.labels,
+                    datasets: [{ 
+                        data: data.funcaoData.data,
+                        backgroundColor: ['#003f6b', '#005fa3', '#0077cc']
+                    }]
                 },
-                options: { plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
-            });
-
-            // Chart: Distribuição por Geografia
-            chartGeografia = new Chart(document.getElementById('chartGeografia'), {
-                type: 'pie',
-                data: {
-                    labels: ['Lisboa', 'Porto', 'Coimbra'],
-                    datasets: [{ data: data.geografiaData, backgroundColor: ['#004c99', '#0066cc', '#3399ff'] }]
-                },
-                options: { plugins: { legend: { position: 'bottom' } } }
+                options: { 
+                    plugins: { legend: { display: false } }, 
+                    scales: { 
+                        x: { 
+                            beginAtZero: true,
+                            ticks: {
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
             });
 
             // Chart: Tempo Médio na Empresa por Género
             chartTempoGenero = new Chart(document.getElementById('chartTempoGenero'), {
                 type: 'bar',
                 data: {
-                    labels: ['Masculino', 'Feminino'],
-                    datasets: [{ data: data.tempoGeneroData, backgroundColor: ['#004c99', '#66b2ff'], barThickness: 50 }]
+                    labels: data.tempoGeneroData.labels,
+                    datasets: [{ 
+                        data: data.tempoGeneroData.data,
+                        backgroundColor: ['#004c99', '#66b2ff'],
+                        barThickness: 50
+                    }]
                 },
-                options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { text: 'Anos' } } } }
+                options: { 
+                    plugins: { 
+                        legend: { display: false }
+                    }, 
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            title: { text: 'Anos' },
+                            ticks: { font: { size: 12 } }
+                        }
+                    }
+                }
             });
 
-            // Chart: Remuneração por Hierarquia
+            // Chart: Remuneração por Função
             chartRemuneracao = new Chart(document.getElementById('chartRemuneracao'), {
                 type: 'bar',
                 data: {
-                    labels: ['Colaborador', 'Coordenador', 'RH'],
-                    datasets: [{ label: 'Remuneração Média (€)', data: data.remuneracaoData, backgroundColor: ['#66b2ff', '#3399cc', '#0077cc'] }]
+                    labels: data.remuneracaoData.labels,
+                    datasets: [{ 
+                        label: 'Remuneração Média (€)', 
+                        data: data.remuneracaoData.data,
+                        backgroundColor: '#66b2ff'
+                    }]
                 },
-                options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, title: { text: '€ Remuneração' } } } }
-            });
-
-            // Chart: Nível Hierárquico por Faixa Etária
-            chartHierarquiaEtaria = new Chart(document.getElementById('chartHierarquiaEtaria'), {
-                type: 'bar',
-                data: {
-                    labels: ['<25', '25-35', '36-45', '>45'],
-                    datasets: [
-                        { label: 'Colaborador', data: data.hierarquiaEtariaData[0], backgroundColor: '#0066cc' },
-                        { label: 'Coordenador', data: data.hierarquiaEtariaData[1], backgroundColor: '#cc66ff' },
-                        { label: 'RH', data: data.hierarquiaEtariaData[2], backgroundColor: '#3399cc' }
-                    ]
-                },
-                options: {
-                    plugins: { legend: { position: 'right' } },
-                    scales: { y: { beginAtZero: true, title: { text: 'Nº de Colaboradores' } } }
+                options: { 
+                    plugins: { 
+                        legend: { 
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Remuneração Média por Função'
+                        }
+                    },
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            title: { text: '€ Remuneração' },
+                            ticks: { font: { size: 12 } }
+                        }
+                    }
                 }
             });
+
+
         }
 
         // Render charts on page load
