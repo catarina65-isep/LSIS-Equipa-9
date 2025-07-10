@@ -30,31 +30,44 @@ if (!$coordenador) {
     die("Usuário não é um coordenador ativo.");
 }
 
-// Obter equipes gerenciadas pelo coordenador usando o ID do coordenador
-$equipes = $coordenadorBLL->obterEquipesGerenciadas($coordenador['id_coordenador']);
-$equipes_coordenadas = count($equipes);
+// Dados estáticos para o dashboard
+$equipes_coordenadas = 3; // Total de equipes
+$total_equipe = 12; // Total de membros
+$alertas_pendentes = 2; // Alertas pendentes
 
-// Calcular total de membros nas equipes
-$total_equipe = 0;
-$membros_unicos = [];
+// Dados dos aniversariantes do mês (julho - 07)
+$aniversariantes = [
+    [
+        'id_utilizador' => 1,
+        'nome' => 'Maria Ferreira',
+        'data_nascimento' => '1999-06-17',
+        'cargo' => 'Desenvolvedor',
+        'email' => 'maria.ferreira@tlantic.pt'
+    ],
+    [
+        'id_utilizador' => 2,
+        'nome' => 'Ana Santos',
+        'data_nascimento' => '1992-07-10',
+        'cargo' => 'Analista de RH',
+        'email' => 'ana.santos@empresa.pt'
+    ],
+    [
+        'id_utilizador' => 3,
+        'nome' => 'Pedro Alves',
+        'data_nascimento' => '1989-07-25',
+        'cargo' => 'Designer',
+        'email' => 'pedro.alves@tlantic.pt'
+    ],
+    [
+        'id_utilizador' => 4,
+        'nome' => 'Rui Martins',
+        'data_nascimento' => '1982-08-25',
+        'cargo' => 'Gerente de Projeto',
+        'email' => 'rui.martins@empresa.pt'
+    ]
+];
 
-foreach ($equipes as $equipa) {
-    $membros = $equipaBLL->obterMembrosEquipa($equipa['id_equipa']);
-    foreach ($membros as $membro) {
-        if (!in_array($membro['id_colaborador'], $membros_unicos)) {
-            $membros_unicos[] = $membro['id_colaborador'];
-            $total_equipe++;
-        }
-    }
-}
-
-// Obter aniversariantes do mês
-$mes_atual = date('m');
-$aniversariantes = $colaboradorBLL->obterAniversariantesDoMes($mes_atual);
 $aniversariantes_mes = count($aniversariantes);
-
-// Obter alertas pendentes (exemplo - implementar conforme necessário)
-$alertas_pendentes = 0; // Implementar lógica de alertas
 
 // Obter projetos ativos (exemplo - implementar conforme necessário)
 $projetos_ativos = 0; // Implementar lógica de projetos
@@ -74,7 +87,7 @@ include_once __DIR__ . '/includes/base_template.php';
 <div class="container-fluid py-3">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h4 mb-1">Bem-vindo(a), <?= htmlspecialchars($_SESSION['nome'] ?? 'Coordenador') ?></h1>
+            <h1 class="h4 mb-1">Bem-vindo(a), Coordenador</h1>
             <p class="text-muted mb-0">
                 <i class="far fa-calendar-alt me-1"></i>
                 <?= date('d/m/Y - H:i') ?>
@@ -99,7 +112,7 @@ include_once __DIR__ . '/includes/base_template.php';
                         </div>
                         <div>
                             <h6 class="text-uppercase text-muted small mb-1">Equipas</h6>
-                            <h3 class="mb-0"><?= $equipes_coordenadas ?></h3>
+                            <h3 class="mb-0" style="font-size: 1.5rem;"><?= $equipes_coordenadas ?></h3>
                         </div>
                     </div>
                 </div>
@@ -116,7 +129,7 @@ include_once __DIR__ . '/includes/base_template.php';
                         </div>
                         <div>
                             <h6 class="text-uppercase text-muted small mb-1">Membros</h6>
-                            <h3 class="mb-0"><?= $total_equipe ?></h3>
+                            <h3 class="mb-0" style="font-size: 1.5rem;"><?= $total_equipe ?></h3>
                         </div>
                     </div>
                 </div>
@@ -133,7 +146,7 @@ include_once __DIR__ . '/includes/base_template.php';
                         </div>
                         <div>
                             <h6 class="text-uppercase text-muted small mb-1">Aniversariantes</h6>
-                            <h3 class="mb-0"><?= $aniversariantes_mes ?></h3>
+                            <h3 class="mb-0" style="font-size: 1.5rem;"><?= $aniversariantes_mes ?></h3>
                         </div>
                     </div>
                 </div>
@@ -150,7 +163,7 @@ include_once __DIR__ . '/includes/base_template.php';
                         </div>
                         <div>
                             <h6 class="text-uppercase text-muted small mb-1">Alertas</h6>
-                            <h3 class="mb-0"><?= $alertas_pendentes ?></h3>
+                            <h3 class="mb-0" style="font-size: 1.5rem;"><?= $alertas_pendentes ?></h3>
                         </div>
                     </div>
                 </div>
@@ -186,74 +199,61 @@ include_once __DIR__ . '/includes/base_template.php';
                     <a href="equipe.php" class="btn btn-sm btn-outline-primary">Ver Todas</a>
                 </div>
                 <div class="card-body p-0">
-                    <?php if (empty($equipes)): ?>
-                        <div class="p-4">
-                            <div class="alert alert-info mb-0">Não está a gerir nenhuma equipa no momento.</div>
-                        </div>
-                    <?php else: ?>
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Nome da Equipa</th>
-                                        <th>Membros</th>
-                                        <th>Ações</th>
-                                        <th class="text-end">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php 
-                                    // Limitar a exibição a 5 equipes no dashboard
-                                    $equipes_limitadas = array_slice($equipes, 0, 5);
-                                    foreach ($equipes_limitadas as $equipa): 
-                                        $membros = $equipaBLL->obterMembrosEquipa($equipa['id_equipa']);
-                                        $total_membros = count($membros);
-                                    ?>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="me-2">
-                                                        <div class="avatar-sm rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 36px; height: 36px;">
-                                                            <?= strtoupper(substr($equipa['nome'], 0, 1)) ?>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <h6 class="mb-0"><?= htmlspecialchars($equipa['nome']) ?></h6>
-                                                        <?php if (!empty($equipa['descricao'])): ?>
-                                                            <small class="text-muted"><?= htmlspecialchars(substr($equipa['descricao'], 0, 50)) . (strlen($equipa['descricao']) > 50 ? '...' : '') ?></small>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <small class="text-muted"><?= $total_membros ?> <?= $total_membros == 1 ? 'membro' : 'membros' ?></small>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="badge bg-<?= $equipa['ativo'] ? 'success' : 'secondary' ?> bg-opacity-10 text-<?= $equipa['ativo'] ? 'success' : 'secondary' ?> px-2 py-1">
-                                                    <?= $equipa['ativo'] ? 'Ativa' : 'Inativa' ?>
-                                                </span>
-                                            </td>
-                                            <td class="text-end">
-                                                <a href="equipe_detalhes.php?id=<?= $equipa['id_equipa'] ?>" class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-eye me-1"></i> Ver
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <?php if (count($equipes) > 5): ?>
-                            <div class="p-3 border-top text-center">
-                                <a href="equipe.php" class="btn btn-link">
-                                    Ver todas as <?= count($equipes) ?> equipas <i class="fas fa-arrow-right ms-1"></i>
+                    <div class="list-group list-group-flush">
+                        <!-- Equipa de Desenvolvimento -->
+                        <div class="list-group-item border-0 py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Equipa de Desenvolvimento</h6>
+                                    <p class="text-muted small mb-0">
+                                        <i class="fas fa-users me-1"></i>
+                                        5 membros
+                                    </p>
+                                </div>
+                                <a href="equipe.php?id=1" class="btn btn-sm btn-outline-primary">
+                                    Ver detalhes
                                 </a>
                             </div>
-                        <?php endif; ?>
-                    <?php endif; ?>
+                        </div>
+                        
+                        <!-- Equipa de RH -->
+                        <div class="list-group-item border-0 py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Recursos Humanos</h6>
+                                    <p class="text-muted small mb-0">
+                                        <i class="fas fa-users me-1"></i>
+                                        3 membros
+                                    </p>
+                                </div>
+                                <a href="equipe.php?id=2" class="btn btn-sm btn-outline-primary">
+                                    Ver detalhes
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Equipa de Coordenação -->
+                        <div class="list-group-item border-0 py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Coordenação</h6>
+                                    <p class="text-muted small mb-0">
+                                        <i class="fas fa-users me-1"></i>
+                                        4 membros
+                                    </p>
+                                </div>
+                                <a href="equipe.php?id=3" class="btn btn-sm btn-outline-primary">
+                                    Ver detalhes
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-3 border-top text-center">
+                        <a href="equipe.php" class="btn btn-link">
+                            Ver todas as 3 equipas <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -272,10 +272,9 @@ include_once __DIR__ . '/includes/base_template.php';
                         <div class="p-4">
                             <div class="text-center py-4">
                                 <div class="mb-3">
-                                    <i class="fas fa-birthday-cake fa-2x text-muted opacity-25"></i>
+                                    <i class="fas fa-birthday-cake fa-3x text-muted"></i>
                                 </div>
-                                <h5 class="text-muted">Sem aniversariantes este mês</h5>
-                                <p class="text-muted mb-0">Nenhum membro da sua equipa faz anos este mês.</p>
+                                <p class="text-muted mb-0">Nenhum aniversariante este mês.</p>
                             </div>
                         </div>
                     <?php else: ?>
@@ -285,59 +284,23 @@ include_once __DIR__ . '/includes/base_template.php';
                             $aniversariantes_limitados = array_slice($aniversariantes, 0, 5);
                             foreach ($aniversariantes_limitados as $aniversariante): 
                                 $data_nascimento = new DateTime($aniversariante['data_nascimento']);
-                                $data_formatada = $data_nascimento->format('d/m');
-                                
-                                // Verificar se o aniversário é hoje
-                                $hoje = new DateTime();
-                                $aniversario_hoje = ($data_nascimento->format('m-d') === $hoje->format('m-d'));
-                                
-                                // Obter a idade
-                                $idade = $hoje->diff($data_nascimento)->y;
-                                
-                                // Obter iniciais para o avatar
-                                $nome_completo = $aniversariante['nome'];
-                                $nomes = explode(' ', $nome_completo);
-                                $iniciais = strtoupper(substr($nomes[0], 0, 1) . (isset($nomes[1]) ? substr($nomes[1], 0, 1) : ''));
+                                $dia = $data_nascimento->format('d/m');
                             ?>
                                 <div class="list-group-item border-0 py-3">
                                     <div class="d-flex align-items-center">
-                                        <!-- Avatar -->
-                                        <div class="position-relative me-3">
-                                            <div class="avatar-sm rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
-                                                <?= $iniciais ?>
-                                            </div>
-                                            <?php if ($aniversario_hoje): ?>
-                                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
-                                                    Hoje
-                                                </span>
-                                            <?php endif; ?>
+                                        <div class="bg-soft-primary rounded-circle p-2 me-3">
+                                            <i class="fas fa-birthday-cake text-primary"></i>
                                         </div>
-                                        
-                                        <!-- Informações -->
                                         <div class="flex-grow-1">
-                                            <h6 class="mb-0"><?= htmlspecialchars($aniversariante['nome']) ?></h6>
-                                            <div class="text-muted small">
-                                                <span class="me-2">
-                                                    <i class="fas fa-birthday-cake text-warning me-1"></i>
-                                                    <?= $data_formatada ?>
-                                                    <?php if ($aniversario_hoje): ?>
-                                                        <span class="badge bg-warning text-dark ms-1"><?= $idade ?> anos</span>
-                                                    <?php endif; ?>
-                                                </span>
+                                            <h6 class="mb-1"><?= htmlspecialchars($aniversariante['nome']) ?></h6>
+                                            <p class="text-muted small mb-0">
+                                                <i class="far fa-calendar-alt me-1"></i>
+                                                <?= $dia ?>
                                                 <?php if (!empty($aniversariante['cargo'])): ?>
-                                                    <span class="mx-1">•</span>
-                                                    <span><?= htmlspecialchars($aniversariante['cargo']) ?></span>
+                                                    <span class="ms-2">•</span>
+                                                    <span class="ms-2"><?= htmlspecialchars($aniversariante['cargo']) ?></span>
                                                 <?php endif; ?>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Ações -->
-                                        <div class="ms-2">
-                                            <?php if (isset($aniversariante['email'])): ?>
-                                                <a href="mailto:<?= htmlspecialchars($aniversariante['email']) ?>" class="btn btn-sm btn-outline-primary" title="Enviar e-mail">
-                                                    <i class="fas fa-envelope"></i>
-                                                </a>
-                                            <?php endif; ?>
+                                            </p>
                                         </div>
                                     </div>
                                 </div>

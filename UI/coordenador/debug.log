@@ -586,3 +586,609 @@ Resultado da consulta: Array
     [username] => admin
 )
 
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Iniciando equipe.php
+SESSION: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => coordenador@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfilacesso] => 3
+    [perfil_nome] => Coordenador
+)
+
+[DEBUG] ID do coordenador da sessão: 1
+[DEBUG] Obtendo dados do coordenador...
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+[DEBUG] Dados do coordenador: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Iniciando equipe.php
+SESSION: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => coordenador@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfilacesso] => 3
+    [perfil_nome] => Coordenador
+)
+
+[DEBUG] ID do coordenador da sessão: 1
+[DEBUG] Obtendo dados do coordenador...
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+[DEBUG] Dados do coordenador: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+Iniciando equipe.php
+SESSION: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => coordenador@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfilacesso] => 3
+    [perfil_nome] => Coordenador
+)
+
+[DEBUG] ID do coordenador da sessão: 1
+[DEBUG] Obtendo dados do coordenador...
+Executando obterPorIdUtilizador para o ID: 1
+SQL: SELECT 
+                    c.*, 
+                    u.email, 
+                    u.username,
+                    u.id_utilizador,
+                    c.id_coordenador,
+                    c.id_equipa,
+                    c.id_departamento,
+                    c.cargo,
+                    c.tipo_coordenacao,
+                    c.permissoes_especificas,
+                    c.data_inicio,
+                    c.data_fim,
+                    c.ativo,
+                    c.observacoes
+                FROM coordenador c 
+                JOIN utilizador u ON c.id_utilizador = u.id_utilizador 
+                WHERE c.id_utilizador = :id_utilizador
+                AND c.ativo = 1
+                AND u.ativo = 1
+Resultado da consulta: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+
+[DEBUG] Dados do coordenador: Array
+(
+    [id_coordenador] => 8
+    [id_utilizador] => 1
+    [id_equipa] => 
+    [id_departamento] => 
+    [cargo] => Coordenador
+    [tipo_coordenacao] => 
+    [permissoes_especificas] => 
+    [data_inicio] => 0000-00-00
+    [data_fim] => 
+    [ativo] => 1
+    [observacoes] => 
+    [data_criacao] => 2025-07-09 09:38:42
+    [data_atualizacao] => 2025-07-09 09:38:42
+    [id_utilizador_criacao] => 
+    [id_utilizador_atualizacao] => 
+    [email] => admin@tlantic.pt
+    [username] => admin
+)
+

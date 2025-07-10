@@ -244,4 +244,2400 @@
     [senha] => 123456
 )
 
+<<<<<<< HEAD
 [2025-07-10 10:58:14] Tentando autenticar usuário: rh@tlantic.pt
+=======
+[2025-07-08 17:35:34] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-08 17:35:34] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-08 17:35:34] ID do perfil do usuário: 2
+[2025-07-08 17:35:34] Nome do perfil: Recursos Humanos
+[2025-07-08 17:35:34] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-08 17:35:34] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-08 17:37:36] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-08 17:37:36] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-08 17:37:36] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-08 17:37:36] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-08 17:37:36] ID do perfil do usuário: 3
+[2025-07-08 17:37:36] Nome do perfil: Coordenador
+[2025-07-08 17:37:36] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-08 17:37:36] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-08 17:39:47] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-08 17:39:47] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-08 17:39:47] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-08 17:39:47] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-08 17:39:47] ID do perfil do usuário: 2
+[2025-07-08 17:39:47] Nome do perfil: Recursos Humanos
+[2025-07-08 17:39:47] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-08 17:39:47] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-08 17:42:45] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-08 17:42:45] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-08 17:42:45] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-08 17:42:45] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-08 17:42:45] ID do perfil do usuário: 3
+[2025-07-08 17:42:45] Nome do perfil: Coordenador
+[2025-07-08 17:42:45] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-08 17:42:45] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-08 18:44:46] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-08 18:44:46] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-08 18:44:46] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-08 18:44:46] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-08 18:44:46] ID do perfil do usuário: 3
+[2025-07-08 18:44:46] Nome do perfil: Coordenador
+[2025-07-08 18:44:46] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-08 18:44:46] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-08 18:48:03] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-08 18:48:03] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-08 18:48:03] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-08 18:48:03] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-08 18:48:03] ID do perfil do usuário: 3
+[2025-07-08 18:48:03] Nome do perfil: Coordenador
+[2025-07-08 18:48:03] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-08 18:48:03] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-09 10:43:51] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 10:43:51] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 10:43:51] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-09 10:43:51] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-09 10:43:51] ID do perfil do usuário: 2
+[2025-07-09 10:43:51] Nome do perfil: Recursos Humanos
+[2025-07-09 10:43:51] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 10:43:51] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 12:09:43] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 12:09:43] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 12:09:43] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-09 12:09:43] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-09 12:09:43] ID do perfil do usuário: 2
+[2025-07-09 12:09:43] Nome do perfil: Recursos Humanos
+[2025-07-09 12:09:43] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 12:09:43] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 13:03:55] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 13:03:55] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 13:03:55] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-09 13:03:55] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-09 13:03:55] ID do perfil do usuário: 2
+[2025-07-09 13:03:55] Nome do perfil: Recursos Humanos
+[2025-07-09 13:03:55] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 13:03:55] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 13:22:08] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 13:22:08] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 13:22:08] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-09 13:22:08] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-09 13:22:08] ID do perfil do usuário: 2
+[2025-07-09 13:22:08] Nome do perfil: Recursos Humanos
+[2025-07-09 13:22:08] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 13:22:08] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 14:46:10] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 14:46:10] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 14:46:10] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-09 14:46:10] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+<<<<<<< HEAD
+[2025-07-09 15:58:34] ID do perfil do usuário: 4
+[2025-07-09 15:58:34] Nome do perfil: Colaborador
+[2025-07-09 15:58:34] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-09 15:58:34] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-09 17:38:11] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 17:38:11] Dados recebidos: Array
+=======
+[2025-07-09 14:46:10] ID do perfil do usuário: 2
+[2025-07-09 14:46:10] Nome do perfil: Recursos Humanos
+[2025-07-09 14:46:10] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 14:46:10] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 18:16:41] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 18:16:41] Dados recebidos: Array
+>>>>>>> 90f4345bbd1437947f238077fa4c35272bf382b3
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+<<<<<<< HEAD
+[2025-07-09 17:38:11] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-09 17:38:11] Resultado da autenticação: Array
+=======
+[2025-07-09 18:16:41] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-09 18:16:41] Resultado da autenticação: Array
+>>>>>>> 90f4345bbd1437947f238077fa4c35272bf382b3
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+<<<<<<< HEAD
+[2025-07-09 17:38:11] ID do perfil do usuário: 2
+[2025-07-09 17:38:11] Nome do perfil: Recursos Humanos
+[2025-07-09 17:38:11] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 17:38:11] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 17:44:03] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 17:44:03] Dados recebidos: Array
+=======
+[2025-07-09 18:16:41] ID do perfil do usuário: 2
+[2025-07-09 18:16:41] Nome do perfil: Recursos Humanos
+[2025-07-09 18:16:41] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 18:16:41] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 18:58:24] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 18:58:24] Dados recebidos: Array
+>>>>>>> 90f4345bbd1437947f238077fa4c35272bf382b3
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+<<<<<<< HEAD
+[2025-07-09 17:44:03] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-09 17:44:03] Resultado da autenticação: Array
+=======
+[2025-07-09 18:58:24] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-09 18:58:24] Resultado da autenticação: Array
+>>>>>>> 90f4345bbd1437947f238077fa4c35272bf382b3
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+<<<<<<< HEAD
+[2025-07-09 17:44:03] ID do perfil do usuário: 2
+[2025-07-09 17:44:03] Nome do perfil: Recursos Humanos
+[2025-07-09 17:44:03] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 17:44:03] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 17:57:34] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 17:57:34] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 17:57:34] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-09 17:57:34] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-09 17:57:34] ID do perfil do usuário: 2
+[2025-07-09 17:57:34] Nome do perfil: Recursos Humanos
+[2025-07-09 17:57:34] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 17:57:34] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 18:02:50] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 18:02:50] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 18:02:50] Tentando autenticar usuário: colaborador@tlantic.pt
+[2025-07-09 18:02:50] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => colaborador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-09 18:02:50] ID do perfil do usuário: 4
+[2025-07-09 18:02:50] Nome do perfil: Colaborador
+[2025-07-09 18:02:50] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-09 18:02:50] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+=======
+[2025-07-09 18:58:24] ID do perfil do usuário: 2
+[2025-07-09 18:58:24] Nome do perfil: Recursos Humanos
+[2025-07-09 18:58:24] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 18:58:24] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-09 20:03:45] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-09 20:03:45] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-09 20:03:45] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-09 20:03:45] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-09 20:03:45] ID do perfil do usuário: 3
+[2025-07-09 20:03:45] Nome do perfil: Coordenador
+[2025-07-09 20:03:45] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-09 20:03:45] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+>>>>>>> 90f4345bbd1437947f238077fa4c35272bf382b3
+[2025-07-10 00:19:16] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 00:19:16] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 00:19:16] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 00:19:16] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 00:19:16] ID do perfil do usuário: 2
+[2025-07-10 00:19:16] Nome do perfil: Recursos Humanos
+[2025-07-10 00:19:16] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 00:19:16] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 00:34:50] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 00:34:50] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 00:34:50] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 00:34:50] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 00:34:50] ID do perfil do usuário: 2
+[2025-07-10 00:34:50] Nome do perfil: Recursos Humanos
+[2025-07-10 00:34:50] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 00:34:50] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 00:35:34] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 00:35:34] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 00:35:34] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 00:35:34] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 00:35:34] ID do perfil do usuário: 2
+[2025-07-10 00:35:34] Nome do perfil: Recursos Humanos
+[2025-07-10 00:35:34] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 00:35:34] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 00:36:23] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 00:36:23] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 00:36:23] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 00:36:23] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 00:36:23] ID do perfil do usuário: 2
+[2025-07-10 00:36:23] Nome do perfil: Recursos Humanos
+[2025-07-10 00:36:23] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 00:36:23] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 00:48:06] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 00:48:06] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 00:48:06] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 00:48:06] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 00:48:06] ID do perfil do usuário: 2
+[2025-07-10 00:48:06] Nome do perfil: Recursos Humanos
+[2025-07-10 00:48:06] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 00:48:06] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 01:20:04] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 01:20:04] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 01:20:04] Tentando autenticar usuário: colaborador@tlantic.pt
+[2025-07-10 01:20:04] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => colaborador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 01:20:04] ID do perfil do usuário: 4
+[2025-07-10 01:20:04] Nome do perfil: Colaborador
+[2025-07-10 01:20:04] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 01:20:04] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 01:21:07] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 01:21:07] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 01:21:07] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 01:21:07] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 01:21:07] ID do perfil do usuário: 2
+[2025-07-10 01:21:07] Nome do perfil: Recursos Humanos
+[2025-07-10 01:21:07] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 01:21:07] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 01:26:17] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 01:26:17] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 12345
+)
+
+[2025-07-10 01:26:17] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-10 01:26:17] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-10 01:26:17] ID do perfil do usuário: 3
+[2025-07-10 01:26:17] Nome do perfil: Coordenador
+[2025-07-10 01:26:17] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 01:26:17] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 01:26:51] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 01:26:51] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 01:26:51] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 01:26:51] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 01:26:51] ID do perfil do usuário: 2
+[2025-07-10 01:26:51] Nome do perfil: Recursos Humanos
+[2025-07-10 01:26:51] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 01:26:51] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 02:21:29] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:21:29] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 12345
+)
+
+[2025-07-10 02:21:29] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-10 02:21:29] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-10 02:21:29] ID do perfil do usuário: 3
+[2025-07-10 02:21:29] Nome do perfil: Coordenador
+[2025-07-10 02:21:29] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 02:21:29] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 02:24:48] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:24:48] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 02:24:48] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-10 02:24:48] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-10 02:24:48] ID do perfil do usuário: 1
+[2025-07-10 02:24:48] Nome do perfil: Administrador
+[2025-07-10 02:24:48] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-10 02:24:48] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+[2025-07-10 02:28:39] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:28:39] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 02:28:39] Tentando autenticar usuário: colaborador@tlantic.pt
+[2025-07-10 02:28:39] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => colaborador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 02:28:39] ID do perfil do usuário: 4
+[2025-07-10 02:28:39] Nome do perfil: Colaborador
+[2025-07-10 02:28:39] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 02:28:39] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 02:28:57] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:28:57] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 12345
+)
+
+[2025-07-10 02:28:57] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-10 02:28:57] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-10 02:28:57] ID do perfil do usuário: 3
+[2025-07-10 02:28:57] Nome do perfil: Coordenador
+[2025-07-10 02:28:57] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 02:28:57] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 02:29:30] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:29:30] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 02:29:30] Tentando autenticar usuário: colaborador@tlantic.pt
+[2025-07-10 02:29:30] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => colaborador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 02:29:30] ID do perfil do usuário: 4
+[2025-07-10 02:29:30] Nome do perfil: Colaborador
+[2025-07-10 02:29:30] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 02:29:30] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 02:29:51] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:29:51] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 12345
+)
+
+[2025-07-10 02:29:51] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-10 02:29:51] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-10 02:29:51] ID do perfil do usuário: 3
+[2025-07-10 02:29:51] Nome do perfil: Coordenador
+[2025-07-10 02:29:51] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 02:29:51] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 02:30:03] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:30:03] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 02:30:03] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 02:30:03] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 02:30:03] ID do perfil do usuário: 2
+[2025-07-10 02:30:03] Nome do perfil: Recursos Humanos
+[2025-07-10 02:30:03] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 02:30:03] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 02:31:02] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:31:02] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 02:31:02] Tentando autenticar usuário: colaborador@tlantic.pt
+[2025-07-10 02:31:02] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => colaborador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 02:31:02] ID do perfil do usuário: 4
+[2025-07-10 02:31:02] Nome do perfil: Colaborador
+[2025-07-10 02:31:02] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 02:31:02] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 02:31:17] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:31:17] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 12345
+)
+
+[2025-07-10 02:31:17] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-10 02:31:17] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-10 02:31:17] ID do perfil do usuário: 3
+[2025-07-10 02:31:17] Nome do perfil: Coordenador
+[2025-07-10 02:31:17] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 02:31:17] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 02:31:28] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:31:28] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 02:31:28] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 02:31:28] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 02:31:28] ID do perfil do usuário: 2
+[2025-07-10 02:31:28] Nome do perfil: Recursos Humanos
+[2025-07-10 02:31:28] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 02:31:28] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 02:31:46] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 02:31:46] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 02:31:46] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-10 02:31:46] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-10 02:31:46] ID do perfil do usuário: 1
+[2025-07-10 02:31:46] Nome do perfil: Administrador
+[2025-07-10 02:31:46] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-10 02:31:46] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+[2025-07-10 10:44:40] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 10:44:40] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 10:44:40] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 10:44:40] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 10:44:40] ID do perfil do usuário: 2
+[2025-07-10 10:44:40] Nome do perfil: Recursos Humanos
+[2025-07-10 10:44:40] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 10:44:40] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 12:54:47] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 12:54:47] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 12:54:47] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-10 12:54:47] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-10 12:54:47] ID do perfil do usuário: 3
+[2025-07-10 12:54:47] Nome do perfil: Coordenador
+[2025-07-10 12:54:47] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 12:54:47] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 12:55:36] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 12:55:36] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 12:55:36] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 12:55:36] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Usuário de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 12:55:36] ID do perfil do usuário: 2
+[2025-07-10 12:55:36] Nome do perfil: Recursos Humanos
+[2025-07-10 12:55:36] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 12:55:36] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+>>>>>>> 516439ab03c804d50401677027324ea23539c7f0
+[2025-07-10 13:26:54] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 13:26:54] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 13:26:54] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 13:26:54] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 13:26:54] ID do perfil do usuário: 2
+[2025-07-10 13:26:54] Nome do perfil: Recursos Humanos
+[2025-07-10 13:26:54] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 13:26:54] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 14:00:05] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 14:00:05] Dados recebidos: Array
+(
+    [email] => admin@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 14:00:05] Tentando autenticar usuário: admin@tlantic.pt
+[2025-07-10 14:00:05] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => admin@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 1
+    [perfil] => Administrador
+)
+
+[2025-07-10 14:00:05] ID do perfil do usuário: 1
+[2025-07-10 14:00:05] Nome do perfil: Administrador
+[2025-07-10 14:00:05] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/administrador.php
+[2025-07-10 14:00:05] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/administrador.php
+[2025-07-10 14:00:47] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 14:00:47] Dados recebidos: Array
+(
+    [email] => colaborador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 14:00:47] Tentando autenticar usuário: colaborador@tlantic.pt
+[2025-07-10 14:00:47] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => colaborador@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 14:00:47] ID do perfil do usuário: 4
+[2025-07-10 14:00:47] Nome do perfil: Colaborador
+[2025-07-10 14:00:47] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 14:00:47] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 14:41:46] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 14:41:46] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 14:41:46] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-10 14:41:46] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-10 14:41:46] ID do perfil do usuário: 3
+[2025-07-10 14:41:46] Nome do perfil: Coordenador
+[2025-07-10 14:41:46] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 14:41:46] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 15:34:36] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 15:34:36] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 15:34:36] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 15:34:36] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 15:34:36] ID do perfil do usuário: 2
+[2025-07-10 15:34:36] Nome do perfil: Recursos Humanos
+[2025-07-10 15:34:36] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 15:34:36] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 15:59:43] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 15:59:43] Dados recebidos: Array
+(
+    [email] => ana.martins@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 15:59:43] Tentando autenticar usuário: ana.martins@tlantic.pt
+[2025-07-10 15:59:43] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => ana.martins@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 15:59:43] ID do perfil do usuário: 4
+[2025-07-10 15:59:43] Nome do perfil: Colaborador
+[2025-07-10 15:59:43] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 15:59:43] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 16:03:22] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 16:03:22] Dados recebidos: Array
+(
+    [email] => ana.martins@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 16:03:22] Tentando autenticar usuário: ana.martins@tlantic.pt
+[2025-07-10 16:03:22] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => ana.martins@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 16:03:22] ID do perfil do usuário: 4
+[2025-07-10 16:03:22] Nome do perfil: Colaborador
+[2025-07-10 16:03:22] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 16:03:22] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 16:31:33] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 16:31:33] Dados recebidos: Array
+(
+    [email] => ana.martins@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 16:31:33] Tentando autenticar usuário: ana.martins@tlantic.pt
+[2025-07-10 16:31:33] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => ana.martins@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 16:31:33] ID do perfil do usuário: 4
+[2025-07-10 16:31:33] Nome do perfil: Colaborador
+[2025-07-10 16:31:33] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 16:31:33] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 16:55:03] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 16:55:03] Dados recebidos: Array
+(
+    [email] => ana.martins@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 16:55:03] Tentando autenticar usuário: ana.martins@tlantic.pt
+[2025-07-10 16:55:03] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => ana.martins@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 16:55:03] ID do perfil do usuário: 4
+[2025-07-10 16:55:03] Nome do perfil: Colaborador
+[2025-07-10 16:55:03] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 16:55:03] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 17:01:17] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:01:17] Dados recebidos: Array
+(
+    [email] => ana.martins@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:01:17] Tentando autenticar usuário: ana.martins@tlantic.pt
+[2025-07-10 17:01:17] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => ana.martins@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 17:01:17] ID do perfil do usuário: 4
+[2025-07-10 17:01:17] Nome do perfil: Colaborador
+[2025-07-10 17:01:17] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 17:01:17] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 17:03:45] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:45] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:45] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:45] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:45] ID do perfil do usuário: 2
+[2025-07-10 17:03:45] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:45] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:45] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:45] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:46] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:46] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:46] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:46] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:46] ID do perfil do usuário: 2
+[2025-07-10 17:03:46] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:46] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:46] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:46] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:47] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:47] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:47] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:47] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:47] ID do perfil do usuário: 2
+[2025-07-10 17:03:47] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:47] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:47] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:47] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:48] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:48] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:48] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:48] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:48] ID do perfil do usuário: 2
+[2025-07-10 17:03:48] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:48] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:48] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:48] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:48] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:48] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:48] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:48] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:48] ID do perfil do usuário: 2
+[2025-07-10 17:03:48] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:48] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:48] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:48] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:48] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:48] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:48] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:48] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:48] ID do perfil do usuário: 2
+[2025-07-10 17:03:48] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:48] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:48] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:48] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:48] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:48] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:48] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:48] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:48] ID do perfil do usuário: 2
+[2025-07-10 17:03:48] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:48] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:48] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:48] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:48] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:48] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:48] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:49] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:49] ID do perfil do usuário: 2
+[2025-07-10 17:03:49] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:49] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:49] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:49] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:49] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:49] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:49] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:49] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:49] ID do perfil do usuário: 2
+[2025-07-10 17:03:49] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:49] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:49] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:49] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:49] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:49] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:49] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:49] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:49] ID do perfil do usuário: 2
+[2025-07-10 17:03:49] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:49] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:49] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:49] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:49] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:03:49] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:03:49] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:03:49] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:03:49] ID do perfil do usuário: 2
+[2025-07-10 17:03:49] Nome do perfil: Recursos Humanos
+[2025-07-10 17:03:49] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:03:49] Dados da sessão: Array
+(
+    [utilizador_id] => 1
+    [utilizador_email] => rh@tlantic.pt
+    [utilizador_nome] => Utilizador de Teste
+    [nome] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil_nome] => Recursos Humanos
+)
+
+[2025-07-10 17:03:49] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:07] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:07] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:07] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:07] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:07] ID do perfil do usuário: 2
+[2025-07-10 17:04:07] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:07] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:07] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:08] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:08] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:08] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:08] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:08] ID do perfil do usuário: 2
+[2025-07-10 17:04:08] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:08] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:08] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:08] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:08] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:08] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:08] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:08] ID do perfil do usuário: 2
+[2025-07-10 17:04:08] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:08] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:08] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:08] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:08] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:08] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:08] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:08] ID do perfil do usuário: 2
+[2025-07-10 17:04:08] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:08] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:08] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:08] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:08] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:08] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:08] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:08] ID do perfil do usuário: 2
+[2025-07-10 17:04:08] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:08] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:08] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:09] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:09] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:09] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:09] ID do perfil do usuário: 2
+[2025-07-10 17:04:09] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:09] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:09] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:09] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:09] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:09] ID do perfil do usuário: 2
+[2025-07-10 17:04:09] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:09] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:09] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:09] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:09] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:09] ID do perfil do usuário: 2
+[2025-07-10 17:04:09] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:09] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:09] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:09] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:09] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:09] ID do perfil do usuário: 2
+[2025-07-10 17:04:09] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:09] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:09] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:09] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:09] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:09] ID do perfil do usuário: 2
+[2025-07-10 17:04:09] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:09] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:09] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:09] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:09] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:09] ID do perfil do usuário: 2
+[2025-07-10 17:04:09] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:09] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:09] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:16] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:16] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:16] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:16] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:16] ID do perfil do usuário: 2
+[2025-07-10 17:04:16] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:16] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:16] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:17] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:17] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:17] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:17] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:17] ID do perfil do usuário: 2
+[2025-07-10 17:04:17] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:17] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:17] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:17] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:17] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:17] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:17] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:17] ID do perfil do usuário: 2
+[2025-07-10 17:04:17] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:17] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:17] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:20] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:20] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:20] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:20] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:20] ID do perfil do usuário: 2
+[2025-07-10 17:04:20] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:20] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:20] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:20] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:20] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:20] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:20] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:20] ID do perfil do usuário: 2
+[2025-07-10 17:04:20] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:20] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:20] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:20] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:20] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:21] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:21] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:21] ID do perfil do usuário: 2
+[2025-07-10 17:04:21] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:21] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:21] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:21] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:21] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:21] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:21] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:21] ID do perfil do usuário: 2
+[2025-07-10 17:04:21] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:21] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:21] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:21] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:21] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:21] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:21] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:21] ID do perfil do usuário: 2
+[2025-07-10 17:04:21] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:21] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:21] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:21] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:21] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:21] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:21] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:21] ID do perfil do usuário: 2
+[2025-07-10 17:04:21] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:21] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:21] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:29] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:29] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:29] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:29] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:29] ID do perfil do usuário: 2
+[2025-07-10 17:04:29] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:29] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:29] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:29] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:29] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:29] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:29] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:29] ID do perfil do usuário: 2
+[2025-07-10 17:04:29] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:29] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:29] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:29] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:29] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:29] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:04:29] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:04:29] ID do perfil do usuário: 2
+[2025-07-10 17:04:29] Nome do perfil: Recursos Humanos
+[2025-07-10 17:04:29] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:29] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:04:39] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:04:39] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:04:39] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:05:47] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:05:47] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:05:47] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:05:47] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:05:47] ID do perfil do usuário: 2
+[2025-07-10 17:05:47] Nome do perfil: Recursos Humanos
+[2025-07-10 17:05:47] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:47] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:48] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:05:48] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:05:48] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:05:48] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:05:48] ID do perfil do usuário: 2
+[2025-07-10 17:05:48] Nome do perfil: Recursos Humanos
+[2025-07-10 17:05:48] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:48] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:50] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:05:50] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:05:50] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:05:50] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:05:50] ID do perfil do usuário: 2
+[2025-07-10 17:05:50] Nome do perfil: Recursos Humanos
+[2025-07-10 17:05:50] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:50] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:51] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:05:51] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:05:51] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:05:51] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:05:51] ID do perfil do usuário: 2
+[2025-07-10 17:05:51] Nome do perfil: Recursos Humanos
+[2025-07-10 17:05:51] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:51] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:51] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:05:51] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:05:51] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:05:51] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:05:51] ID do perfil do usuário: 2
+[2025-07-10 17:05:51] Nome do perfil: Recursos Humanos
+[2025-07-10 17:05:51] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:51] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:51] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:05:51] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:05:51] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:05:51] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:05:51] ID do perfil do usuário: 2
+[2025-07-10 17:05:51] Nome do perfil: Recursos Humanos
+[2025-07-10 17:05:51] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:51] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:51] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:05:51] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:05:51] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:05:51] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:05:51] ID do perfil do usuário: 2
+[2025-07-10 17:05:51] Nome do perfil: Recursos Humanos
+[2025-07-10 17:05:51] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:51] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:51] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:05:51] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:05:51] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:05:51] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:05:51] ID do perfil do usuário: 2
+[2025-07-10 17:05:51] Nome do perfil: Recursos Humanos
+[2025-07-10 17:05:51] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:51] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:52] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:05:52] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:05:52] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:05:52] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:05:52] ID do perfil do usuário: 2
+[2025-07-10 17:05:52] Nome do perfil: Recursos Humanos
+[2025-07-10 17:05:52] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:05:52] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:39] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:39] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:39] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:39] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:39] ID do perfil do usuário: 2
+[2025-07-10 17:07:39] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:39] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:39] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:39] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:39] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:39] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:39] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:39] ID do perfil do usuário: 2
+[2025-07-10 17:07:39] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:39] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:39] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:39] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:39] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:39] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:39] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:39] ID do perfil do usuário: 2
+[2025-07-10 17:07:39] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:39] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:39] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:40] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:40] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:40] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:40] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:40] ID do perfil do usuário: 2
+[2025-07-10 17:07:40] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:40] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:40] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:41] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:41] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:41] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:41] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:41] ID do perfil do usuário: 2
+[2025-07-10 17:07:41] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:41] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:41] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:41] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:41] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:41] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:41] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:41] ID do perfil do usuário: 2
+[2025-07-10 17:07:41] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:41] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:41] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:41] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:41] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:41] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:41] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:41] ID do perfil do usuário: 2
+[2025-07-10 17:07:41] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:41] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:41] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:42] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:42] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:42] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:42] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:42] ID do perfil do usuário: 2
+[2025-07-10 17:07:42] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:42] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:42] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:42] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:42] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:42] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:42] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:42] ID do perfil do usuário: 2
+[2025-07-10 17:07:42] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:42] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:42] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:42] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:42] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:42] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:42] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:42] ID do perfil do usuário: 2
+[2025-07-10 17:07:42] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:42] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:42] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:43] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:07:43] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:07:43] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:07:43] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:07:43] ID do perfil do usuário: 2
+[2025-07-10 17:07:43] Nome do perfil: Recursos Humanos
+[2025-07-10 17:07:43] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:07:43] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:11:46] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:11:46] Dados recebidos: Array
+(
+    [email] => rh@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:11:46] Tentando autenticar usuário: rh@tlantic.pt
+[2025-07-10 17:11:46] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => rh@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 2
+    [perfil] => Recursos Humanos
+)
+
+[2025-07-10 17:11:46] ID do perfil do usuário: 2
+[2025-07-10 17:11:46] Nome do perfil: Recursos Humanos
+[2025-07-10 17:11:46] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:11:46] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/recursos_humanos/dashboard.php
+[2025-07-10 17:11:54] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:11:54] Dados recebidos: Array
+(
+    [email] => ana.martins@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:11:54] Tentando autenticar usuário: ana.martins@tlantic.pt
+[2025-07-10 17:11:54] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => ana.martins@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 4
+    [perfil] => Colaborador
+)
+
+[2025-07-10 17:11:54] ID do perfil do usuário: 4
+[2025-07-10 17:11:54] Nome do perfil: Colaborador
+[2025-07-10 17:11:54] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 17:11:54] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/colaborador.php
+[2025-07-10 17:12:02] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:12:02] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:12:02] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-10 17:12:02] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-10 17:12:02] ID do perfil do usuário: 3
+[2025-07-10 17:12:02] Nome do perfil: Coordenador
+[2025-07-10 17:12:02] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 17:12:02] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 17:14:47] === INÍCIO DO PROCESSAMENTO DO LOGIN ===
+[2025-07-10 17:14:47] Dados recebidos: Array
+(
+    [email] => coordenador@tlantic.pt
+    [senha] => 123456
+)
+
+[2025-07-10 17:14:47] Tentando autenticar usuário: coordenador@tlantic.pt
+[2025-07-10 17:14:47] Resultado da autenticação: Array
+(
+    [id_utilizador] => 1
+    [email] => coordenador@tlantic.pt
+    [username] => Utilizador de Teste
+    [id_perfil_acesso] => 3
+    [perfil] => Coordenador
+)
+
+[2025-07-10 17:14:47] ID do perfil do usuário: 3
+[2025-07-10 17:14:47] Nome do perfil: Coordenador
+[2025-07-10 17:14:47] URL de redirecionamento gerada: /LSIS-Equipa-9/UI/coordenador/index.php
+[2025-07-10 17:14:47] Redirecionando para: http://localhost/LSIS-Equipa-9/UI/coordenador/index.php
